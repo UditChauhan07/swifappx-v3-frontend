@@ -115,3 +115,15 @@
 .sidebar::-webkit-scrollbar-thumb:hover {
   background-color: #495057; 
 }
+
+.selected-item {
+  background-color: #8d28dd !important;  /* Example: blue background */
+  color: white;                          /* White text */
+}
+.selected-item:hover {
+  background-color: #9e53da !important;  /* Darker blue on hover */
+}
+
+.dropdown-menu {
+  --bs-dropdown-link-active-bg: white;
+}

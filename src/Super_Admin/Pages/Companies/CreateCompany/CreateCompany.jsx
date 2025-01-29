@@ -13,6 +13,7 @@ import Header from "../../../../Components/Header/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { createCompanyApi } from "../../../../lib/store";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const CreateCompany = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -71,7 +72,7 @@ const CreateCompany = () => {
     workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday"],
     companyStatus: true,
   });
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
   console.log("formData", formData);
   const [errors, setErrors] = useState({});
@@ -582,8 +583,7 @@ const CreateCompany = () => {
     return newErrors;
   };
 
-  const handleSubmit = async() => {
-
+  const handleSubmit = async () => {
     const allCertificates = [
       {
         name: formData.certificationName,
@@ -637,7 +637,7 @@ const CreateCompany = () => {
       zip_code: formData.zip,
     };
 
-    console.log("Transformed finalData", companyData,'\navigator',userdata);
+    console.log("Transformed finalData", companyData, "\navigator", userdata);
 
     const formDataToSend = new FormData();
     formDataToSend.append("userdata", JSON.stringify(userdata)); // Stringify userdata
@@ -649,25 +649,68 @@ const CreateCompany = () => {
       formDataToSend.append("company_logo", formData.companyLogo);
     }
 
-    // Use `formDataToSend` in your API call
-    // for (const pair of formDataToSend.entries()) {
-    //   console.log(`${pair[0]}:`, pair[1]);
-    // }
     console.log("Final FormData: ", formDataToSend);
     try {
-      const response = await createCompanyApi(formDataToSend,token)
-      console.log('response', response);
-      if(response.success){
-        alert('Company created successfully');
-        setTimeout(() =>{
-          navigate(-1)
-        },1500)
-        
-      } 
+      // Show confirmation alert before API call
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to create this company?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, create it!",
+        cancelButtonText: "No, cancel",
+      });
+
+      if (!result.isConfirmed) {
+        console.log("Company creation cancelled");
+        return;
+      }
+
+      // Show loading alert while API is executing
+      Swal.fire({
+        title: "Processing...",
+        text: "Creating company, please wait.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      // Call API
+      const response = await createCompanyApi(formDataToSend, token);
+      console.log("response", response);
+
+      // Close loading alert
+      Swal.close();
+
+      if (response.success) {
+        Swal.fire({
+          title: "Success!",
+          text: "Company created successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/customers/list"); // Navigate after confirmation
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: response.message || "There was an error creating the company.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
     } catch (error) {
-      console.error('error creating company', error);
+      Swal.close(); // Ensure loading is closed
+      console.error("Error creating company", error);
+
+      Swal.fire({
+        title: "API Error!",
+        text: "Something went wrong. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
-    
   };
 
   return (

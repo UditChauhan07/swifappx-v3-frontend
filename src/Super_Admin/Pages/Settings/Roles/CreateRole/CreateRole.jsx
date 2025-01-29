@@ -102,13 +102,26 @@ const CreateRole = () => {
   };
 
   const handlePermissionChange = (module, action) => {
-    setPermissions((prev) => ({
-      ...prev,
-      [module]: {
-        ...prev[module],
-        [action]: !prev[module]?.[action],
-      },
-    }));
+    setPermissions((prev) => {
+      const updatedPermissions = {
+        ...prev,
+        [module]: {
+          ...prev[module],
+          [action]: !prev[module]?.[action],
+        },
+      };
+
+      // Check if at least one checkbox is selected and clear the error
+      const permissionsSelected = Object.values(updatedPermissions).some(
+        (mod) => Object.values(mod).some((act) => act)
+      );
+
+      if (permissionsSelected) {
+        setErrors((prevErrors) => ({ ...prevErrors, permissions: "" }));
+      }
+
+      return updatedPermissions;
+    });
   };
 
   const renderModules = (modules) =>
@@ -183,7 +196,6 @@ const CreateRole = () => {
       window.scroll(0, 0);
     }
 
-    // Check if any permission is selected
     const permissionsSelected = Object.values(permissions).some((module) =>
       Object.values(module).some((action) => action)
     );
@@ -191,12 +203,10 @@ const CreateRole = () => {
     if (!permissionsSelected) {
       newErrors.permissions = "Please select at least one checkbox!";
       isValid = false;
-    //   window.scroll(0, 0);
     }
 
     if (!isValid) {
       setErrors(newErrors);
-    //   window.scroll(0, 0);
       return;
     }
 
@@ -213,8 +223,7 @@ const CreateRole = () => {
       created_by: createdBy,
     };
 
-    console.log("Role Data to send to API:", roleData);
-
+    // Confirm action before proceeding
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "Do you want to create this role?",
@@ -224,39 +233,55 @@ const CreateRole = () => {
       cancelButtonText: "No, cancel",
     });
 
-    if (result.isConfirmed) {
-      try {
-        const response = await createUserRole(roleData);
+    if (!result.isConfirmed) {
+      console.log("Role creation was cancelled");
+      return;
+    }
 
-        if (response.success) {
-          Swal.fire({
-            title: "Success!",
-            text: "Role created successfully.",
-            icon: "success",
-            confirmButtonText: "OK",
-          });
+    Swal.fire({
+      title: "Processing...",
+      text: "Creating role, please wait.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
 
-          console.log("Response:", response);
-        } else {
-          Swal.fire({
-            title: "Error!",
-            text: response.message || "There was an error creating the role.",
-            icon: "error",
-            confirmButtonText: "Try Again",
-          });
-        }
-      } catch (error) {
-        console.error("API Error:", error);
+    try {
+      const response = await createUserRole(roleData);
+
+      Swal.close();
+
+      if (response.status === true) {
+        e.target.reset();
+        setPermissions({});
+        setErrors({ roleName: "", roleDescription: "", permissions: "" });
 
         Swal.fire({
-          title: "API Error!",
-          text: "Something went wrong. Please try again later.",
-          icon: "error",
+          title: "Success!",
+          text: "Role created successfully.",
+          icon: "success",
           confirmButtonText: "OK",
         });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: response.message || "There was an error creating the role.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
       }
-    } else {
-      console.log("Role creation was cancelled");
+    } catch (error) {
+      // Close SweetAlert loading spinner and show error
+      Swal.close();
+      console.error("API Error:", error);
+
+      Swal.fire({
+        title: "API Error!",
+        text: "Something went wrong. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -350,11 +375,13 @@ const CreateRole = () => {
                   : renderModules(companyModules)}
               </tbody>
             </Table>
-            {errors.permissions && (
-              <Form.Text className="text-danger">
-                {errors.permissions}
-              </Form.Text>
-            )}
+            <div className="mb-2">
+              {errors.permissions && (
+                <Form.Text className="text-danger">
+                  {errors.permissions}
+                </Form.Text>
+              )}
+            </div>
             <Button variant="primary" type="submit">
               Submit
             </Button>

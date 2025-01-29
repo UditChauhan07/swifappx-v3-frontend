@@ -21,10 +21,15 @@ import {
   FaChartBar,
 } from "react-icons/fa";
 import "./Header.css";
+import { useTranslation } from "react-i18next";
 
 const Header = () => {
   const location = useLocation();
   const Navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    localStorage.getItem("language")
+  );
 
   const [expandedDropdown, setExpandedDropdown] = useState("");
   const [nestedDropdown, setNestedDropdown] = useState("");
@@ -86,6 +91,22 @@ const Header = () => {
     });
   };
 
+  const changeLanguage = (lng) => {
+    setSelectedLanguage(lng);
+    i18n.changeLanguage(lng);
+    localStorage.setItem("language", lng);
+  };
+
+  const languageNames = {
+    en: "English",
+    es: "Spanish",
+    fr: "French",
+  };
+
+  const getItemClass = (lng) => {
+    return lng === selectedLanguage ? "selected-item" : "";
+  };
+
   return (
     <>
       {/* Navbar */}
@@ -96,19 +117,26 @@ const Header = () => {
             {/* Language Dropdown */}
             <Dropdown>
               <Dropdown.Toggle variant="light" id="language-dropdown">
-                <FaLanguage className="me-2" /> Language
+                <FaLanguage className="me-2" />
+                {languageNames[selectedLanguage]}{" "}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item>English</Dropdown.Item>
-                <Dropdown.Item>Spanish</Dropdown.Item>
-                <Dropdown.Item>French</Dropdown.Item>
+                {Object.keys(languageNames).map((lng) => (
+                  <Dropdown.Item
+                    key={lng}
+                    onClick={() => changeLanguage(lng)}
+                    className={getItemClass(lng)}
+                  >
+                    {languageNames[lng]}
+                  </Dropdown.Item>
+                ))}
               </Dropdown.Menu>
             </Dropdown>
 
             {/* User Profile Dropdown */}
             <Dropdown align="end">
               <Dropdown.Toggle variant="light" id="profile-dropdown">
-                <FaUserCircle className="me-2" /> Profile
+                <FaUserCircle className="me-2" /> {t("Profile")}
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item>
@@ -117,10 +145,12 @@ const Header = () => {
                     to={"/changepassword"}
                     style={{ textDecoration: "none", color: "black" }}
                   >
-                    Change Password
+                    {t("Change Password")}
                   </Link>
                 </Dropdown.Item>
-                <Dropdown.Item onClick={handleLogOut}>Logout</Dropdown.Item>
+                <Dropdown.Item onClick={handleLogOut}>
+                  {t("Logout")}
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Nav>
@@ -149,7 +179,7 @@ const Header = () => {
                   className="sidebar-link"
                   activeClassName="active"
                 >
-                  Dashboard
+                  {t("Dashboard")}
                 </Link>
 
                 {/* Company Dropdown */}
@@ -162,7 +192,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("company")}
                   >
-                    <span>Company</span>
+                    <span>{t("Company")}</span>
                     <FaBuilding />
                   </div>
                   <div
@@ -175,21 +205,21 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Create
+                      ▣ {t("Create")}
                     </Link>
                     <Link
                       to="/company/companies"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Companies
+                      ▣ {t("Companies")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Access
+                      ▣ {t("Access")}
                     </Link>
                   </div>
                 </div>
@@ -204,7 +234,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("settings")}
                   >
-                    <span>Settings</span>
+                    <span>{t("Settings")}</span>
                     <FaCog />
                   </div>
                   <div
@@ -217,49 +247,49 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Roles
+                      ▣ {t("Roles")}
                     </Link>
                     <Link
                       to="/settings/payment-method"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Payment Modes
+                      ▣ {t("Payment Modes")}
                     </Link>
                     <Link
                       to="/settings/payment-method"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Sub Admin
+                      ▣ {t("Sub Admin")}
                     </Link>
                     <Link
                       to="/settings/payment-method"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Company Charges
+                      ▣ {t("Company Charges")}
                     </Link>
                     <Link
                       to="/settings/payment-method"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Default Trial Offer
+                      ▣ {t("Default Trial Offer")}
                     </Link>
                     <Link
                       to="/settings/payment-method"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Company Pre-Fix
+                      ▣ {t("Company Pre-Fix")}
                     </Link>
                     <Link
                       to="/settings/payment-method"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Address Formatting
+                      ▣ {t("Address Formatting")}
                     </Link>
                   </div>
                 </div>
@@ -274,7 +304,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("reports")}
                   >
-                    <span>Reports</span>
+                    <span>{t("Reports")}</span>
                     <FaChartBar />
                   </div>
                   <div
@@ -287,21 +317,21 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Sales Report
+                      ▣ {t("Sales Report")}
                     </Link>
                     <Link
                       to="/reports/option2"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Revenue Reports
+                      ▣ {t("Revenue Reports")}
                     </Link>
                     <Link
                       to="/reports/option2"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Billing Reports
+                      ▣ {t("Billing Reports")}
                     </Link>
                   </div>
                 </div>
@@ -314,7 +344,7 @@ const Header = () => {
                   className="sidebar-link"
                   activeClassName="active"
                 >
-                  Dashboard
+                  {t("Dashboard")}
                 </Link>
                 {/* Services Dropdown */}
                 <div
@@ -326,7 +356,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("servies")}
                   >
-                    <span>Servies and Products</span>
+                    <span>{t("Servies and Products")}</span>
                     <GiPerspectiveDiceSixFacesOne size={20} />
                   </div>
                   <div
@@ -339,28 +369,28 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Service Categories
+                      ▣ {t("Service Categories")}
                     </Link>
                     <Link
                       to="/servies/list"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Service List
+                      ▣ {t("Service List")}
                     </Link>
                     <Link
                       to="/servies/item"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Item Categories
+                      ▣ {t("Item Categories")}
                     </Link>
                     <Link
                       to="/servies/products"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Product Items
+                      ▣ {t("Product Items")}
                     </Link>
                   </div>
                 </div>
@@ -374,7 +404,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("users")}
                   >
-                    <span>Users</span>
+                    <span>{t("Users")}</span>
                     <FaUserCog size={20} />
                   </div>
                   <div
@@ -401,7 +431,7 @@ const Header = () => {
                           )
                         }
                       >
-                        ▣ Office Users
+                        ▣ {t("Office Users")}
                       </div>
                       {nestedDropdown === "officeUsers" ? (
                         <div
@@ -416,43 +446,43 @@ const Header = () => {
                             to="/users/office/create"
                             className="sidebar-link"
                           >
-                            Create
+                            {t("Create")}
                           </Link>
                           <Link
                             to="/users/office/super-admin"
                             className="sidebar-link"
                           >
-                            Super Admin
+                            {t("Super Admin")}
                           </Link>
                           <Link
                             to="/users/office/staff-admin"
                             className="sidebar-link"
                           >
-                            Staff Admin
+                            {t("Staff Admin")}
                           </Link>
                           <Link
                             to="/users/office/accountant"
                             className="sidebar-link"
                           >
-                            Accountant
+                            {t("Accountant")}
                           </Link>
                           <Link
                             to="/users/office/manager"
                             className="sidebar-link"
                           >
-                            Manager
+                            {t("Manager")}
                           </Link>
                           <Link
                             to="/users/office/human-resource"
                             className="sidebar-link"
                           >
-                            Human Resource
+                            {t("Human Resource")}
                           </Link>
                           <Link
                             to="/users/office/other-users"
                             className="sidebar-link"
                           >
-                            Other Users
+                            {t("Other Users")}
                           </Link>
                         </div>
                       ) : (
@@ -477,7 +507,7 @@ const Header = () => {
                           )
                         }
                       >
-                        ▣ Field Users
+                        ▣ {t("Field Users")}
                       </div>
                       {nestedDropdown === "fieldUsers" ? (
                         <div
@@ -492,16 +522,16 @@ const Header = () => {
                             to="/users/field/create"
                             className="sidebar-link"
                           >
-                            Create
+                            {t("Create")}
                           </Link>
                           <Link to="/users/field/list" className="sidebar-link">
-                            Field Users List
+                            {t("Field Users List")}
                           </Link>
                           <Link
                             to="/users/field/import"
                             className="sidebar-link"
                           >
-                            Import
+                            {t("Import")}
                           </Link>
                         </div>
                       ) : (
@@ -521,7 +551,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("customers")}
                   >
-                    <span>Customers</span>
+                    <span>{t("Customers")}</span>
                     <FaUserFriends size={20} />
                   </div>
                   <div
@@ -534,28 +564,28 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Create
+                      ▣ {t("Create")}
                     </Link>
                     <Link
                       to="/customers/list"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Customer List
+                      ▣ {t("Customer List")}
                     </Link>
                     <Link
                       to="/customers/prospects"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Prospects & Leads
+                      ▣ {t("Prospects & Leads")}
                     </Link>
                     <Link
                       to="/customers/import"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Customer Import
+                      ▣ {t("Customer Import")}
                     </Link>
                   </div>
                 </div>
@@ -569,7 +599,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("quotations")}
                   >
-                    <span>Quotations</span>
+                    <span>{t("Quotations")}</span>
                     <FaFileSignature size={20} />
                   </div>
                   <div
@@ -582,28 +612,28 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Create
+                      ▣ {t("Create")}
                     </Link>
                     <Link
                       to="/company/companies"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Submitted QT
+                      ▣ {t("Submitted QT")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Approved QT
+                      ▣ {t("Approved QT")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Draft QT
+                      ▣ {t("Draft QT")}
                     </Link>
                   </div>
                 </div>
@@ -617,7 +647,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("contracts")}
                   >
-                    <span>Contracts</span>
+                    <span>{t("Contracts")}</span>
                     <VscFiles size={20} />
                   </div>
                   <div
@@ -630,35 +660,35 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Create
+                      ▣ {t("Create")}
                     </Link>
                     <Link
                       to="/company/companies"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Active Contracts
+                      ▣ {t("Active Contracts")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Terminate Contracts
+                      ▣ {t("Terminate Contracts")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Hold Contracts
+                      ▣ {t("Hold Contracts")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Draft Contracts
+                      ▣ {t("Draft Contracts")}
                     </Link>
                   </div>
                 </div>
@@ -672,7 +702,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("workOrder")}
                   >
-                    <span>Work Orders</span>
+                    <span>{t("Work Orders")}</span>
                     <MdWork size={20} />
                   </div>
                   <div
@@ -685,35 +715,35 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Create
+                      ▣ {t("Create")}
                     </Link>
                     <Link
                       to="/company/companies"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Work Orders List
+                      ▣ {t("Work Orders List")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Draft Work Orders
+                      ▣ {t("Draft Work Orders")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Request
+                      ▣ {t("Request")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ W.O Calender
+                      ▣ {t("W.O Calendar")}
                     </Link>
                   </div>
                 </div>
@@ -727,7 +757,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("settings")}
                   >
-                    <span>Settings</span>
+                    <span>{t("Settings")}</span>
                     <IoMdSettings size={20} />
                   </div>
                   <div
@@ -740,49 +770,49 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Account Settings
+                      ▣ {t("Account Settings")}
                     </Link>
                     <Link
                       to="/company/companies"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ User Profile
+                      ▣ {t("User Profile")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Company Settings
+                      ▣ {t("Company Settings")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Roles
+                      ▣ {t("Roles")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Public Holidays
+                      ▣ {t("Public Holidays")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Email Settings
+                      ▣ {t("Email Settings")}
                     </Link>
                     <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Security
+                      ▣ {t("Security")}
                     </Link>
                   </div>
                 </div>
@@ -796,7 +826,7 @@ const Header = () => {
                     className="dropdown-title"
                     onClick={() => toggleDropdown("reports")}
                   >
-                    <span>Reports</span>
+                    <span>{t("Reports")}</span>
                     <TbReportSearch size={20} />
                   </div>
                   <div
@@ -809,14 +839,14 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ TimeSheet
+                      ▣ {t("TimeSheet")}
                     </Link>
                     <Link
                       to="/company/companies"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ Sales Performance
+                      ▣ {t("Sales Performance")}
                     </Link>
                   </div>
                 </div>
@@ -829,14 +859,14 @@ const Header = () => {
               className="sidebar-link"
               activeClassName="active"
             >
-              Training & Notes
+              {t("Training & Notes")}
             </Link>
             <Link
               to="/release-notes"
               className="sidebar-link"
               activeClassName="active"
             >
-              Release Notes
+              {t("Release Notes")}
             </Link>
           </Nav>
         </div>

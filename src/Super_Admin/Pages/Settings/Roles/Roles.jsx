@@ -4,45 +4,22 @@ import { FaEdit } from "react-icons/fa";
 import { BeatLoader } from "react-spinners";
 import Header from "../../../../Components/Header/Header";
 import { Link } from "react-router-dom";
+import { getRoles } from "../../../../lib/store";
 
 const Roles = () => {
   const [rolesList, setRolesList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [userId, setuserId] = useState(localStorage.getItem("userId"));
   const rowsPerPage = 4;
 
   useEffect(() => {
     const fetchRoles = async () => {
       setIsLoading(true);
       try {
-        // Replace this with your actual API or static data
-        const mockData = [
-          {
-            roleName: "commis aux comptes",
-            roleLevel: "Company",
-            roleDescription: "commis aux comptes commis aux comptes",
-            numberOfUsers: 0,
-          },
-          {
-            roleName: "HR USER",
-            roleLevel: "Company",
-            roleDescription: "THIS IS ROLE DESCRIPTION",
-            numberOfUsers: 0,
-          },
-          {
-            roleName: "Modren Complex",
-            roleLevel: "SAAS",
-            roleDescription: "na",
-            numberOfUsers: 0,
-          },
-          {
-            roleName: "view access",
-            roleLevel: "Company",
-            roleDescription: "na",
-            numberOfUsers: 0,
-          },
-        ];
-        setRolesList(mockData);
+        const response = await getRoles(userId);
+        console.log("dasda", response);
+        setRolesList(response?.data);
       } catch (error) {
         console.error("Error fetching roles data:", error);
       } finally {
@@ -73,8 +50,8 @@ const Roles = () => {
       <div className="main-header-box mt-4">
         <div className="pages-box">
           <div className="mb-2">
-            <Link to={'/settings/roles/create'}>
-            <Button>Create</Button>
+            <Link to={"/settings/roles/create"}>
+              <Button>Create</Button>
             </Link>
           </div>
           <h2 className="mb-4">SAAS Roles</h2>
@@ -133,7 +110,9 @@ const Roles = () => {
                 {isLoading ? (
                   <tr>
                     <td colSpan="5" className="text-center py-5">
-                      <BeatLoader size={12} color={"#3C3C3C"} />
+                      <BeatLoader size={12} color={"#3C3C3C"} style={{
+                        display:"flex",justifyContent:"center"
+                      }}/>
                       <p className="mt-2">Loading...</p>
                     </td>
                   </tr>
@@ -170,7 +149,7 @@ const Roles = () => {
                       >
                         {role.roleDescription}
                       </td>
-                      <td className="text-center">{role.numberOfUsers}</td>
+                      <td className="text-center">0</td>
                       <td className="text-center">
                         <Button
                           variant="outline-secondary"
@@ -179,9 +158,6 @@ const Roles = () => {
                             borderRadius: "50%",
                             width: "35px",
                             height: "35px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
                           }}
                         >
                           <FaEdit />

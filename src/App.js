@@ -25,6 +25,8 @@ import ChangePassword from "./Super_Admin/Pages/ChangePassword/ChangePassword";
 import PrivateRoute from "./PrivateRoute";
 import Roles from "./Super_Admin/Pages/Settings/Roles/Roles";
 import CreateRole from "./Super_Admin/Pages/Settings/Roles/CreateRole/CreateRole";
+import "./i18n"; 
+
 
 function App() {
   return (
