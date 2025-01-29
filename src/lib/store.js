@@ -97,3 +97,48 @@ export const createUserRole = async (finalData) => {
     throw new Error("An unexpected error occurred");
   }
 };
+
+//create office User
+export const createOfficeUser=async (finalData,token) => {
+  try {
+    const response = await axios.post(
+      `${Url}/ocf432w678/off21m9076`,
+      finalData,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+
+//fetch roles list for office user
+export const fetchRolesList=async (userid,token) => {
+  try {
+    const response = await axios.get(
+      `${Url}/srw4rdxkh8/ywqg21sh72?userId=${encodeURIComponent(userid)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response.data, "login api data");
+    return response.data.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  } 
+
+}
+
