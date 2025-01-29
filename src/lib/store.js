@@ -97,3 +97,24 @@ export const createUserRole = async (finalData) => {
     throw new Error("An unexpected error occurred");
   }
 };
+
+// Get Role List
+export const getRoles = async (finalData) => {
+  console.log("finalData",finalData)
+  const userId = finalData
+  try {
+    const response = await axios.get(
+      `${Url}/srw4rdxkh8/ywqg21sh72`, 
+      {
+        params:{userId}, 
+      }
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
