@@ -26,6 +26,8 @@ import PrivateRoute from "./PrivateRoute";
 import Roles from "./Super_Admin/Pages/Settings/Roles/Roles";
 import CreateRole from "./Super_Admin/Pages/Settings/Roles/CreateRole/CreateRole";
 import "./i18n"; 
+import AdminRoles from "./Admin/Pages/Settings/Roles/AdminRoles";
+import CreateAdminRole from "./Admin/Pages/Settings/Roles/CreateAdminRole/CreateAdminRole";
 
 
 function App() {
@@ -48,6 +50,10 @@ function App() {
           <Route path="/company/companies" element={<Companies />} />
 
           <Route path="/company/access" element={<CompanyAccess />} />
+
+          {/* Roles */}
+          <Route path="/settings/roles" element={<Roles />} />
+          <Route path="/settings/roles/create" element={<CreateRole />} />
 
           {/* Admin */}
           
@@ -74,8 +80,8 @@ function App() {
 
           {/* Settings */}
           {/* Roles */}
-          <Route path="/settings/roles" element={<Roles />} />
-          <Route path="/settings/roles/create" element={<CreateRole />} />
+          <Route path="/settings/admin/roles" element={<AdminRoles />} />
+          <Route path="/settings/admin/roles/create" element={<CreateAdminRole />} />
         </Routes>
       </Router>
     </>
