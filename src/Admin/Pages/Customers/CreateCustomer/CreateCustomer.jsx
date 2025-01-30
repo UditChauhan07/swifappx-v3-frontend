@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import Header from "../../../../Components/Header/Header";
+import { createCustomerApi } from "../../../../lib/store";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const CreateCustomer = () => {
-  // State to manage form inputs
+  const navigate = useNavigate()
+  const [adminName, setadminName] = useState(localStorage.getItem("name"))
   const [formData, setFormData] = useState({
     name: "",
     type: "Individual",
     email: "",
-    remarks: "",
+    initial_remarks: "",
+    company_id: localStorage.getItem("userId"),
+    created_by:adminName
   });
+  const [token, settoken] = useState(localStorage.getItem("UserToken"))
 
-  // State to manage validation errors
   const [errors, setErrors] = useState({
     name: "",
     email: "",
@@ -34,7 +40,6 @@ const CreateCustomer = () => {
     }
   };
 
-  // Validate form fields
   const validateForm = () => {
     let isValid = true;
     const newErrors = { name: "", email: "" };
@@ -58,30 +63,81 @@ const CreateCustomer = () => {
     return isValid;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
 
-    // Validate form before submission
     if (!validateForm()) {
       return;
     }
 
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to create customer?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, create it!",
+      cancelButtonText: "No, cancel",
+    });
+
+    if (!result.isConfirmed) {
+      console.log("Customer creation was cancelled");
+      return;
+    }
+
+    Swal.fire({
+      title: "Processing...",
+      text: "Creating role, please wait.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
     try {
-      
+      const response = await createCustomerApi(formData,token);
+
+      Swal.close();
       console.log("Form submitted successfully:", formData);
 
+      if (response.status === true) {
+        Swal.fire({
+          title: "Success!",
+          text: "Role created successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/customers/list"); // Navigate after confirmation
+        });;
+        setFormData({
+          name: "",
+          type: "Individual",
+          email: "",
+          initial_remarks: "",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: response.message || "There was an error creating the role.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
       setFormData({
         name: "",
         type: "Individual",
         email: "",
-        remarks: "",
+        initial_remarks: "",
       });
-
-      alert("Customer created successfully!");
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("Failed to create customer. Please try again.");
+      Swal.close();
+      console.error("API Error:", error);
+
+      Swal.fire({
+        title: "API Error!",
+        text: "Something went wrong. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -160,14 +216,14 @@ const CreateCustomer = () => {
                 </Col>
 
                 <Col md={12}>
-                  <Form.Group className="mb-3" controlId="formRemarks">
+                  <Form.Group className="mb-3" controlId="forminitial_remarks">
                     <Form.Label>Initial Remarks</Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={3}
-                      placeholder="Enter Initial Remarks"
-                      name="remarks"
-                      value={formData.remarks}
+                      placeholder="Enter Initial initial_remarks"
+                      name="initial_remarks"
+                      value={formData.initial_remarks}
                       onChange={handleInputChange}
                     />
                   </Form.Group>

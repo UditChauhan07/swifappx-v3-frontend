@@ -28,6 +28,9 @@ import CreateRole from "./Super_Admin/Pages/Settings/Roles/CreateRole/CreateRole
 import "./i18n"; 
 import AdminRoles from "./Admin/Pages/Settings/Roles/AdminRoles";
 import CreateAdminRole from "./Admin/Pages/Settings/Roles/CreateAdminRole/CreateAdminRole";
+import CompanyDetails from "./Super_Admin/Pages/Companies/Companies/CompanyDetails/CompanyDetails";
+import EditCompany from "./Super_Admin/Pages/Companies/Companies/EditCompany/EditCompany";
+import EditRoles from "./Super_Admin/Pages/Settings/Roles/EditRoles/EditRoles";
 
 
 function App() {
@@ -45,17 +48,19 @@ function App() {
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route path="/dashboard" element={<PrivateRoute element={Dashboard} />} />
 
+          {/* Companies */}
           <Route path="/company/create" element={<CreateCompany />} />
-
           <Route path="/company/companies" element={<Companies />} />
-
+          <Route path="/company/companies/details" element={<CompanyDetails />} />
+          <Route path="/company/companies/edit" element={<EditCompany />} />
           <Route path="/company/access" element={<CompanyAccess />} />
 
           {/* Roles */}
           <Route path="/settings/roles" element={<Roles />} />
           <Route path="/settings/roles/create" element={<CreateRole />} />
+          <Route path="/settings/roles/edit" element={<EditRoles />} />
 
-          {/* Admin */}
+                      {/* Admin */}
           
           {/* Users */}
           {/* Ofice */}

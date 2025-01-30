@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Row,
@@ -9,14 +9,18 @@ import {
   ToggleButtonGroup,
   ToggleButton,
 } from "react-bootstrap";
-import Header from "../../../../Components/Header/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { createCompanyApi } from "../../../../lib/store";
-import { useNavigate } from "react-router-dom";
+import { createCompanyApi } from "../../../../../lib/store";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import Header from "../../../../../Components/Header/Header";
 
-const CreateCompany = () => {
+const EditCompany = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const { state } = useLocation();
+  const { company = {}, user = {} } = state.company || {}; 
+  console.log("Company------",state.company)
+
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
     firstName: "",
@@ -72,6 +76,60 @@ const CreateCompany = () => {
     workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday"],
     companyStatus: true,
   });
+
+  useEffect(() => {
+    if (company && user) {
+      setFormData((prev) => ({
+        ...prev,
+        // Step 1: Super Admin Details
+        firstName: user.first_name || "",
+        lastName: user.last_name || "",
+        profilePicture: user.profile_picture || null,
+        contactNumber: user.contact_number || "",
+        email: user.email || "",
+        address: user.Address || "",
+        city: user.city || "",
+        state: user.state || "",
+        country: user.country || "",
+        zip: user.zip_code || "",
+
+        // Step 2: Company Basic Details
+        companyName: company.company_name || "",
+        companyLogo: company.company_logo || null,
+        currency: company.currency || "",
+        timeZone: company.time_zone || "",
+        taxName: company.tax_name || "",
+        taxPercentage: company.tax_percentage || "",
+        certificationName: company.certificates?.[0]?.name || "",
+        certificationNumber: company.certificates?.[0]?.number || "",
+        additionalCertifications: company.certificates || [],
+
+        // Step 3: Contact Information
+        addressLine1: company.address_line_1 || "",
+        addressLine2: company.address_line_2 || "",
+        contactCity: company.city || "",
+        contactCountry: company.country || "",
+        contactZip: company.zip_postal_code || "",
+        contactPerson: company.company_contact_person_name || "",
+        contactPhone: company.contact_person_phone || "",
+        officePhone: company.company_office_phone || "",
+        officeEmail: company.company_office_email || "",
+
+        // Step 4: Other Settings
+        package: company.package || "",
+        packageDescritption: company.packageDescritption || [],
+        workOrderTime: company.workOrderTime || "",
+        quotationCost: company.quotationCost || "",
+        freeQuotations: company.freeQuotations || "",
+        primaryWorkOrderCost: company.primaryWorkOrderCost || "",
+        executionWorkOrderCost: company.executionWorkOrderCost || "",
+        freeWorkOrders: company.freeWorkOrders || "",
+        customerAddressFormat: company.customerAddressFormat || "",
+        workingDays: company.workingDays || [],
+        companyStatus: company.companyStatus ?? true, // Ensures `true` if undefined
+      }));
+    }
+  }, []);
   const navigate = useNavigate();
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
   console.log("formData", formData);
@@ -835,21 +893,13 @@ const CreateCompany = () => {
                   </Form.Group>
                 </Col>
                 <Col md={6}>
-                  <Form.Group className="mb-3">
+                  <Form.Group className="">
                     <Form.Label>
                       <span className="text-danger">*</span> Admin Password:
                     </Form.Label>
-                    <Form.Control
-                      type="password"
-                      placeholder="Enter Super Admin Password"
-                      value={formData.password}
-                      onChange={(e) => handleChange("password", e.target.value)}
-                      isInvalid={!!errors.password}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.password}
-                    </Form.Control.Feedback>
+                    
                   </Form.Group>
+                    <Button>Change Password</Button>
                 </Col>
               </Row>
               <Row>
@@ -1782,4 +1832,4 @@ const CreateCompany = () => {
   );
 };
 
-export default CreateCompany;
+export default EditCompany;

@@ -2,23 +2,27 @@ import React, { useEffect, useState } from "react";
 import { Table, Button } from "react-bootstrap";
 import { FaInfoCircle, FaEdit, FaClipboardList } from "react-icons/fa";
 import Header from "../../../../Components/Header/Header";
-import { getCompanyListApi } from "../../../../lib/store";
+import { deleteCompanyApi, getCompanyListApi } from "../../../../lib/store";
 import { BeatLoader } from "react-spinners";
+import { MdDelete } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Companies = () => {
+  const navigate = useNavigate();
   const [companyList, setCompanyList] = useState([]);
   const [token, setToken] = useState(localStorage.getItem("UserToken"));
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  console.log("Loadingg", isLoading);
   const rowsPerPage = 4;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getCompanyListApi(token);
-        if (response.success === true) {
-          setCompanyList(response.data || []);
+        console.log("resss", response);
+        if (response.status === true) {
+          setCompanyList(response?.data || []);
           console.log("ress", response);
         }
       } catch (error) {
@@ -47,6 +51,91 @@ const Companies = () => {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = companyList.slice(indexOfFirstRow, indexOfLastRow);
+  function formatTimestamp(timestamp) {
+    const { _seconds, _nanoseconds } = timestamp;
+
+    const date = new Date(_seconds * 1000 + _nanoseconds / 1000000);
+
+    const options = {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    };
+
+    // Format the date
+    return date.toLocaleDateString("en-US", options).replace(",", "");
+  }
+
+  const handleDetailsClick = (company) => {
+    navigate("/company/companies/details", { state: { company } });
+  };
+
+  const handleEditCompanyClick = (company) => {
+    navigate("/company/companies/edit", { state: { company } });
+  };
+
+  const hanldeDeleteCompany = async (item) => {
+    console.log("dddddd", item);
+
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to delete this company",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete it!",
+      cancelButtonText: "No, cancel",
+    });
+
+    if (!result.isConfirmed) {
+      console.log("Role creation was cancelled");
+      return;
+    }
+
+    Swal.fire({
+      title: "Deletingg...",
+      text: "Deleting Company, please wait.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const response = await deleteCompanyApi(item, token);
+      Swal.close();
+
+      if (response.status === true) {
+        // Remove the deleted company from the companyList state
+        setCompanyList((prevList) =>
+          prevList.filter((company) => company.company.id !== item)
+        );
+        Swal.fire({
+          title: "Success!",
+          text: "Company Deleted successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: response.message || "There was an error Deleting company.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
+    } catch (error) {
+      // Close SweetAlert loading spinner and show error
+      Swal.close();
+      console.error("API Error:", error);
+
+      Swal.fire({
+        title: "API Error!",
+        text: "Something went wrong. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
 
   return (
     <>
@@ -59,7 +148,7 @@ const Companies = () => {
               hover
               responsive
               className="align-middle "
-              style={{ minWidth: "1650px",  }}
+              style={{ minWidth: "1650px" }}
             >
               <thead>
                 <tr style={{ backgroundColor: "#E7EAF3", color: "#3C3C3C" }}>
@@ -139,10 +228,14 @@ const Companies = () => {
                 {isLoading ? (
                   <tr>
                     <td colSpan="10" className="text-center py-5">
-                      <BeatLoader size={12} color={"#3C3C3C"} style={{
-                        display:"flex",
-                        justifyContent:"center"
-                      }} />
+                      <BeatLoader
+                        size={12}
+                        color={"#3C3C3C"}
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      />
                       <p className="mt-2">Loading...</p>
                     </td>
                   </tr>
@@ -160,11 +253,12 @@ const Companies = () => {
                           color: "#4B5563",
                         }}
                       >
-                        <strong>{item.company_name}</strong>
+                        <strong>{item.company.company_name}</strong>
                         <br />
                         <span style={{ color: "gray", fontSize: "0.9rem" }}>
-                          {item.address_line_1},{item.address_line_2},
-                          {item.city},{item.zip_postal_code}
+                          {item.company.address_line_1},
+                          {item.company.address_line_2},{item.company.city},
+                          {item.company.zip_postal_code}
                         </span>
                       </td>
                       <td
@@ -175,9 +269,9 @@ const Companies = () => {
                           color: "#4B5563",
                         }}
                       >
-                        {item.adminName || "null"} [
-                        {item.adminContact || "null"},{" "}
-                        {item.adminEmail || "null"}]
+                        {item.company.adminName || "null"} [
+                        {item.company.adminContact || "null"},{" "}
+                        {item.company.adminEmail || "null"}]
                       </td>
 
                       <td
@@ -188,7 +282,7 @@ const Companies = () => {
                           color: "#4B5563",
                         }}
                       >
-                        28, Jan 2025
+                        {formatTimestamp(item.company.created_at)}
                       </td>
                       <td className="text-center">0</td>
                       <td className="text-center">0</td>
@@ -209,11 +303,12 @@ const Companies = () => {
                               alignItems: "center",
                               justifyContent: "center",
                             }}
+                            onClick={() => handleDetailsClick(item)}
                           >
                             <FaInfoCircle />
                           </Button>
                           <Button
-                            variant="warning"
+                            variant="outline-secondary"
                             size="sm"
                             style={{
                               borderRadius: "50%",
@@ -223,11 +318,12 @@ const Companies = () => {
                               alignItems: "center",
                               justifyContent: "center",
                             }}
+                            onClick={() => handleEditCompanyClick(item)}
                           >
                             <FaEdit />
                           </Button>
                           <Button
-                            variant="success"
+                            variant="outline-secondary"
                             size="sm"
                             style={{
                               borderRadius: "50%",
@@ -237,8 +333,9 @@ const Companies = () => {
                               alignItems: "center",
                               justifyContent: "center",
                             }}
+                            onClick={() => hanldeDeleteCompany(item.company.id)}
                           >
-                            <FaClipboardList />
+                            <MdDelete />
                           </Button>
                         </div>
                       </td>

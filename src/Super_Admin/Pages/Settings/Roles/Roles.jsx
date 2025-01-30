@@ -3,10 +3,11 @@ import { Table, Button } from "react-bootstrap";
 import { FaEdit } from "react-icons/fa";
 import { BeatLoader } from "react-spinners";
 import Header from "../../../../Components/Header/Header";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getRoles } from "../../../../lib/store";
 
 const Roles = () => {
+  const navigate = useNavigate()
   const [rolesList, setRolesList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,7 +19,7 @@ const Roles = () => {
       setIsLoading(true);
       try {
         const response = await getRoles(userId);
-        console.log("dasda", response);
+        // console.log("dasda", response);
         setRolesList(response?.data);
       } catch (error) {
         console.error("Error fetching roles data:", error);
@@ -43,6 +44,10 @@ const Roles = () => {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = rolesList.slice(indexOfFirstRow, indexOfLastRow);
+
+  const handleEditRoles = (role)=>{
+    navigate("/settings/roles/edit", { state: { role } });
+  }
 
   return (
     <>
@@ -159,6 +164,7 @@ const Roles = () => {
                             width: "35px",
                             height: "35px",
                           }}
+                          onClick={()=>handleEditRoles(role)}
                         >
                           <FaEdit />
                         </Button>
