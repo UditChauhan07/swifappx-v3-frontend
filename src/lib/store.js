@@ -179,3 +179,20 @@ export const getRoles = async (finalData) => {
     throw new Error("An unexpected error occurred");
   }
 };
+
+// Create Customer
+export const createCustomer = async (finalData) => {
+  try {
+    const response = await axios.post(
+      `${Url}/c3w4rd26yh/c2waz5tgh7`,
+      finalData
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};

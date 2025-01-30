@@ -718,28 +718,28 @@ const Header = () => {
                       ▣ {t("Create")}
                     </Link>
                     <Link
-                      to="/company/companies"
+                      to=""
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Work Orders List")}
                     </Link>
                     <Link
-                      to="/company/access"
+                      to=""
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Draft Work Orders")}
                     </Link>
                     <Link
-                      to="/company/access"
+                      to=""
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Request")}
                     </Link>
                     <Link
-                      to="/company/access"
+                      to=""
                       className="sidebar-link"
                       activeClassName="active"
                     >
@@ -786,13 +786,42 @@ const Header = () => {
                     >
                       ▣ {t("Company Settings")}
                     </Link>
-                    <Link
-                      to="/company/access"
-                      className="sidebar-link"
-                      activeClassName="active"
+
+                    {/* Roles Dropdown */}
+                    <div
+                      className={`dropdown ${
+                        nestedDropdown === "roles" ? "expanded" : ""
+                      }`}
                     >
-                      ▣ {t("Roles")}
-                    </Link>
+                      <div
+                        className="dropdown-title"
+                        onClick={() =>
+                          setNestedDropdown(
+                            nestedDropdown === "roles" ? "" : "roles"
+                          )
+                        }
+                      >
+                        ▣ {t("Roles")}
+                      </div>
+                      {nestedDropdown === "roles" && (
+                        <div className="dropdown-items show">
+                          
+                          <Link
+                            to="/settings/admin/roles/create"
+                            className="sidebar-link"
+                          >
+                            {t("Create New")}
+                          </Link>
+                          <Link
+                            to="/settings/admin/roles"
+                            className="sidebar-link"
+                          >
+                            {t("List Roles")}
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+
                     <Link
                       to="/company/access"
                       className="sidebar-link"
@@ -816,6 +845,7 @@ const Header = () => {
                     </Link>
                   </div>
                 </div>
+
                 {/* Reports */}
                 <div
                   className={`dropdown ${
