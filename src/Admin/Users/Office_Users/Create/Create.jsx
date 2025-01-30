@@ -232,16 +232,17 @@ useEffect(() => {
   }
 }, [userid]);
 console.log("insode role",roles.length);
-if(roles && roles.length<=0){
+
+// if(roles && roles.length<=0){
   
-  Swal.fire({
-    title: "Roles list is empty",
-    text: "Create a new role first",
-    icon: "warning",
-    confirmButtonText: "Okay",
-  });
-  return null;
-}
+//   Swal.fire({
+//     title: "Roles list is empty",
+//     text: "Create a new role first",
+//     icon: "warning",
+//     confirmButtonText: "Okay",
+//   });
+//   return null;
+// }
 
   return (
     <>
