@@ -7,7 +7,7 @@ const PermissionsContext = createContext();
 const userDataKey = 'userId';
 
 export const PermissionsProvider = ({ children }) => {
-  const [userRole, setUserRole] = useState(null);
+  const [userRole, setUserRole] = useState([]);
   const [permissions, setPermissions] = useState([]);
   const [user, setUser] = useState(localStorage.getItem(userDataKey));
 
@@ -22,8 +22,8 @@ export const PermissionsProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // console.log('response',response.data.data);
-        setPermissions(response?.data?.data?.permissions || []);
+        console.log('response',response.data.data);
+        setPermissions(response?.data?.data || []);
         setUserRole(response?.data?.data?.roleName || null);
       } catch (error) {
         console.error('Error fetching permissions:', error);

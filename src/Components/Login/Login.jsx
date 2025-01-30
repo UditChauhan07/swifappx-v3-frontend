@@ -40,6 +40,7 @@ const Login = () => {
         localStorage.setItem("userEmail", response.user.email);
         localStorage.setItem("profilePic", response.user.profile_picture);
         localStorage.setItem("name", response.user.first_name);
+        localStorage.setItem("companyId", response.company_id);
 
         setisLoading(false);
         Navigate("/dashboard");

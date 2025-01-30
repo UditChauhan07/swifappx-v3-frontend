@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../../../../Components/Header/Header";
 import UsersTabelComp from "../../../Components/User_Table/UsersTabelComp";
+import { useParams ,useLocation} from 'react-router-dom';
+import { fetch_officeUsersByRoleId } from "../../../../lib/store";
 
 const StaffAdmin = () => {
+  const [tableData, setTableData] = React.useState([]);
+  const token = localStorage.getItem("UserToken");
+  const { roleName } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get('id');
+  console.log('staff admin',roleName, id);
   const tableHeaders = [
     "Full Name & Location",
     "Role",
@@ -12,21 +21,19 @@ const StaffAdmin = () => {
     "Action",
   ];
 
-  const tableData = [
-    {
-      fullName: (
-        <div>
-          <strong>new user</strong>
-          <br />
-          haryana zirakpur
-        </div>
-      ),
-      role: "Company Super Admin",
-      email: "hghg@gmail.com",
-      createdAt: "24 January, 2025",
-      status: "Activated",
-    },
-  ];
+   const fetchData = () =>{
+    const response = fetch_officeUsersByRoleId(id,token)
+    .then((response) => {
+    if (response.status === true) {
+      setTableData(response.users)
+    }
+    })
+    .catch((error) => {console.log('error', error)})
+   }
+
+   useEffect(() =>{
+     fetchData()
+   },[]);
 
   return (
     <>
@@ -43,12 +50,13 @@ const StaffAdmin = () => {
                 textAlign:"center"
               }}
             >
-              <h4 className="mb-0">Staff Admin</h4>
+              <h4 className="mb-0">{roleName}</h4>
             </div>
           {/* Pass props to TableComponent */}
           <UsersTabelComp
             tableHeaders={tableHeaders}
             tableData={tableData}
+            roleName={roleName}
           />
         </div>
       </div>

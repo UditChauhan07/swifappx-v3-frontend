@@ -1,8 +1,30 @@
-import React from "react";
+import React, { useState ,useEffect} from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import Header from "../../../../Components/Header/Header";
+import { fetch_FieldUserOfCompany } from "../../../../lib/store";
+import { FaInfoCircle, FaEdit, FaClipboardList } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 
 const FieldUserList = () => {
+  const [tableData, setTableData] =useState([]);
+  const token = localStorage.getItem("UserToken");
+  const company_id=localStorage.getItem("companyId")||null;
+  const navigate=useNavigate();
+
+ const fetchData = () =>{
+  const response = fetch_FieldUserOfCompany(company_id,token)
+  .then((response) => {
+  if (response.success === true) {
+    setTableData(response.data)
+  }
+  })
+  .catch((error) => {console.log('error', error)})
+ } 
+ 
+useEffect(() =>{
+  fetchData()
+},[]);
   const tableHeaders = [
     "Full Name & Location",
     "Email Address",
@@ -13,75 +35,80 @@ const FieldUserList = () => {
     "Action",
   ];
 
-  const tableData = [
-    {
-      fullName: (
-        <div>
-          <strong>field user 1</strong>
-          <br />
-          Sukha enclave
-        </div>
-      ),
-      email: "fielduser1@gmail.com",
-      username: "fielduser1",
-      status: (
-        <Form.Check
-          type="switch"
-          id="status-switch"
-          label="Active"
-          defaultChecked
-        />
-      ),
-      country: "India",
-      createdBy: "new user",
-      action: (
-        <div className="d-flex gap-2 justify-content-center">
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            style={{
-              borderRadius: "50%",
-              width: "35px",
-              height: "35px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <i className="bi bi-info-circle"></i>
-          </Button>
-          <Button
-            variant="warning"
-            size="sm"
-            style={{
-              borderRadius: "50%",
-              width: "35px",
-              height: "35px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <i className="bi bi-pencil"></i>
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            style={{
-              borderRadius: "50%",
-              width: "35px",
-              height: "35px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <i className="bi bi-trash"></i>
-          </Button>
-        </div>
-      ),
-    },
-  ];
+
+  // const tableData = [
+  //   {
+  //     fullName: (
+  //       <div>
+  //         <strong>field user 1</strong>
+  //         <br />
+  //         Sukha enclave
+  //       </div>
+  //     ),
+  //     email: "fielduser1@gmail.com",
+  //     username: "fielduser1",
+  //     status: (
+  //       <Form.Check
+  //         type="switch"
+  //         id="status-switch"
+  //         label="Active"
+  //         defaultChecked
+  //       />
+  //     ),
+  //     country: "India",
+  //     createdBy: "new user",
+  //     action: (
+  //       <div className="d-flex gap-2 justify-content-center">
+  //         <Button
+  //           variant="outline-secondary"
+  //           size="sm"
+  //           style={{
+  //             borderRadius: "50%",
+  //             width: "35px",
+  //             height: "35px",
+  //             display: "flex",
+  //             alignItems: "center",
+  //             justifyContent: "center",
+  //           }}
+  //         >
+  //           <i className="bi bi-info-circle"></i>
+  //         </Button>
+  //         <Button
+  //           variant="warning"
+  //           size="sm"
+  //           style={{
+  //             borderRadius: "50%",
+  //             width: "35px",
+  //             height: "35px",
+  //             display: "flex",
+  //             alignItems: "center",
+  //             justifyContent: "center",
+  //           }}
+  //         >
+  //           <i className="bi bi-pencil"></i>
+  //         </Button>
+  //         <Button
+  //           variant="danger"
+  //           size="sm"
+  //           style={{
+  //             borderRadius: "50%",
+  //             width: "35px",
+  //             height: "35px",
+  //             display: "flex",
+  //             alignItems: "center",
+  //             justifyContent: "center",
+  //           }}
+  //         >
+  //           <i className="bi bi-trash"></i>
+  //         </Button>
+  //       </div>
+  //     ),
+  //   },
+  // ];
+const handleToPreview=async (row) => {
+  navigate('/users/field/list/view',{ state: { row } })
+}
+  
 
   return (
     <>
@@ -146,7 +173,11 @@ const FieldUserList = () => {
                         color: "#4B5563",
                       }}
                     >
-                      {row.fullName}
+                       <div>
+                        <strong>{row.name}</strong>
+                        <br />
+                        {row.address}
+                      </div>
                     </td>
                     <td
                       style={{
@@ -176,7 +207,12 @@ const FieldUserList = () => {
                         color: "#4B5563",
                       }}
                     >
-                      {row.status}
+                       <Form.Check
+                          type="switch"
+                          id="status-switch"
+                          label={row.active?"Active":"Unactive"}
+                          checked={row.active}
+                        />
                     </td>
                     <td
                       style={{
@@ -196,10 +232,57 @@ const FieldUserList = () => {
                         color: "#4B5563",
                       }}
                     >
-                      {row.createdBy}
+                      {row.created_by}
                     </td>
                     <td style={{ textAlign: "center", padding: "15px" }}>
-                      {row.action}
+                    <div className="d-flex gap-2 justify-content-center">
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        style={{
+                          borderRadius: "50%",
+                          width: "35px",
+                          height: "35px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        onClick={()=>handleToPreview(row)}
+                      >
+                        <i className="bi bi-info-circle"></i>
+                        <FaInfoCircle />
+                      </Button>
+                      <Button
+                        variant="warning"
+                        size="sm"
+                        style={{
+                          borderRadius: "50%",
+                          width: "35px",
+                          height: "35px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <i className="bi bi-pencil"></i>
+                        <FaEdit />
+                      </Button>
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        style={{
+                          borderRadius: "50%",
+                          width: "35px",
+                          height: "35px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <i className="bi bi-trash"></i>
+                         <FaClipboardList />
+                      </Button>
+                    </div>
                     </td>
                   </tr>
                 ))}

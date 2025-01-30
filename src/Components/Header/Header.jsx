@@ -12,6 +12,7 @@ import { TbReportSearch } from "react-icons/tb";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { usePermissions } from "../../context/PermissionContext";
 
 import {
   FaLanguage,
@@ -34,6 +35,9 @@ const Header = () => {
   const [expandedDropdown, setExpandedDropdown] = useState("");
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
+  const {permissions}=usePermissions();
+  // console.log("permissions",permissions);
+  
 
   const toggleDropdown = (dropdown) => {
     setExpandedDropdown(expandedDropdown === dropdown ? "" : dropdown);
@@ -454,12 +458,17 @@ const Header = () => {
                           >
                             {t("Super Admin")}
                           </Link>
-                          <Link
-                            to="/users/office/staff-admin"
+
+                          {permissions.length>0 && permissions?.map(permission =>
+                          (<Link
+                            to={`/users/office/${permission.roleName}?id=${permission.id}`}
                             className="sidebar-link"
                           >
-                            {t("Staff Admin")}
-                          </Link>
+                            {permission.roleName}
+                            {/* {t("Staff Admin")} */}
+                          </Link>))
+                            }
+{/*                          
                           <Link
                             to="/users/office/accountant"
                             className="sidebar-link"
@@ -477,7 +486,8 @@ const Header = () => {
                             className="sidebar-link"
                           >
                             {t("Human Resource")}
-                          </Link>
+                          </Link> */}
+
                           <Link
                             to="/users/office/other-users"
                             className="sidebar-link"

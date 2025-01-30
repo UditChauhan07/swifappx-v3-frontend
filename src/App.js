@@ -28,6 +28,7 @@ import CreateRole from "./Super_Admin/Pages/Settings/Roles/CreateRole/CreateRole
 import "./i18n"; 
 import AdminRoles from "./Admin/Pages/Settings/Roles/AdminRoles";
 import CreateAdminRole from "./Admin/Pages/Settings/Roles/CreateAdminRole/CreateAdminRole";
+import FieldUserDetails from "./Admin/Users/Field_Users/Filed_user_list/FieldUserDetails";
 
 
 function App() {
@@ -61,7 +62,7 @@ function App() {
           {/* Ofice */}
           <Route path="/users/office/create" element={<Create />} />
           <Route path="/users/office/super-admin" element={<SuperAdmin />} />
-          <Route path="/users/office/staff-admin" element={<StaffAdmin />} />
+          <Route path="/users/office/:roleName" element={<StaffAdmin />} />
           <Route path="/users/office/accountant" element={<Accountant />} />
           <Route path="/users/office/manager" element={<Manager />} />
           <Route path="/users/office/human-resource" element={<HumanResource />} />
@@ -69,6 +70,7 @@ function App() {
           {/* Field */}
           <Route path="/users/field/create" element={<CreateFieldUser />} />
           <Route path="/users/field/list" element={<FieldUserList />} />
+          <Route path="/users/field/list/view" element={<FieldUserDetails/>} />
           <Route path="/users/field/import" element={<ImportFieldUser />} />
 
           {/* Customers */}

@@ -231,7 +231,6 @@ useEffect(() => {
     });
   }
 }, [userid]);
-console.log("insode role",roles.length);
 
 // if(roles && roles.length<=0){
   
