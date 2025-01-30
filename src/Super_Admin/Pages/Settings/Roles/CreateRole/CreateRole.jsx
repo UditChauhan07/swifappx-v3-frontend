@@ -11,8 +11,10 @@ import {
 import Header from "../../../../../Components/Header/Header";
 import { createUserRole } from "../../../../../lib/store";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const CreateRole = () => {
+  const navigate = useNavigate();
   const [roleType, setRoleType] = useState("saas");
   const [permissions, setPermissions] = useState({});
   const [userId, setuserId] = useState(localStorage.getItem("userId"));
@@ -262,6 +264,8 @@ const CreateRole = () => {
           text: "Role created successfully.",
           icon: "success",
           confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/settings/roles"); // Navigate after confirmation
         });
       } else {
         Swal.fire({

@@ -3,8 +3,10 @@ import { Container, Form, Row, Col, Button, Table } from "react-bootstrap";
 import Header from "../../../../../Components/Header/Header";
 import { createUserRole } from "../../../../../lib/store";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const CreateAdminRole = () => {
+  const navigate = useNavigate()
   const [permissions, setPermissions] = useState({});
   const [userId, setuserId] = useState(localStorage.getItem("userId"));
   const [errors, setErrors] = useState({
@@ -197,14 +199,17 @@ const CreateAdminRole = () => {
         setPermissions({});
         setErrors({ roleName: "", roleDescription: "", permissions: "" });
 
-        Swal.fire({
+        await Swal.fire({
           title: "Success!",
-          text: "Role created successfully.",
+          text: "Role has been created successfully.",
           icon: "success",
           confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/settings/admin/roles"); // Navigate after confirmation
         });
       } else {
-        Swal.fire({
+        // Show error message if response is not successful
+        await Swal.fire({
           title: "Error!",
           text: response.message || "There was an error creating the role.",
           icon: "error",

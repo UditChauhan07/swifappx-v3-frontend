@@ -1,38 +1,59 @@
-import React from "react";
-import { Card, Row, Col, Form, InputGroup } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Card, Row, Col, Form, InputGroup, Button } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import Header from "../../../../Components/Header/Header";
+import { getCompanyListApi } from "../../../../lib/store";
 
 const CompanyAccess = () => {
-  const companies = [
-    {
-      name: "Basic Company",
-      address: "Mohali, Punjab, Haryana, Zirakpur, India, 23802",
-      logo: "https://swif.truet.net/public/swifCompany/uploads/logo/Kht22XRGSpqv.png", // Example image placeholder
-      totalUsers: 1,
-      quotations: 0,
-      workOrders: 0,
-      admin: "new user",
-    },
-    {
-      name: "Test 1",
-      address: "1, , C, S, India, 140603",
-      logo: "https://swif.truet.net/public/swifCompany/uploads/logo/Kht22XRGSpqv.png", // Example image placeholder
-      totalUsers: 1,
-      quotations: 0,
-      workOrders: 0,
-      admin: "Name Name",
-    },
-    {
-      name: "Jagga",
-      address: "Jagga, , jagga, jagga, Singapore, 123456",
-      logo: "https://swif.truet.net/public/swifCompany/uploads/logo/Kht22XRGSpqv.png", // Example image placeholder
-      totalUsers: 1,
-      quotations: 0,
-      workOrders: 10,
-      admin: "jagga jagga",
-    },
-  ];
+  const [companyList, setCompanyList] = useState([]);
+  const [filteredCompanies, setFilteredCompanies] = useState([]);
+  const [token, setToken] = useState(localStorage.getItem("UserToken"));
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [companiesPerPage] = useState(9);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getCompanyListApi(token);
+        if (response.status === true) {
+          setCompanyList(response?.data || []);
+          setFilteredCompanies(response?.data || []);
+        }
+      } catch (error) {
+        console.error("API Error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
+  const handleSearch = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+    const filtered = companyList.filter((company) =>
+      company.company_name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredCompanies(filtered);
+    setCurrentPage(1); // Reset to the first page when searching
+  };
+
+  // Get current companies based on page number
+  const indexOfLastCompany = currentPage * companiesPerPage;
+  const indexOfFirstCompany = indexOfLastCompany - companiesPerPage;
+  const currentCompanies = filteredCompanies.slice(indexOfFirstCompany, indexOfLastCompany);
+
+  // Pagination logic
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Total number of pages
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(filteredCompanies.length / companiesPerPage); i++) {
+    pageNumbers.push(i);
+  }
 
   return (
     <>
@@ -46,6 +67,8 @@ const CompanyAccess = () => {
             <Col md="auto">
               <InputGroup style={{ maxWidth: "300px" }}>
                 <Form.Control
+                  value={searchQuery}
+                  onChange={handleSearch}
                   placeholder="Filter Company..."
                   aria-label="Filter Company"
                 />
@@ -55,80 +78,140 @@ const CompanyAccess = () => {
               </InputGroup>
             </Col>
           </Row>
-          <Row style={{ textAlign: "center" }}>
-            {companies.map((company, index) => (
-              <Col className="mb-4" key={index}>
-                <Card
-                  className="h-100 shadow-sm border-0"
-                  style={{
-                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-                    width: "90%",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "scale(1.05)";
-                    e.currentTarget.style.boxShadow =
-                      "0px 10px 20px rgba(0, 0, 0, 0.2)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "scale(1)";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
-                >
-                  <Card.Img
-                    variant="top"
-                    src={company.logo}
+
+          {/* Pagination above items */}
+          <div className="d-flex justify-content-end mt-4 mb-4">
+            <Button
+              variant="secondary"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            {pageNumbers.map((number) => (
+              <Button
+                key={number}
+                variant="light"
+                className={`mx-1 ${currentPage === number ? "active" : ""}`}
+                onClick={() => paginate(number)}
+              >
+                {number}
+              </Button>
+            ))}
+            <Button
+              variant="secondary"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === pageNumbers.length}
+            >
+              Next
+            </Button>
+          </div>
+
+          {/* No Companies Found Message */}
+          {filteredCompanies.length === 0 ? (
+            <p className="text-center">No Companies Found</p>
+          ) : (
+            <Row style={{ textAlign: "center" }}>
+              {currentCompanies.map((company, index) => (
+                <Col className="mb-4" md={4} key={index}>
+                  <Card
+                    className="h-100 shadow-sm border-0"
                     style={{
-                      height: "150px",
-                      objectFit: "cover",
-                      borderTopLeftRadius: "8px",
-                      borderTopRightRadius: "8px",
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      width: "90%",
                     }}
-                  />
-                  <Card.Body>
-                    <Card.Title
-                      className="text-uppercase fw-bold"
-                      style={{ color: "#8d28dd" }}
-                    >
-                      {company.name}
-                    </Card.Title>
-                    <Card.Text className="text-muted">
-                      {company.address}
-                    </Card.Text>
-                  </Card.Body>
-                  <div
-                    className="d-flex text-center"
-                    style={{
-                      backgroundColor: "#f8f9fa",
-                      borderTop: "1px solid #ddd",
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.05)";
+                      e.currentTarget.style.boxShadow =
+                        "0px 10px 20px rgba(0, 0, 0, 0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                      e.currentTarget.style.boxShadow = "none";
                     }}
                   >
-                    <div className="flex-fill p-2 border-end">
-                      <h5 className="mb-0 text-primary">
-                        {company.totalUsers}
-                      </h5>
-                      <small>Total Users</small>
+                    <Card.Img
+                      variant="top"
+                      src="https://swif.truet.net/public/swifCompany/uploads/logo/Kht22XRGSpqv.png"
+                      style={{
+                        height: "150px",
+                        objectFit: "cover",
+                        borderTopLeftRadius: "8px",
+                        borderTopRightRadius: "8px",
+                      }}
+                    />
+                    <Card.Body>
+                      <Card.Title
+                        className="text-uppercase fw-bold"
+                        style={{ color: "#8d28dd" }}
+                      >
+                        {company.company.company_name}
+                      </Card.Title>
+                      <Card.Text className="text-muted">
+                        {company.company.address_line_1} , {company.company.city} ,{" "}
+                        {company.company.country} , {company.company.zip_postal_code}
+                      </Card.Text>
+                    </Card.Body>
+                    <div
+                      className="d-flex text-center"
+                      style={{
+                        backgroundColor: "#f8f9fa",
+                        borderTop: "1px solid #ddd",
+                      }}
+                    >
+                      <div className="flex-fill p-2 border-end">
+                        <h5 className="mb-0 text-primary">1</h5>
+                        <small>Total Users</small>
+                      </div>
+                      <div className="flex-fill p-2 border-end">
+                        <h5 className="mb-0 text-success">0</h5>
+                        <small>Quotations</small>
+                      </div>
+                      <div className="flex-fill p-2">
+                        <h5 className="mb-0 text-danger">0</h5>
+                        <small>Work Orders</small>
+                      </div>
                     </div>
-                    <div className="flex-fill p-2 border-end">
-                      <h5 className="mb-0 text-success">
-                        {company.quotations}
-                      </h5>
-                      <small>Quotations</small>
-                    </div>
-                    <div className="flex-fill p-2">
-                      <h5 className="mb-0 text-danger">{company.workOrders}</h5>
-                      <small>Work Orders</small>
-                    </div>
-                  </div>
-                  <Card.Footer className="bg-light">
-                    <small className="text-muted">
-                      Admin: <span className="fw-bold">{company.admin}</span>
-                    </small>
-                  </Card.Footer>
-                </Card>
-              </Col>
+                    <Card.Footer className="bg-light">
+                      <small className="text-muted">
+                        Admin:{" "}
+                        <span className="fw-bold">{company.company.adminName}</span>
+                      </small>
+                    </Card.Footer>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          )}
+          {/* Pagination above items */}
+          <div className="d-flex justify-content-end mt-4 mb-4">
+            <Button
+              variant="secondary"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            {pageNumbers.map((number) => (
+              <Button
+                key={number}
+                variant="light"
+                className={`mx-1 ${currentPage === number ? "active" : ""}`}
+                onClick={() => paginate(number)}
+              >
+                {number}
+              </Button>
             ))}
-          </Row>
+            <Button
+              variant="secondary"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === pageNumbers.length}
+            >
+              Next
+            </Button>
+          </div>
         </div>
+        
       </div>
     </>
   );

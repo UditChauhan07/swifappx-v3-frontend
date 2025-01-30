@@ -99,11 +99,12 @@ export const createCompanyApi = async (formdata, token) => {
 // };
 
 //create office User
-export const createOfficeUser=async (finalData,token) => {
+export const createOfficeUser = async (finalData, token) => {
   try {
     const response = await axios.post(
       `${Url}/ocf432w678/off21m9076`,
-      finalData,{
+      finalData,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -119,9 +120,8 @@ export const createOfficeUser=async (finalData,token) => {
   }
 };
 
-
 //fetch roles list for office user
-export const fetchRolesList=async (userid,token) => {
+export const fetchRolesList = async (userid, token) => {
   try {
     const response = await axios.get(
       `${Url}/srw4rdxkh8/ywqg21sh72?userId=${encodeURIComponent(userid)}`,
@@ -138,9 +138,8 @@ export const fetchRolesList=async (userid,token) => {
       return error.response.data;
     }
     throw new Error("An unexpected error occurred");
-  } 
-
-}
+  }
+};
 
 // Create User Role
 export const createUserRole = async (finalData) => {
@@ -161,13 +160,32 @@ export const createUserRole = async (finalData) => {
 
 // Get Role List
 export const getRoles = async (finalData) => {
-  console.log("finalData",finalData)
-  const userId = finalData
+  console.log("finalData", finalData);
+  const userId = finalData;
   try {
-    const response = await axios.get(
-      `${Url}/srw4rdxkh8/ywqg21sh72`, 
+    const response = await axios.get(`${Url}/srw4rdxkh8/ywqg21sh72`, {
+      params: { userId },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Create Customer
+export const createCustomerApi = async (finalData, token) => {
+  try {
+    const response = await axios.post(
+      `${Url}/c3w4rd26yh/c2waz5tgh7`,
+      finalData,
       {
-        params:{userId}, 
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     // console.log(response.data, "login api data");
@@ -180,12 +198,35 @@ export const getRoles = async (finalData) => {
   }
 };
 
-// Create Customer
-export const createCustomer = async (finalData) => {
+// Get Customer APi
+export const getCustomerList = async (company_id, token) => {
   try {
-    const response = await axios.post(
-      `${Url}/c3w4rd26yh/c2waz5tgh7`,
-      finalData
+    const response = await axios.get(`${Url}/c3w4rd26yh/g1a35muk9o`, {
+      params: { company_id }, 
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data; 
+  } catch (error) {
+    if (error.response) {
+      return error.response.data; 
+    }
+    throw new Error("An unexpected error occurred"); 
+  }
+};
+
+// Delete Company Api 
+export const deleteCompanyApi = async (userId, token) => {
+  try {
+    const response = await axios.delete(
+      `${Url}/q12w3e4rde/a123e4wjrds/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     // console.log(response.data, "login api data");
     return response.data;

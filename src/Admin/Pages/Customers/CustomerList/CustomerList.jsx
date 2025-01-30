@@ -1,123 +1,204 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
-import Header from "../../../../Components/Header/Header";
 import { FaUserEdit } from "react-icons/fa";
+import { BeatLoader } from "react-spinners";
+import Header from "../../../../Components/Header/Header";
+import { getCustomerList } from "../../../../lib/store"; 
+import { IoIosInformationCircle } from "react-icons/io";
+import { FaAddressBook } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+
 
 const CustomerList = () => {
-  const tableHeaders = [
-    "Name",
-    "Type",
-    "Email Address",
-    "Created By",
-    "Action",
-  ];
+  const [customers, setCustomers] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [userId, setuserId] = useState(localStorage.getItem("userId"));
+  const [token, settoken] = useState(localStorage.getItem("UserToken"));
+  const rowsPerPage = 4;
 
-  const tableData = [
-    {
-      name: "surbhi",
-      type: "Individual",
-      email: "surbhi.k@designersx.com",
-      createdBy: "new user",
-    },
-    {
-      name: "cx-01",
-      type: "Company",
-      email: "test7@gmail.com",
-      createdBy: "new user",
-    },
-  ];
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      setIsLoading(true);
+      try {
+        const response = await getCustomerList(userId, token); // Fetch customers from API
+        console.log("resss", response);
+        setCustomers(response?.customers || []);
+      } catch (error) {
+        console.error("Error fetching customers:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCustomers();
+  }, []);
+
+  // Handle pagination
+  const handlePageChange = (direction) => {
+    if (
+      direction === "next" &&
+      currentPage * rowsPerPage < filteredCustomers.length
+    ) {
+      setCurrentPage(currentPage + 1);
+    } else if (direction === "previous" && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Filter customers based on search query
+  const filteredCustomers = customers.filter(
+    (customer) =>
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Pagination logic
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = filteredCustomers.slice(indexOfFirstRow, indexOfLastRow);
 
   return (
     <>
       <Header />
       <div className="main-header-box mt-4">
         <div className="pages-box">
-          <div className="">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h4 className="mb-0">Customer List</h4>
-              <div className="d-flex gap-2">
-                <Form.Control
-                  type="text"
-                  placeholder="Search"
-                  className="me-2"
-                  style={{ width: "200px" }}
-                />
-                <Button variant="primary">
-                  <i className="bi bi-search"></i>
-                </Button>
-              </div>
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h4 className="mb-0">Customer List</h4>
+            <div className="d-flex gap-2">
+              <Form.Control
+                type="text"
+                placeholder="Search customers..."
+                className="me-2"
+                style={{ width: "200px" }}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Button variant="primary">
+                <i className="bi bi-search"></i>
+              </Button>
             </div>
-            <Table hover responsive className="align-middle">
-              <thead>
-                <tr style={{ backgroundColor: "#E7EAF3", color: "#3C3C3C" }}>
-                  {tableHeaders.map((header, index) => (
-                    <th
-                      key={index}
-                      style={{
-                        textAlign: "left",
-                        padding: "15px",
-                        fontWeight: "600",
-                        fontSize: "0.9rem",
-                        color: "black",
-                        background: "#e5e5e5",
-                      }}
-                    >
-                      {header}
-                    </th>
-                  ))}
+          </div>
+
+          <Table
+            hover
+            responsive
+            className="align-middle"
+            style={{ minWidth: "1000px" }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: "#E7EAF3", color: "#3C3C3C" }}>
+                <th
+                  style={{
+                    width: "22%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
+                  Name
+                </th>
+                <th
+                  style={{
+                    width: "15%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
+                  Type
+                </th>
+                <th
+                  style={{
+                    width: "30%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
+                  Email Address
+                </th>
+                <th
+                  style={{
+                    width: "15%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
+                  Created By
+                </th>
+                <th
+                  className="text-center"
+                  style={{ width: "20%", background: "#e5e5e5" }}
+                >
+                  Action
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {isLoading ? (
+                <tr>
+                  <td colSpan="5" className="text-center py-5">
+                    <BeatLoader
+                      size={12}
+                      color={"#3C3C3C"}
+                      style={{ display: "flex", justifyContent: "center" }}
+                    />
+                    <p className="mt-2">Loading...</p>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {tableData.map((row, index) => (
-                  <tr
-                    key={index}
-                    style={{
-                      backgroundColor: "#fff",
-                      borderRadius: "10px",
-                      boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
-                    }}
-                  >
+              ) : currentRows.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="text-center py-4">
+                    No customers found.
+                  </td>
+                </tr>
+              ) : (
+                currentRows.map((customer, index) => (
+                  <tr key={index}>
                     <td
                       style={{
                         textAlign: "left",
-                        padding: "15px",
+                        // padding: "15px",
                         fontSize: "0.9rem",
                         color: "#4B5563",
                       }}
                     >
-                      {row.name}
+                      {customer.name}
                     </td>
                     <td
                       style={{
                         textAlign: "left",
-                        padding: "15px",
+                        // padding: "15px",
                         fontSize: "0.9rem",
                         color: "#4B5563",
                       }}
                     >
-                      {row.type}
+                      {customer.type}
                     </td>
                     <td
                       style={{
                         textAlign: "left",
-                        padding: "15px",
+                        // padding: "15px",
                         fontSize: "0.9rem",
                         color: "#4B5563",
                       }}
                     >
-                      {row.email}
+                      {customer.email}
                     </td>
                     <td
                       style={{
                         textAlign: "left",
-                        padding: "15px",
+                        // padding: "15px",
                         fontSize: "0.9rem",
                         color: "#4B5563",
                       }}
                     >
-                      {row.createdBy}
+                      {customer.created_by
+                        ? customer.created_by.charAt(0).toUpperCase() +
+                          customer.created_by.slice(1)
+                        : ""}
                     </td>
-                    <td style={{ textAlign: "center", padding: "15px" }}>
+                    <td className="text-center">
                       <div className="d-flex gap-2 justify-content-center">
                         <Button
                           variant="outline-secondary"
@@ -126,60 +207,72 @@ const CustomerList = () => {
                             borderRadius: "50%",
                             width: "35px",
                             height: "35px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
                           }}
                         >
-                          <FaUserEdit size={20} />
+                          <IoIosInformationCircle />
                         </Button>
                         <Button
-                          variant="warning"
+                          variant="outline-secondary"
                           size="sm"
                           style={{
                             borderRadius: "50%",
                             width: "35px",
                             height: "35px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
                           }}
                         >
-                          <i className="bi bi-pencil"></i>
+                          <FaUserEdit />
                         </Button>
                         <Button
-                          variant="danger"
+                          variant="outline-secondary"
                           size="sm"
                           style={{
                             borderRadius: "50%",
                             width: "35px",
                             height: "35px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
                           }}
                         >
-                          <i className="bi bi-trash"></i>
+                          <FaAddressBook />
+                        </Button>
+                        <Button
+                          variant="outline-secondary"
+                          size="sm"
+                          style={{
+                            borderRadius: "50%",
+                            width: "35px",
+                            height: "35px",
+                          }}
+                        >
+                          <MdDelete />
                         </Button>
                       </div>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-            <div className="d-flex justify-content-between align-items-center mt-3">
-              <span>
-                Showing 1 to {tableData.length} of {tableData.length} items
-              </span>
-              <div>
-                <Button variant="light" className="me-1" disabled>
-                  &laquo;
-                </Button>
-                <Button variant="light" disabled>
-                  &raquo;
-                </Button>
-              </div>
-            </div>
+                ))
+              )}
+            </tbody>
+          </Table>
+
+          <div className="d-flex justify-content-end mt-3">
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              className="me-2"
+              onClick={() => handlePageChange("previous")}
+              disabled={currentPage === 1}
+            >
+              &laquo; Previous
+            </Button>
+            <Button variant="outline-secondary" size="sm" className="me-2">
+              {currentPage}
+            </Button>
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={() => handlePageChange("next")}
+              disabled={currentPage * rowsPerPage >= filteredCustomers.length}
+            >
+              Next &raquo;
+            </Button>
           </div>
         </div>
       </div>
