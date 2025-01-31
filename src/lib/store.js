@@ -82,10 +82,10 @@ export const createCompanyApi = async (formdata, token) => {
 };
 
 // Edit Company Api
-export const editCompanyApi = async (formdata, token) => {
+export const editCompanyApi = async (companyId,formdata, token) => {
   try {
-    const response = await axios.post(
-      `${Url}/q12w3e4rde/a123e4wjrds`,
+    const response = await axios.patch(
+      `${Url}/q12w3e4rde/d1234d1234/${companyId}`,
       formdata,
       {
         headers: {

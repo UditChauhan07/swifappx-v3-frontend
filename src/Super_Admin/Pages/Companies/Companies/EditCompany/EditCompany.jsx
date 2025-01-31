@@ -20,6 +20,7 @@ const EditCompany = () => {
   const { state } = useLocation();
   const { company = {}, user = {} } = state.company || {};
   console.log("Company------", state.company);
+  const [companyId, setcompanyId] = useState(state.company.id)
 
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -742,7 +743,7 @@ const EditCompany = () => {
       });
 
       // Call API
-      const response = await editCompanyApi(formDataToSend, token);
+      const response = await editCompanyApi(companyId,formDataToSend, token);
       console.log("response", response);
 
       // Close loading alert
