@@ -72,7 +72,7 @@ const EditOfficeUser = () => {
     //     text: "User Updated Successfully",
     //     icon: "success",
     //     timer: 1400, // Time in milliseconds (1400 ms = 1.4 seconds)
-    //     showConfirmButton: false, // Optional: Hide the confirm button
+    //     showConfirmButton: false, // Optional: Hide the confirm buttonn
     //   });
 
     //   resetForm();
