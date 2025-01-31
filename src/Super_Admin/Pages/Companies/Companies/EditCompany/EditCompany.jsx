@@ -10,7 +10,7 @@ import {
   ToggleButton,
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { createCompanyApi } from "../../../../../lib/store";
+import { createCompanyApi, editCompanyApi } from "../../../../../lib/store";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Header from "../../../../../Components/Header/Header";
@@ -18,8 +18,9 @@ import Header from "../../../../../Components/Header/Header";
 const EditCompany = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const { state } = useLocation();
-  const { company = {}, user = {} } = state.company || {}; 
-  console.log("Company------",state.company)
+  const { company = {}, user = {} } = state.company || {};
+  console.log("Company------", state.company);
+  const [companyId, setcompanyId] = useState(state.company.id)
 
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -50,7 +51,7 @@ const EditCompany = () => {
     addressLine1: "",
     addressLine2: "",
     contactCity: "",
-    contactState: "",
+    companyState: "",
     contactCountry: "",
     contactZip: "",
     contactPerson: "",
@@ -109,6 +110,7 @@ const EditCompany = () => {
         addressLine2: company.address_line_2 || "",
         contactCity: company.city || "",
         contactCountry: company.country || "",
+        companyState: company.companyState || "",
         contactZip: company.zip_postal_code || "",
         contactPerson: company.company_contact_person_name || "",
         contactPhone: company.contact_person_phone || "",
@@ -374,17 +376,17 @@ const EditCompany = () => {
           }
           break;
 
-        case "contactState":
+        case "companyState":
           if (
             !value.trim() ||
             value.length < 2 ||
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.contactState =
+            newErrors.companyState =
               "State must be 2-60 characters, letters only.";
           } else {
-            delete newErrors.contactState;
+            delete newErrors.companyState;
           }
           break;
 
@@ -474,8 +476,6 @@ const EditCompany = () => {
       }
       return newErrors;
     });
-
-    
   };
 
   const validateStep = (step) => {
@@ -524,8 +524,8 @@ const EditCompany = () => {
 
         if (
           !formData.contactNumber ||
-          !formData.contactNumber.trim() ||
-          !isPhone.test(formData.contactNumber)
+          !String(formData.contactNumber).trim() ||
+          !isPhone.test(String(formData.contactNumber))
         )
           newErrors.contactNumber =
             "Valid Contact Number (10-15 digits) is required.";
@@ -583,13 +583,13 @@ const EditCompany = () => {
         )
           newErrors.contactCity = "City must be 2-60 characters, letters only.";
         if (
-          !formData.contactState ||
-          !formData.contactState.trim() ||
-          formData.contactState.length < 2 ||
-          formData.contactState.length > 60 ||
-          !isAlpha.test(formData.contactState)
+          !formData.companyState ||
+          !formData.companyState.trim() ||
+          formData.companyState.length < 2 ||
+          formData.companyState.length > 60 ||
+          !isAlpha.test(formData.companyState)
         )
-          newErrors.contactState =
+          newErrors.companyState =
             "State must be 2-60 characters, letters only.";
         if (
           !formData.contactZip ||
@@ -688,6 +688,7 @@ const EditCompany = () => {
       customerAddressFormat: formData.customerAddressFormat,
       workingDays: formData.workingDays,
       companyStatus: formData.companyStatus,
+      companyState: formData.companyState
     };
     const userdata = {
       first_name: formData.firstName,
@@ -698,7 +699,7 @@ const EditCompany = () => {
       contact_number: formData.contactNumber,
       country: formData.country,
       email: formData.email,
-      password: formData.password,
+      // password: formData.password,
       zip_code: formData.zip,
     };
 
@@ -742,7 +743,7 @@ const EditCompany = () => {
       });
 
       // Call API
-      const response = await createCompanyApi(formDataToSend, token);
+      const response = await editCompanyApi(companyId,formDataToSend, token);
       console.log("response", response);
 
       // Close loading alert
@@ -897,9 +898,8 @@ const EditCompany = () => {
                     <Form.Label>
                       <span className="text-danger">*</span> Admin Password:
                     </Form.Label>
-                    
                   </Form.Group>
-                    <Button>Change Password</Button>
+                  <Button>Change Password</Button>
                 </Col>
               </Row>
               <Row>
@@ -1327,14 +1327,14 @@ const EditCompany = () => {
                     <Form.Control
                       type="text"
                       placeholder="Enter Company Address's State"
-                      value={formData.contactState}
+                      value={formData.companyState}
                       onChange={(e) =>
-                        handleChange("contactState", e.target.value)
+                        handleChange("companyState", e.target.value)
                       }
-                      isInvalid={!!errors.contactState}
+                      isInvalid={!!errors.companyState}
                     />
                     <Form.Control.Feedback type="invalid">
-                      {errors.contactState}
+                      {errors.companyState}
                     </Form.Control.Feedback>
                   </Form.Group>
 

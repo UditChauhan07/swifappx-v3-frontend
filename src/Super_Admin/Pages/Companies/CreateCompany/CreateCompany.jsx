@@ -46,7 +46,7 @@ const CreateCompany = () => {
     addressLine1: "",
     addressLine2: "",
     contactCity: "",
-    contactState: "",
+    companyState: "",
     contactCountry: "",
     contactZip: "",
     contactPerson: "",
@@ -316,17 +316,17 @@ const CreateCompany = () => {
           }
           break;
 
-        case "contactState":
+        case "companyState":
           if (
             !value.trim() ||
             value.length < 2 ||
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.contactState =
+            newErrors.companyState =
               "State must be 2-60 characters, letters only.";
           } else {
-            delete newErrors.contactState;
+            delete newErrors.companyState;
           }
           break;
 
@@ -525,13 +525,13 @@ const CreateCompany = () => {
         )
           newErrors.contactCity = "City must be 2-60 characters, letters only.";
         if (
-          !formData.contactState ||
-          !formData.contactState.trim() ||
-          formData.contactState.length < 2 ||
-          formData.contactState.length > 60 ||
-          !isAlpha.test(formData.contactState)
+          !formData.companyState ||
+          !formData.companyState.trim() ||
+          formData.companyState.length < 2 ||
+          formData.companyState.length > 60 ||
+          !isAlpha.test(formData.companyState)
         )
-          newErrors.contactState =
+          newErrors.companyState =
             "State must be 2-60 characters, letters only.";
         if (
           !formData.contactZip ||
@@ -630,6 +630,7 @@ const CreateCompany = () => {
       customerAddressFormat: formData.customerAddressFormat,
       workingDays: formData.workingDays,
       companyStatus: formData.companyStatus,
+      companyState:formData.companyState
     };
     const userdata = {
       first_name: formData.firstName,
@@ -1277,14 +1278,14 @@ const CreateCompany = () => {
                     <Form.Control
                       type="text"
                       placeholder="Enter Company Address's State"
-                      value={formData.contactState}
+                      value={formData.companyState}
                       onChange={(e) =>
-                        handleChange("contactState", e.target.value)
+                        handleChange("companyState", e.target.value)
                       }
-                      isInvalid={!!errors.contactState}
+                      isInvalid={!!errors.companyState}
                     />
                     <Form.Control.Feedback type="invalid">
-                      {errors.contactState}
+                      {errors.companyState}
                     </Form.Control.Feedback>
                   </Form.Group>
 
