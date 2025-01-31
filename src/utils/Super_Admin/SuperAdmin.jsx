@@ -1,8 +1,8 @@
 import React from "react";
-import Header from "../../../../Components/Header/Header";
-import UsersTabelComp from "../../../Components/User_Table/UsersTabelComp";
+import Header from "../../Components/Header/Header";
+import UsersTabelComp from "../../Admin/Components/User_Table/UsersTabelComp";
 
-const Accountant = () => {
+const SuperAdmin = () => {
   const tableHeaders = [
     "Full Name & Location",
     "Role",
@@ -13,19 +13,19 @@ const Accountant = () => {
   ];
 
   const tableData = [
-    {
-      fullName: (
-        <div>
-          <strong>new user</strong>
-          <br />
-          haryana zirakpur
-        </div>
-      ),
-      role: "Company Super Admin",
-      email: "hghg@gmail.com",
-      createdAt: "24 January, 2025",
-      status: "Activated",
-    },
+    // {
+    //   fullName: (
+    //     <div>
+    //       <strong>new user</strong>
+    //       <br />
+    //       haryana zirakpur
+    //     </div>
+    //   ),
+    //   role: "Company Super Admin",
+    //   email: "hghg@gmail.com",
+    //   createdAt: "24 January, 2025",
+    //   status: "Activated",
+    // },
   ];
 
   return (
@@ -43,7 +43,7 @@ const Accountant = () => {
                 textAlign:"center"
               }}
             >
-              <h4 className="mb-0">Accountant</h4>
+              <h4 className="mb-0">Super Admin</h4>
             </div>
           {/* Pass props to TableComponent */}
           <UsersTabelComp tableHeaders={tableHeaders} tableData={tableData} />
@@ -53,4 +53,4 @@ const Accountant = () => {
   );
 };
 
-export default Accountant;
+export default SuperAdmin;

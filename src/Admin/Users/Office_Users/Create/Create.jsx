@@ -234,16 +234,7 @@ useEffect(() => {
   }
 }, [userid]);
 
-// if(roles && roles.length<=0){
-  
-//   Swal.fire({
-//     title: "Roles list is empty",
-//     text: "Create a new role first",
-//     icon: "warning",
-//     confirmButtonText: "Okay",
-//   });
-//   return null;
-// }
+
 
   return (
     <>

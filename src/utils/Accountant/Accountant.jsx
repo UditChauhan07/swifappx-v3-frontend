@@ -1,8 +1,8 @@
 import React from "react";
-import Header from "../../../../Components/Header/Header";
-import UsersTabelComp from "../../../Components/User_Table/UsersTabelComp";
+import Header from "../../Components/Header/Header";
+import UsersTabelComp from "../../Admin/Components/User_Table/UsersTabelComp";
 
-const Manager = () => {
+const Accountant = () => {
   const tableHeaders = [
     "Full Name & Location",
     "Role",
@@ -43,7 +43,7 @@ const Manager = () => {
                 textAlign:"center"
               }}
             >
-              <h4 className="mb-0">Manager</h4>
+              <h4 className="mb-0">Accountant</h4>
             </div>
           {/* Pass props to TableComponent */}
           <UsersTabelComp tableHeaders={tableHeaders} tableData={tableData} />
@@ -53,4 +53,4 @@ const Manager = () => {
   );
 };
 
-export default Manager;
+export default Accountant;

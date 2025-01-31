@@ -8,11 +8,11 @@ import CreateCompany from "./Super_Admin/Pages/Companies/CreateCompany/CreateCom
 import Companies from "./Super_Admin/Pages/Companies/Companies/Companies";
 import CompanyAccess from "./Super_Admin/Pages/Companies/Access/CompanyAccess";
 import Create from "./Admin/Users/Office_Users/Create/Create";
-import SuperAdmin from "./Admin/Users/Office_Users/Super_Admin/SuperAdmin";
+import SuperAdmin from "./utils/Super_Admin/SuperAdmin";
 import StaffAdmin from "./Admin/Users/Office_Users/Staff_Admin/StaffAdmin";
-import Accountant from "./Admin/Users/Office_Users/Accountant/Accountant";
-import Manager from "./Admin/Users/Office_Users/Manager/Manager";
-import HumanResource from "./Admin/Users/Office_Users/Human_Resource/HumanResource";
+import Accountant from "./utils/Accountant/Accountant";
+import Manager from "./utils/Manager/Manager";
+import HumanResource from "./utils/Human_Resource/HumanResource";
 import OtherUsers from "./Admin/Users/Office_Users/Other_Users/OtherUsers";
 import CreateFieldUser from "./Admin/Users/Field_Users/Create/CreateFieldUser";
 import FieldUserList from "./Admin/Users/Field_Users/Filed_user_list/FieldUserList";
@@ -33,6 +33,8 @@ import CompanyDetails from "./Super_Admin/Pages/Companies/Companies/CompanyDetai
 import EditCompany from "./Super_Admin/Pages/Companies/Companies/EditCompany/EditCompany";
 import EditRoles from "./Super_Admin/Pages/Settings/Roles/EditRoles/EditRoles";
 import UpdateFieldUser from "./Admin/Users/Field_Users/Filed_user_list/UpdateFieldUser ";
+import OfficeUserDetails from "./Admin/Users/Office_Users/Staff_Admin/OfficeUserDetails";
+import EditOfficeUser from "./Admin/Users/Office_Users/Staff_Admin/EditOfficeUser";
 
 
 function App() {
@@ -69,8 +71,8 @@ function App() {
           <Route path="/users/office/create" element={<Create />} />
           <Route path="/users/office/super-admin" element={<SuperAdmin />} />
           <Route path="/users/office/:roleName" element={<StaffAdmin />} />
-          <Route path="/users/office/accountant" element={<Accountant />} />
-          <Route path="/users/office/manager" element={<Manager />} />
+          <Route path="/users/office/list/view" element={<OfficeUserDetails/>} />
+          <Route path="/users/office/edit" element={<EditOfficeUser/>} />
           <Route path="/users/office/human-resource" element={<HumanResource />} />
           <Route path="/users/office/other-users" element={<OtherUsers />} />
           {/* Field */}

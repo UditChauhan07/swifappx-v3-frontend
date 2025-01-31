@@ -47,7 +47,7 @@ const UpdateFieldUser = () => {
         }
       }
 
-      console.log("Form", values);
+    //   console.log("Form", values);
       const response = await update_FieldUser(formData, token, userData.id); // Assuming userData.id is the unique ID
       if (response.success) {
         Swal.fire({
@@ -64,7 +64,7 @@ const UpdateFieldUser = () => {
       } else {
         Swal.fire("Error", response.message, "error");
       }
-      console.log("Response", response);
+    //   console.log("Response", response);
     },
   });
 

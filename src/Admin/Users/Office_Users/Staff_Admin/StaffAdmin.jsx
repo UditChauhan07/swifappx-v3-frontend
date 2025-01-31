@@ -25,6 +25,7 @@ const StaffAdmin = () => {
   ];
 
    const fetchData = () =>{
+    console.log('staff admin hit');
     const response = fetch_officeUsersByRoleId(id,token)
     .then((response) => {
     if (response.status === true) {
@@ -66,6 +67,7 @@ const StaffAdmin = () => {
             tableData={tableData}
             roleName={roleName}
             isLoading={isLoading}
+            fetchData={fetchData}
           />
         </div>
       </div>

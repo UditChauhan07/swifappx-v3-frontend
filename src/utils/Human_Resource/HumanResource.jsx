@@ -1,6 +1,6 @@
 import React from "react";
-import Header from "../../../../Components/Header/Header";
-import UsersTabelComp from "../../../Components/User_Table/UsersTabelComp";
+import Header from "../../Components/Header/Header";
+import UsersTabelComp from "../../Admin/Components/User_Table/UsersTabelComp";
 
 const HumanResource = () => {
   const tableHeaders = [

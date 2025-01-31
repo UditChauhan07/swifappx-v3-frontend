@@ -284,7 +284,7 @@ export const deleteCompanyApi = async (userId, token) => {
 
 
 
-
+//create field user
 export const create_FieldUser=async (formdata,token) => {
   try {
     const response = await axios.post(
@@ -305,6 +305,7 @@ export const create_FieldUser=async (formdata,token) => {
   }
 }
 
+//get field users of company
 export const fetch_FieldUserOfCompany = async (companyId,token) => {
  
   try {
@@ -325,6 +326,7 @@ export const fetch_FieldUserOfCompany = async (companyId,token) => {
   }
 }
 
+//get office users by role id
 export const fetch_officeUsersByRoleId = async (roleId,token) => {
   try {
     const response = await axios.get(
@@ -344,6 +346,7 @@ export const fetch_officeUsersByRoleId = async (roleId,token) => {
   }
 }
 
+//delete field user by id
 export const delete_FieldUser = async (userId,token) => {
   try {
     const response = await axios.delete(
@@ -363,11 +366,31 @@ export const delete_FieldUser = async (userId,token) => {
   }
 }
 
+//update field user by id
 export const update_FieldUser=async (formdata,token,id) => {
   try {
-    const response = await axios.post(
+    const response = await axios.put(
       `${Url}/zxf432w6d9/ofx21u908d/${id}`,
       formdata,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+}
+
+export const delete_OfficeUser = async (userId,token) => {
+  try {
+    const response = await axios.delete(
+      `${Url}/ocf432w678/odi8m90987/${userId}`,{
         headers: {
           Authorization: `Bearer ${token}`,
         },
