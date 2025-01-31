@@ -17,6 +17,7 @@ const CreateRole = () => {
   const navigate = useNavigate();
   const [roleType, setRoleType] = useState("saas");
   const [permissions, setPermissions] = useState({});
+  const company_id=localStorage.getItem("companyId")||null;
   const [userId, setuserId] = useState(localStorage.getItem("userId"));
   const [errors, setErrors] = useState({
     roleName: "",
@@ -223,6 +224,7 @@ const CreateRole = () => {
         return { moduleName, actions };
       }),
       created_by: createdBy,
+      company_id: company_id||null,
     };
 
     // Confirm action before proceeding

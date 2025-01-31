@@ -32,6 +32,7 @@ import FieldUserDetails from "./Admin/Users/Field_Users/Filed_user_list/FieldUse
 import CompanyDetails from "./Super_Admin/Pages/Companies/Companies/CompanyDetails/CompanyDetails";
 import EditCompany from "./Super_Admin/Pages/Companies/Companies/EditCompany/EditCompany";
 import EditRoles from "./Super_Admin/Pages/Settings/Roles/EditRoles/EditRoles";
+import UpdateFieldUser from "./Admin/Users/Field_Users/Filed_user_list/UpdateFieldUser ";
 
 
 function App() {
@@ -75,6 +76,7 @@ function App() {
           {/* Field */}
           <Route path="/users/field/create" element={<CreateFieldUser />} />
           <Route path="/users/field/list" element={<FieldUserList />} />
+          <Route path="/users/field/edit" element={<UpdateFieldUser/>} />
           <Route path="/users/field/list/view" element={<FieldUserDetails/>} />
           <Route path="/users/field/import" element={<ImportFieldUser />} />
 

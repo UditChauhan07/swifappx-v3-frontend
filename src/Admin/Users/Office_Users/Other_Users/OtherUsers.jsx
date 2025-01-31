@@ -13,19 +13,19 @@ const OtherUsers = () => {
   ];
 
   const tableData = [
-    {
-      fullName: (
-        <div>
-          <strong>new user</strong>
-          <br />
-          haryana zirakpur
-        </div>
-      ),
-      role: "Company Super Admin",
-      email: "hghg@gmail.com",
-      createdAt: "24 January, 2025",
-      status: "Activated",
-    },
+    // {
+    //   fullName: (
+    //     <div>
+    //       <strong>new user</strong>
+    //       <br />
+    //       haryana zirakpur
+    //     </div>
+    //   ),
+    //   role: "Company Super Admin",
+    //   email: "hghg@gmail.com",
+    //   createdAt: "24 January, 2025",
+    //   status: "Activated",
+    // },
   ];
 
   return (

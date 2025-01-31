@@ -198,6 +198,7 @@ import Header from "../../../../Components/Header/Header";
 import { usePermissions } from "../../../../context/PermissionContext";
 import { createOfficeUser, fetchRolesList } from "../../../../lib/store";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().trim().required("First Name is required").min(4,"Must be at least 4 characters"),
@@ -223,6 +224,7 @@ const Create = () => {
 const token = localStorage.getItem("UserToken");
 const userid = localStorage.getItem("userId");
 const company_id=localStorage.getItem("companyId")||null;
+const navigate=useNavigate();
 
 useEffect(() => {
   if (userid) {
@@ -280,6 +282,7 @@ useEffect(() => {
               }}
               validationSchema={validationSchema}
               onSubmit={async(values, { setSubmitting,resetForm  }) => {
+                setSubmitting(true);
                 const formData = new FormData();
                 formData.append("first_name", values.firstName);
                 formData.append("last_name", values.lastName);
@@ -301,13 +304,23 @@ useEffect(() => {
              
                 const submitData=await createOfficeUser(formData,token)
             
-                console.log('response',submitData)
+                // console.log('response',submitData)
                 if(submitData.status){
-                  Swal.fire('Success','User Created Successfully',"success");
+                  Swal.fire({
+                    title: 'Success',
+                    text: 'User Created Successfully',
+                    icon: 'success',
+                    timer: 1400, // Time in milliseconds (1400 ms = 1.4 seconds)
+                    showConfirmButton: false, // Optional: Hide the confirm button
+                  });
+                  values.profilePicture = null;
+                  resetForm();
+                  const roleName = roles?.find((role) => role.id === values.role)?.roleName;
+                  console.log('roleName',roleName)
                   setTimeout(()=>{
-                    resetForm();
-                    values.profilePicture = null;
-                  },1500)
+                    
+                    navigate(`/users/office/${roleName}?id=${values.role}`)
+                  },1600)
                   setSubmitting(false);
                 }
                else{
@@ -315,7 +328,7 @@ useEffect(() => {
                }
               }}
             >
-              {({ setFieldValue }) => (
+              {({ setFieldValue,isSubmitting }) => (
                 <FormikForm>
                   <Row>
                     <Col md={6}>
@@ -435,7 +448,7 @@ useEffect(() => {
                   </Row>
 
                   <div className="text-center">
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" disabled={isSubmitting}>
                       Save
                     </Button>
                     <Button variant="secondary" type="reset">

@@ -1,12 +1,16 @@
 import React, { useState ,useEffect} from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import Header from "../../../../Components/Header/Header";
-import { fetch_FieldUserOfCompany } from "../../../../lib/store";
+import { delete_FieldUser, fetch_FieldUserOfCompany } from "../../../../lib/store";
 import { FaInfoCircle, FaEdit, FaClipboardList } from "react-icons/fa";
+import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
 
 
 const FieldUserList = () => {
+  const [isLoading, setLoading] = useState(true);
   const [tableData, setTableData] =useState([]);
   const token = localStorage.getItem("UserToken");
   const company_id=localStorage.getItem("companyId")||null;
@@ -20,6 +24,7 @@ const FieldUserList = () => {
   }
   })
   .catch((error) => {console.log('error', error)})
+  .finally(() => {setLoading(false)});
  } 
  
 useEffect(() =>{
@@ -108,7 +113,36 @@ useEffect(() =>{
 const handleToPreview=async (row) => {
   navigate('/users/field/list/view',{ state: { row } })
 }
-  
+
+const handleDelete = (id) => {
+  // Show confirmation dialog
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel',
+    reverseButtons: true, // Reverse the order of the buttons (Cancel left, Confirm right)
+  }).then((result) => {
+    if (result.isConfirmed) {
+      delete_FieldUser(id,token)
+      .then((result) => {
+        if (result.success === true) {
+          fetchData();
+        } else {
+          Swal.fire("Error", result.message, "error");
+        }
+      })
+      
+      Swal.fire('Deleted!', 'Your user has been deleted.', 'success');
+    }
+  });
+};
+
+const handleEdit = (row) => {
+  navigate('/users/field/edit', { state: { row } })
+}
 
   return (
     <>
@@ -155,8 +189,22 @@ const handleToPreview=async (row) => {
                   ))}
                 </tr>
               </thead>
+            {
+              isLoading ?
+                  <tr>
+                  <td colSpan="7" className="text-center py-5">
+                    <BeatLoader
+                      size={12}
+                      color={"#3C3C3C"}
+                      style={{ display: "flex", justifyContent: "center" }}
+                    />
+                    <p className="mt-2">Loading...</p>
+                  </td>
+                </tr>
+              :
+              <>
               <tbody>
-                {tableData.map((row, index) => (
+                {tableData.length>0 ? tableData.map((row, index) => (
                   <tr
                     key={index}
                     style={{
@@ -210,8 +258,8 @@ const handleToPreview=async (row) => {
                        <Form.Check
                           type="switch"
                           id="status-switch"
-                          label={row.active?"Active":"Unactive"}
-                          checked={row.active}
+                          label={row.isActive==1?"Active":"Unactive"}
+                          checked={row.isActive==1?"Active":"Unactive"}
                         />
                     </td>
                     <td
@@ -255,6 +303,7 @@ const handleToPreview=async (row) => {
                       <Button
                         variant="warning"
                         size="sm"
+                        onClick={()=>handleEdit(row)}
                         style={{
                           borderRadius: "50%",
                           width: "35px",
@@ -270,6 +319,7 @@ const handleToPreview=async (row) => {
                       <Button
                         variant="danger"
                         size="sm"
+                        onClick={()=>handleDelete(row.id)}
                         style={{
                           borderRadius: "50%",
                           width: "35px",
@@ -277,6 +327,7 @@ const handleToPreview=async (row) => {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
+                         
                         }}
                       >
                         <i className="bi bi-trash"></i>
@@ -285,8 +336,16 @@ const handleToPreview=async (row) => {
                     </div>
                     </td>
                   </tr>
-                ))}
+                ))
+              :
+              <tr>
+                <td colSpan="7" className="text-center py-5">
+                  No data found
+                </td>
+              </tr>}
               </tbody>
+              </>
+            }
             </Table>
             <div className="d-flex justify-content-between align-items-center mt-3">
               <span>Showing 1 to 1 of 1 items</span>

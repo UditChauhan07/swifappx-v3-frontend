@@ -8,10 +8,11 @@ const userDataKey = 'userId';
 
 export const PermissionsProvider = ({ children }) => {
   const [userRole, setUserRole] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
   const [user, setUser] = useState(localStorage.getItem(userDataKey));
 
-  const getPermissions = async (userID) => {
+  const getRoles = async (userID) => {
     if (userID) {
       try {
         // console.log(`userid: ${userID}  `);
@@ -23,7 +24,7 @@ export const PermissionsProvider = ({ children }) => {
           },
         });
         console.log('response',response.data.data);
-        setPermissions(response?.data?.data || []);
+        setRoles(response?.data?.data || []);
         setUserRole(response?.data?.data?.roleName || null);
       } catch (error) {
         console.error('Error fetching permissions:', error);
@@ -38,7 +39,7 @@ export const PermissionsProvider = ({ children }) => {
 //       try {
 //         // const decodedToken = jwtDecode(token);
 //         // setUser(decodedToken?.userId);
-//         getPermissions(decodedToken?.userId);
+//         getRoles(decodedToken?.userId);
 //       } catch (error) {
 //         console.error("Error decoding token:", error);
 //       }
@@ -46,8 +47,8 @@ export const PermissionsProvider = ({ children }) => {
 //   }, []);
 
   useEffect(() => {
-    if (permissions.length === 0 && user) {
-      getPermissions(user);
+    if (roles.length === 0 && user) {
+      getRoles(user);
     }
   }, [user]);
 
@@ -55,7 +56,7 @@ export const PermissionsProvider = ({ children }) => {
     const handleStorageChange = (event) => {
       if (event.key === userDataKey) {
         setUser(event.newValue);
-        getPermissions(event.newValue);
+        getRoles(event.newValue);
       }
     };
 
@@ -71,7 +72,7 @@ export const PermissionsProvider = ({ children }) => {
     );
 
   return (
-    <PermissionsContext.Provider value={{ userRole, hasPermission, permissions, getPermissions }}>
+    <PermissionsContext.Provider value={{ userRole, hasPermission, permissions, getRoles,roles}}>
       {children}
     </PermissionsContext.Provider>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import Header from "../../../../Components/Header/Header";
 import UsersTabelComp from "../../../Components/User_Table/UsersTabelComp";
 import { useParams ,useLocation} from 'react-router-dom';
@@ -6,12 +6,15 @@ import { fetch_officeUsersByRoleId } from "../../../../lib/store";
 
 const StaffAdmin = () => {
   const [tableData, setTableData] = React.useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const token = localStorage.getItem("UserToken");
+  // const companyId = localStorage.getItem("UserToken");
   const { roleName } = useParams();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get('id');
-  console.log('staff admin',roleName, id);
+  // console.log('staff admin',roleName, id);
   const tableHeaders = [
     "Full Name & Location",
     "Role",
@@ -25,15 +28,20 @@ const StaffAdmin = () => {
     const response = fetch_officeUsersByRoleId(id,token)
     .then((response) => {
     if (response.status === true) {
+
       setTableData(response.users)
+    }else{
+      setTableData([]);
     }
     })
     .catch((error) => {console.log('error', error)})
+    .finally(() => {setIsLoading(false)});
    }
 
    useEffect(() =>{
+     setIsLoading(true);
      fetchData()
-   },[]);
+   },[location,id]);
 
   return (
     <>
@@ -57,6 +65,7 @@ const StaffAdmin = () => {
             tableHeaders={tableHeaders}
             tableData={tableData}
             roleName={roleName}
+            isLoading={isLoading}
           />
         </div>
       </div>

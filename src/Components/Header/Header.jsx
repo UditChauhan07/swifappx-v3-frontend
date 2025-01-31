@@ -12,7 +12,7 @@ import { TbReportSearch } from "react-icons/tb";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { usePermissions } from "../../context/PermissionContext";
+import { usePermissions } from "../../context/PermissionContext"; 
 
 import {
   FaLanguage,
@@ -35,7 +35,7 @@ const Header = () => {
   const [expandedDropdown, setExpandedDropdown] = useState("");
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
-  const {permissions}=usePermissions();
+  const {roles}=usePermissions();
   // console.log("permissions",permissions);
   
 
@@ -452,14 +452,14 @@ const Header = () => {
                           >
                             {t("Create")}
                           </Link>
-                          <Link
+                          {/* <Link                                             31/01
                             to="/users/office/super-admin"
                             className="sidebar-link"
                           >
                             {t("Super Admin")}
-                          </Link>
+                          </Link> */}
 
-                          {permissions.length>0 && permissions?.map(permission =>
+                          {roles.length>0 && roles?.map(permission =>
                           (<Link
                             to={`/users/office/${permission.roleName}?id=${permission.id}`}
                             className="sidebar-link"
@@ -487,13 +487,13 @@ const Header = () => {
                           >
                             {t("Human Resource")}
                           </Link> */}
-
-                          <Link
-                            to="/users/office/other-users"
+{/* 
+                          <Link                                   31/01
+                            to="/users/office/other-users"  
                             className="sidebar-link"
                           >
                             {t("Other Users")}
-                          </Link>
+                          </Link> */}
                         </div>
                       ) : (
                         ""
@@ -537,12 +537,12 @@ const Header = () => {
                           <Link to="/users/field/list" className="sidebar-link">
                             {t("Field Users List")}
                           </Link>
-                          <Link
+                          {/* <Link to="/users/                               31/01
                             to="/users/field/import"
                             className="sidebar-link"
                           >
                             {t("Import")}
-                          </Link>
+                          </Link> */}
                         </div>
                       ) : (
                         ""
@@ -583,20 +583,20 @@ const Header = () => {
                     >
                       ▣ {t("Customer List")}
                     </Link>
-                    <Link
+                    {/* <Link                                         31 /01/2025
                       to="/customers/prospects"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Prospects & Leads")}
-                    </Link>
-                    <Link
+                    </Link> */}
+                    {/* <Link
                       to="/customers/import"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Customer Import")}
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
                 {/* Quotations */}

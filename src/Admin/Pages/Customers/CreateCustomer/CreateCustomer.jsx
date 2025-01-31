@@ -86,7 +86,7 @@ const CreateCustomer = () => {
 
     Swal.fire({
       title: "Processing...",
-      text: "Creating role, please wait.",
+      text: "Creating Customer, please wait.",
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -102,7 +102,7 @@ const CreateCustomer = () => {
       if (response.status === true) {
         Swal.fire({
           title: "Success!",
-          text: "Role created successfully.",
+          text: "Customer created successfully.",
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
@@ -117,7 +117,7 @@ const CreateCustomer = () => {
       } else {
         Swal.fire({
           title: "Error!",
-          text: response.message || "There was an error creating the role.",
+          text: response.message || "There was an error creating the Customer.",
           icon: "error",
           confirmButtonText: "Try Again",
         });

@@ -4,10 +4,13 @@ import Header from "../../../../../Components/Header/Header";
 import { createUserRole } from "../../../../../lib/store";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { usePermissions } from "../../../../../context/PermissionContext";
 
 const CreateAdminRole = () => {
+  const {getRoles}=usePermissions();
   const navigate = useNavigate()
   const [permissions, setPermissions] = useState({});
+  const company_id=localStorage.getItem("companyId")||null;
   const [userId, setuserId] = useState(localStorage.getItem("userId"));
   const [errors, setErrors] = useState({
     roleName: "",
@@ -154,7 +157,7 @@ const CreateAdminRole = () => {
     }
 
     const roleData = {
-      roleName,
+      roleName:roleName.trim(),
       roleDescription,
       roleLevel: "Company",
       permissions: Object.keys(permissions).map((moduleName) => {
@@ -164,6 +167,8 @@ const CreateAdminRole = () => {
         return { moduleName, actions };
       }),
       created_by: createdBy,
+      company_id: company_id,
+
     };
 
     const result = await Swal.fire({
@@ -205,6 +210,7 @@ const CreateAdminRole = () => {
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
+          getRoles(userId)
           navigate("/settings/admin/roles"); // Navigate after confirmation
         });
       } else {

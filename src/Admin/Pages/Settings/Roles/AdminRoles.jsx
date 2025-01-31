@@ -32,7 +32,7 @@ const AdminRoles = () => {
 
   // Handle pagination
   const handlePageChange = (direction) => {
-    if (direction === "next" && currentPage * rowsPerPage < rolesList.length) {
+    if (direction === "next" && currentPage * rowsPerPage < rolesList?.length) {
       setCurrentPage(currentPage + 1);
     } else if (direction === "previous" && currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -42,7 +42,7 @@ const AdminRoles = () => {
   // Pagination logic
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = rolesList.slice(indexOfFirstRow, indexOfLastRow);
+  const currentRows = rolesList?.slice(indexOfFirstRow, indexOfLastRow);
 
   return (
     <>
@@ -113,7 +113,8 @@ const AdminRoles = () => {
                     </td>
                   </tr>
                 ) : (
-                  currentRows.map((role, index) => (
+                  currentRows?.length>0 ?
+                   currentRows?.map((role, index) => (
                     <tr key={index}>
                       <td
                         style={{
@@ -161,6 +162,10 @@ const AdminRoles = () => {
                       </td>
                     </tr>
                   ))
+                  :
+                  <tr>
+                    <td colSpan="5" className="text-center py-5">No roles found.</td>
+                  </tr>
                 )}
               </tbody>
             </Table>
@@ -181,7 +186,7 @@ const AdminRoles = () => {
                 variant="outline-secondary"
                 size="sm"
                 onClick={() => handlePageChange("next")}
-                disabled={currentPage * rowsPerPage >= rolesList.length}
+                disabled={currentPage * rowsPerPage >= rolesList?.length}
               >
                 Next &raquo;
               </Button>
