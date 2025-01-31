@@ -75,7 +75,7 @@ const Companies = () => {
   };
 
   const hanldeDeleteCompany = async (item) => {
-    console.log("dddddd", item);
+    // console.log("dddddd", item);
 
     const result = await Swal.fire({
       title: "Are you sure?",

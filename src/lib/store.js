@@ -1,6 +1,6 @@
 import axios from "axios";
 export const Url = "http://localhost:2525";
-// export const Url = "https://dev.astar8.com"
+// export const Url = "https://test-hl3bjt37ia-uc.a.run.app"
 
 // Admin Login APi
 export const LoginApi = async (formData) => {
@@ -80,6 +80,29 @@ export const createCompanyApi = async (formdata, token) => {
     throw new Error("An unexpected error occurred");
   }
 };
+
+// Edit Company Api
+export const editCompanyApi = async (formdata, token) => {
+  try {
+    const response = await axios.post(
+      `${Url}/q12w3e4rde/a123e4wjrds`,
+      formdata,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
 
 // Create User Role
 // export const createUserRole = async (finalData) => {
@@ -176,12 +199,29 @@ export const getRoles = async (finalData) => {
   }
 };
 
+// Edit Role Edit 
+export const roleEditApi = async (roleId,finalData) => {
+  try {
+    const response = await axios.patch(
+      `${Url}/srw4rdxkh8/r31dishdq2/${roleId}`,
+      finalData
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
 // Create Customer
 export const createCustomerApi = async (finalData, token) => {
   try {
     const response = await axios.post(
       // `${Url}/c3w4rd26yh/c2waz5tgh7`,
-      `https://test-hl3bjt37ia-uc.a.run.app/create-customer`,
+      `https://test-hl3bjt37ia-uc.a.run.app/cr5mki489n`,
       finalData,
       {
         headers: {

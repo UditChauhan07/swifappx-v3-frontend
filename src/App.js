@@ -57,7 +57,7 @@ function App() {
           <Route path="/company/companies/edit" element={<EditCompany />} />
           <Route path="/company/access" element={<CompanyAccess />} />
 
-          {/* Roles */}
+          {/* Settings */}
           <Route path="/settings/roles" element={<Roles />} />
           <Route path="/settings/roles/create" element={<CreateRole />} />
           <Route path="/settings/roles/edit" element={<EditRoles />} />
