@@ -83,6 +83,7 @@ export const createCompanyApi = async (formdata, token) => {
 
 // Edit Company Api
 export const editCompanyApi = async (companyId,formdata, token) => {
+  console.log('companyId: ' + companyId);
   try {
     const response = await axios.patch(
       `${Url}/q12w3e4rde/d1234d1234/${companyId}`,
@@ -437,6 +438,26 @@ export const delete_OfficeUser = async (userId,token) => {
       }
     );
     // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+}
+
+export const edit_OfficeUser = async (formdata,userId,token) => {
+  try {
+    const response = await axios.put(
+      `${Url}/ocf432w678/edi2mq098m/${userId}`,formdata,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log(response.data, "login api data");
     return response.data;
   } catch (error) {
     if (error.response) {

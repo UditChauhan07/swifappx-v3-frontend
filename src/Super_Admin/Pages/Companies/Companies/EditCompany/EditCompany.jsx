@@ -20,7 +20,7 @@ const EditCompany = () => {
   const { state } = useLocation();
   const { company = {}, user = {} } = state.company || {};
   console.log("Company------", state.company);
-  const [companyId, setcompanyId] = useState(state.company.id)
+  const [companyId, setcompanyId] = useState(state.company.company.company_id)
 
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -743,13 +743,14 @@ const EditCompany = () => {
       });
 
       // Call API
+      console.log('companyId: ', companyId);
       const response = await editCompanyApi(companyId,formDataToSend, token);
       console.log("response", response);
 
       // Close loading alert
       Swal.close();
 
-      if (response.success) {
+      if (response.status) {
         Swal.fire({
           title: "Success!",
           text: "Company created successfully.",
