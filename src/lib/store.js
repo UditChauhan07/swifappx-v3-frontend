@@ -104,6 +104,27 @@ export const editCompanyApi = async (companyId,formdata, token) => {
   }
 };
 
+// Delete Company Api 
+export const deleteCompanyApi = async (userId, token) => {
+  try {
+    const response = await axios.delete(
+      `${Url}/q12w3e4rde/a123e4wjrds/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
 
 // Create User Role
 // export const createUserRole = async (finalData) => {
@@ -221,8 +242,8 @@ export const roleEditApi = async (roleId,finalData) => {
 export const createCustomerApi = async (finalData, token) => {
   try {
     const response = await axios.post(
-      // `${Url}/c3w4rd26yh/c2waz5tgh7`,
-      `https://test-hl3bjt37ia-uc.a.run.app/cr5mki489n`,
+      `${Url}/c3w4rd26yh/c2waz5tgh7`,
+      // `https://test-hl3bjt37ia-uc.a.run.app/cr5mki489n`,
       finalData,
       {
         headers: {
@@ -259,11 +280,33 @@ export const getCustomerList = async (company_id, token) => {
   }
 };
 
-// Delete Company Api 
-export const deleteCompanyApi = async (userId, token) => {
+// Edit Customer Api
+export const editCustomerApi = async (customerId,formdata, token) => {
+  try {
+    const response = await axios.put(
+      `${Url}/c3w4rd26yh/ecd45r6t72/${customerId}`,
+      formdata,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+}
+
+// Delete Customer Api
+export const DeleteCustomerApi = async (userId, token) => {
   try {
     const response = await axios.delete(
-      `${Url}/q12w3e4rde/a123e4wjrds/${userId}`,
+      `${Url}/c3w4rd26yh/cd2196nbhf/${userId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

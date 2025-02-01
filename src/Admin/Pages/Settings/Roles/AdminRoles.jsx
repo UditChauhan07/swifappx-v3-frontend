@@ -3,10 +3,11 @@ import { Table, Button } from "react-bootstrap";
 import { FaEdit } from "react-icons/fa";
 import { BeatLoader } from "react-spinners";
 import Header from "../../../../Components/Header/Header";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getRoles } from "../../../../lib/store";
 
 const AdminRoles = () => {
+  const navigate = useNavigate()
   const [rolesList, setRolesList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,6 +44,10 @@ const AdminRoles = () => {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = rolesList?.slice(indexOfFirstRow, indexOfLastRow);
+
+  const handleEditAdminRoleClick = (role) => {
+    navigate("/settings/admin/roles/edit", { state: { role } });
+  };
 
   return (
     <>
@@ -156,6 +161,7 @@ const AdminRoles = () => {
                             width: "35px",
                             height: "35px",
                           }}
+                          onClick={()=>handleEditAdminRoleClick(role)}
                         >
                           <FaEdit />
                         </Button>

@@ -1,0 +1,79 @@
+import React, { useState } from "react";
+import Header from "../../../../../Components/Header/Header";
+import { Container, Row, Col, Image, Card } from "react-bootstrap";
+import { useLocation } from "react-router-dom";
+
+const CustomerDetails = () => {
+  const location = useLocation();
+  const { customer } = location.state || {};
+  console.log(customer);
+
+  function formatTimestamp(timestamp) {
+    // Extract seconds and nanoseconds
+    const { _seconds, _nanoseconds } = timestamp;
+
+    // Create a Date object
+    const date = new Date(_seconds * 1000 + _nanoseconds / 1000000);
+
+    // Define options for formatting
+    const options = {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+
+    // Format the date
+    return date.toLocaleString("en-US", options);
+  }
+  return (
+    <>
+      <Header />
+      <div className="main-header-box mt-4">
+        <div className="pages-box">
+          <h4 className="mb-4">Customer Details</h4>
+          <Container className="mt-4">
+            <Card className="p-2 shadow-sm">
+              <Row className="p-3">
+                <Col md={3} className="fw-bold">
+                  Name:
+                </Col>
+                <Col>{customer.name}</Col>
+              </Row>
+
+              <Row className="p-3">
+                <Col md={3} className="fw-bold">
+                  Type:
+                </Col>
+                <Col>{customer.type}</Col>
+              </Row>
+              <Row className="p-3">
+                <Col md={3} className="fw-bold">
+                  Email Address:
+                </Col>
+                <Col>{customer.email}</Col>
+              </Row>
+              <Row className="p-3">
+                <Col md={3} className="fw-bold">
+                  Initial Remarks:
+                </Col>
+                <Col>{customer.initial_remarks || "--"}</Col>
+              </Row>
+              <Row className="p-3">
+                <Col md={3} className="fw-bold">
+                  Created At:
+                </Col>
+                <Col>{formatTimestamp(customer.created_at)}</Col>
+              </Row>
+            </Card>
+          </Container>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default CustomerDetails;

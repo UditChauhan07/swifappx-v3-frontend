@@ -3,14 +3,17 @@ import { Table, Button, Form } from "react-bootstrap";
 import { FaUserEdit } from "react-icons/fa";
 import { BeatLoader } from "react-spinners";
 import Header from "../../../../Components/Header/Header";
-import { getCustomerList } from "../../../../lib/store"; 
+import { DeleteCustomerApi, getCustomerList } from "../../../../lib/store";
 import { IoIosInformationCircle } from "react-icons/io";
 import { FaAddressBook } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const CustomerList = () => {
+  const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
+  console.log("cussss", customers);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,6 +61,77 @@ const CustomerList = () => {
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredCustomers.slice(indexOfFirstRow, indexOfLastRow);
+
+  const handleDetailsClick = (customer) => {
+    navigate("/customers/list/details", { state: { customer } });
+  };
+
+  const handleEditCustomerClick = (customer) => {
+    navigate("/customers/list/edit", { state: { customer } });
+  };
+
+  const hanldeDeleteCustomer = async (item) => {
+    // console.log("dddddd", item);
+
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You are about to delete this Customer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete it!",
+      cancelButtonText: "No, cancel",
+    });
+
+    if (!result.isConfirmed) {
+      console.log("Customer Deletion was cancelled");
+      return;
+    }
+
+    Swal.fire({
+      title: "Deletingg...",
+      text: "Deleting Customer, please wait.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const response = await DeleteCustomerApi(item, token);
+      Swal.close();
+
+      if (response.status === true) {
+        // Remove the deleted company from the companyList state
+        setCustomers((prevList) =>
+          prevList.filter((customer) => customer.id !== item)
+        );
+        Swal.fire({
+          title: "Success!",
+          text: "Customer Deleted successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: response.message || "There was an error Deleting Customer.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
+    } catch (error) {
+      // Close SweetAlert loading spinner and show error
+      Swal.close();
+      console.error("API Error:", error);
+
+      Swal.fire({
+        title: "API Error!",
+        text: "Something went wrong. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
 
   return (
     <>
@@ -208,6 +282,7 @@ const CustomerList = () => {
                             width: "35px",
                             height: "35px",
                           }}
+                          onClick={() => handleDetailsClick(customer)}
                         >
                           <IoIosInformationCircle />
                         </Button>
@@ -219,6 +294,7 @@ const CustomerList = () => {
                             width: "35px",
                             height: "35px",
                           }}
+                          onClick={() => handleEditCustomerClick(customer)}
                         >
                           <FaUserEdit />
                         </Button>
@@ -241,6 +317,7 @@ const CustomerList = () => {
                             width: "35px",
                             height: "35px",
                           }}
+                          onClick={() => hanldeDeleteCustomer(customer.id)}
                         >
                           <MdDelete />
                         </Button>

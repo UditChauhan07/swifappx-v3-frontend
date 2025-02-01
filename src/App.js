@@ -35,6 +35,9 @@ import EditRoles from "./Super_Admin/Pages/Settings/Roles/EditRoles/EditRoles";
 import UpdateFieldUser from "./Admin/Users/Field_Users/Filed_user_list/UpdateFieldUser ";
 import OfficeUserDetails from "./Admin/Users/Office_Users/Staff_Admin/OfficeUserDetails";
 import EditOfficeUser from "./Admin/Users/Office_Users/Staff_Admin/EditOfficeUser";
+import CustomerDetails from "./Admin/Pages/Customers/CustomerList/CustomerDetails/CustomerDetails";
+import CustomerEdit from "./Admin/Pages/Customers/CustomerList/CustomerEdit/CustomerEdit";
+import EditAdminRole from "./Admin/Pages/Settings/Roles/EditAdminRole/EditAdminRole";
 
 
 function App() {
@@ -85,6 +88,10 @@ function App() {
           {/* Customers */}
           <Route path="/customers/create" element={<CreateCustomer />} />
           <Route path="/customers/list" element={<CustomerList />} />
+          <Route path="/customers/list/details" element={<CustomerDetails />} />
+          <Route path="/customers/list/edit" element={<CustomerEdit />} />
+          {/* <Route path="/customers/list/address" element={<CustomerList />} /> */}
+
           <Route path="/customers/prospects" element={<ProspectsCustomer />} />
           <Route path="/customers/import" element={<CustomerImport />} />
 
@@ -93,6 +100,7 @@ function App() {
           {/* Roles */}
           <Route path="/settings/admin/roles" element={<AdminRoles />} />
           <Route path="/settings/admin/roles/create" element={<CreateAdminRole />} />
+          <Route path="/settings/admin/roles/edit" element={<EditAdminRole />} />
         </Routes>
       </Router>
     </>
