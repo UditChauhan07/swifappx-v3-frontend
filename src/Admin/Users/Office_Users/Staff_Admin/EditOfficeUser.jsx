@@ -63,8 +63,7 @@ const EditOfficeUser = () => {
     if (values.profilePicture) {
       formData.append("profilePicture", values.profilePicture);
     }
-
-    console.log(values);
+    console.log('formData', formData,values);
     edit_OfficeUser(formData,userData.id,token)
     .then((response) => {
       
