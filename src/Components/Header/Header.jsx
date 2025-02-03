@@ -54,6 +54,8 @@ const Header = () => {
       setExpandedDropdown("reports");
     } else if (location.pathname.startsWith("/settings")) {
       setExpandedDropdown("settings");
+    } else if (location.pathname.startsWith("/workorder")) {
+      setExpandedDropdown("workOrder");
     } else {
       setExpandedDropdown("");
     }
@@ -78,6 +80,7 @@ const Header = () => {
         localStorage.removeItem("userEmail");
         localStorage.removeItem("profilePic");
         localStorage.removeItem("name");
+        localStorage.removeItem("companyId");
 
         Swal.fire({
           title: "Logged Out!",
@@ -721,35 +724,35 @@ const Header = () => {
                     }`}
                   >
                     <Link
-                      to="/company/create"
+                      to="/workorder/create"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Create")}
                     </Link>
                     <Link
-                      to=""
+                      to="/workorder/list"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Work Orders List")}
                     </Link>
                     <Link
-                      to=""
+                      to="/workorder/draft"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Draft Work Orders")}
                     </Link>
                     <Link
-                      to=""
+                      to="/workorder/request"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Request")}
                     </Link>
                     <Link
-                      to=""
+                      to="/workorder/wocalender"
                       className="sidebar-link"
                       activeClassName="active"
                     >

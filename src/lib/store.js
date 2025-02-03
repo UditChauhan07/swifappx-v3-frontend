@@ -147,6 +147,8 @@ export const deleteCompanyApi = async (userId, token) => {
 
 //create office User
 export const createOfficeUser = async (finalData, token) => {
+  console.log("dasasd",finalData)
+  console.log("tt",token)
   try {
     const response = await axios.post(
       `${Url}/cou34er5t6`,

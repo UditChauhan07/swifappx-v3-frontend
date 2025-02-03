@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 const FieldUserList = () => {
   const [isLoading, setLoading] = useState(true);
   const [tableData, setTableData] =useState([]);
+  console.log("dadsaasd",tableData)
   const token = localStorage.getItem("UserToken");
   const company_id=localStorage.getItem("companyId")||null;
   const navigate=useNavigate();

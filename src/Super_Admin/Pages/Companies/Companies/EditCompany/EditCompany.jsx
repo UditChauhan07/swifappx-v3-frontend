@@ -20,7 +20,7 @@ const EditCompany = () => {
   const { state } = useLocation();
   const { company = {}, user = {} } = state.company || {};
   console.log("Company------", state.company);
-  const [companyId, setcompanyId] = useState(state.company.company.company_id)
+  const [companyId, setcompanyId] = useState(state.company.company.company_id);
 
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -688,7 +688,7 @@ const EditCompany = () => {
       customerAddressFormat: formData.customerAddressFormat,
       workingDays: formData.workingDays,
       companyStatus: formData.companyStatus,
-      companyState: formData.companyState
+      companyState: formData.companyState,
     };
     const userdata = {
       first_name: formData.firstName,
@@ -701,6 +701,11 @@ const EditCompany = () => {
       email: formData.email,
       // password: formData.password,
       zip_code: formData.zip,
+    };
+
+    const finalData = {
+      companyData,
+      userdata,
     };
 
     console.log("Transformed finalData", companyData, "\navigator", userdata);
@@ -735,7 +740,7 @@ const EditCompany = () => {
       // Show loading alert while API is executing
       Swal.fire({
         title: "Processing...",
-        text: "Creating company, please wait.",
+        text: "Updating company, please wait.",
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
@@ -743,8 +748,7 @@ const EditCompany = () => {
       });
 
       // Call API
-      console.log('companyId: ', companyId);
-      const response = await editCompanyApi(companyId,formDataToSend, token);
+      const response = await editCompanyApi(companyId, finalData, token);
       console.log("response", response);
 
       // Close loading alert
@@ -753,7 +757,7 @@ const EditCompany = () => {
       if (response.status) {
         Swal.fire({
           title: "Success!",
-          text: "Company created successfully.",
+          text: "Company Updated successfully.",
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
@@ -769,7 +773,7 @@ const EditCompany = () => {
       }
     } catch (error) {
       Swal.close(); // Ensure loading is closed
-      console.error("Error creating company", error);
+      console.error("Error Updating company", error);
 
       Swal.fire({
         title: "API Error!",
@@ -845,7 +849,7 @@ const EditCompany = () => {
                 </Col>
               </Row>
               <Row>
-                <Col md={6}>
+                {/* <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Profile Picture:</Form.Label>
                     <Form.Control
@@ -855,7 +859,7 @@ const EditCompany = () => {
                       }
                     />
                   </Form.Group>
-                </Col>
+                </Col> */}
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
@@ -1016,7 +1020,7 @@ const EditCompany = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
-                <Col md={6}>
+                {/* <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Company Logo:</Form.Label>
                     <Form.Control
@@ -1026,7 +1030,7 @@ const EditCompany = () => {
                       }
                     />
                   </Form.Group>
-                </Col>
+                </Col> */}
               </Row>
 
               <Row>

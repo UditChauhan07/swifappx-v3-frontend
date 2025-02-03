@@ -38,7 +38,9 @@ import EditOfficeUser from "./Admin/Users/Office_Users/Staff_Admin/EditOfficeUse
 import CustomerDetails from "./Admin/Pages/Customers/CustomerList/CustomerDetails/CustomerDetails";
 import CustomerEdit from "./Admin/Pages/Customers/CustomerList/CustomerEdit/CustomerEdit";
 import EditAdminRole from "./Admin/Pages/Settings/Roles/EditAdminRole/EditAdminRole";
-
+import CreateWorkOrder from "./Admin/Pages/WorkOrders/CreateWorkOrder/CreateWorkOrder";
+import WorkOrderList from './Admin/Pages/WorkOrders/WorkOrderList/WorkOrderList';
+import DraftWorkOrder from './Admin/Pages/WorkOrders/DraftWorkOrder/DraftWorkOrder';
 
 function App() {
   return (
@@ -101,6 +103,12 @@ function App() {
           <Route path="/settings/admin/roles" element={<AdminRoles />} />
           <Route path="/settings/admin/roles/create" element={<CreateAdminRole />} />
           <Route path="/settings/admin/roles/edit" element={<EditAdminRole />} />
+
+
+          {/* Work Order */}
+          <Route path="/workorder/create" element={<CreateWorkOrder />} />
+          <Route path="/workorder/list" element={<WorkOrderList />} />
+          <Route path="/workorder/draft" element={<DraftWorkOrder />} />
         </Routes>
       </Router>
     </>

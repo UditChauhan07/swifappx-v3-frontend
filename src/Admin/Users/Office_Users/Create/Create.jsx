@@ -292,8 +292,31 @@ useEffect(() => {
                 if (values.profilePicture) {
                   formData.append("profilePicture", values.profilePicture);
                 }
+                console.log("formDataaaa",formData)
+
+                const finalData = 
+                  {
+                    first_name: values.firstName,
+                    company_id:company_id,
+                    last_name: values.lastName,
+                    email: values.email,
+                    password: values.password,
+                    contact_number: values.contactNumber,
+                    city: values.city,
+                    state: values.state,
+                    zip_code: values.zip,
+                    Address:values.address,
+                    country: values.country,
+                    roleID: values.role,
+                    profile_picture: values.profilePicture,
+                    isActive: values.activateUser
+                }
+                
+
+                console.log("finalDataa",values)
+                
              
-                const submitData=await createOfficeUser(formData,token)
+                const submitData=await createOfficeUser(finalData,token)
             
                 // console.log('response',submitData)
                 if(submitData.status){
@@ -421,7 +444,7 @@ useEffect(() => {
                       </Form.Group>
                     </Col>
 
-                    <Col md={6}>
+                    {/* <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>Profile Picture</Form.Label>
                         <input
@@ -430,7 +453,7 @@ useEffect(() => {
                           onChange={(event) => setFieldValue("profilePicture", event.target.files[0])}
                         />
                       </Form.Group>
-                    </Col>
+                    </Col> */}
 
                     <Col md={6} className="d-flex align-items-center">
                       <Field type="checkbox" name="activateUser" className="form-check-input" />

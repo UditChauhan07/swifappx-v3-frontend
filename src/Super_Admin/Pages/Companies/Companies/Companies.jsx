@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 const Companies = () => {
   const navigate = useNavigate();
   const [companyList, setCompanyList] = useState([]);
+  console.log("cascasc",companyList)
   const [token, setToken] = useState(localStorage.getItem("UserToken"));
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -275,9 +276,9 @@ const Companies = () => {
                           color: "#4B5563",
                         }}
                       >
-                        {item.company.adminName || "null"} [
-                        {item.company.adminContact || "null"},{" "}
-                        {item.company.adminEmail || "null"}]
+                        {item.user.first_name || "null"} [
+                        {item.user.contact_number || "null"},{" "}
+                        {item.user.email || "null"}]
                       </td>
 
                       <td

@@ -47,8 +47,9 @@ const UpdateFieldUser = () => {
         }
       }
 
-    //   console.log("Form", values);
-      const response = await update_FieldUser(formData, token, userData.id); // Assuming userData.id is the unique ID
+      // console.log("Form", values);
+      // console.log("hghh",userData.id)
+      const response = await update_FieldUser(values, token, userData.id); // Assuming userData.id is the unique ID
       if (response.success) {
         Swal.fire({
           title: "Success",
@@ -167,7 +168,7 @@ const UpdateFieldUser = () => {
                     <Form.Control.Feedback type="invalid">{formik.errors.contact_number}</Form.Control.Feedback>
                   </Form.Group>
                 </Col>
-
+{/* 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formProfilePicture">
                     <Form.Label>Profile Picture</Form.Label>
@@ -177,7 +178,7 @@ const UpdateFieldUser = () => {
                       onChange={(e) => formik.setFieldValue("profilePicture", e.target.files[0])}
                     />
                   </Form.Group>
-                </Col>
+                </Col> */}
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formCountry">

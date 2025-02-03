@@ -645,6 +645,11 @@ const CreateCompany = () => {
       zip_code: formData.zip,
     };
 
+    const finaldata = {
+      companyData,
+      userdata
+    }
+
     console.log("Transformed finalData", companyData, "\navigator", userdata);
 
     const formDataToSend = new FormData();
@@ -685,7 +690,7 @@ const CreateCompany = () => {
       });
 
       // Call API
-      const response = await createCompanyApi(formDataToSend, token);
+      const response = await createCompanyApi(finaldata, token);
       console.log("response", response);
 
       // Close loading alert
@@ -786,7 +791,7 @@ const CreateCompany = () => {
                 </Col>
               </Row>
               <Row>
-                <Col md={6}>
+                {/* <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Profile Picture:</Form.Label>
                     <Form.Control
@@ -796,7 +801,7 @@ const CreateCompany = () => {
                       }
                     />
                   </Form.Group>
-                </Col>
+                </Col> */}
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
@@ -966,7 +971,7 @@ const CreateCompany = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
-                <Col md={6}>
+                {/* <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Company Logo:</Form.Label>
                     <Form.Control
@@ -976,7 +981,7 @@ const CreateCompany = () => {
                       }
                     />
                   </Form.Group>
-                </Col>
+                </Col> */}
               </Row>
 
               <Row>
