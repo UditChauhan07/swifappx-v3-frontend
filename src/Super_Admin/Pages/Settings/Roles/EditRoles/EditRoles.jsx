@@ -265,21 +265,21 @@ const EditRoles = () => {
     // Confirm action before proceeding
     const result = await Swal.fire({
       title: "Are you sure?",
-      text: "Do you want to create this role?",
+      text: "Do you want to Update this role?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, create it!",
+      confirmButtonText: "Yes, Update it!",
       cancelButtonText: "No, cancel",
     });
 
     if (!result.isConfirmed) {
-      console.log("Role creation was cancelled");
+      console.log("Role Updating was cancelled");
       return;
     }
 
     Swal.fire({
       title: "Processing...",
-      text: "Creating role, please wait.",
+      text: "Updating role, please wait.",
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -298,7 +298,7 @@ const EditRoles = () => {
 
         Swal.fire({
           title: "Success!",
-          text: "Role created successfully.",
+          text: "Role Updated successfully.",
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {

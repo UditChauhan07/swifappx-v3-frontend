@@ -1,0 +1,33 @@
+.dashboard-container {
+    display: flex;
+  }
+  
+  .dashboard-content {
+    padding: 20px;
+    width: 100%;
+  }
+  
+  .stats-row .stats-card {
+    margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    border-radius: 10px;
+  }
+  
+  .company-card {
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 10px;
+  }
+  
+  .company-stats div {
+    text-align: center;
+    padding: 10px 0;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .dashboard-content {
+      padding: 10px;
+    }
+  }
+  

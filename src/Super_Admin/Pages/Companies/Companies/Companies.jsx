@@ -239,6 +239,12 @@ const Companies = () => {
                       <p className="mt-2">Loading...</p>
                     </td>
                   </tr>
+                ) : companyList.length === 0 ? (
+                  <tr>
+                    <td colSpan="10" className="text-center py-5">
+                      No Companies found
+                    </td>
+                  </tr>
                 ) : (
                   currentRows.map((item, index) => (
                     <tr

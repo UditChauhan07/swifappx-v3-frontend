@@ -1,10 +1,11 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Form, Table, Button } from "react-bootstrap";
 import Header from "../../../../../Components/Header/Header";
 import { Alert } from "react-bootstrap";
 
 const EditAdminRole = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { role } = location.state || {};
   console.log("role", role);
@@ -188,7 +189,14 @@ const EditAdminRole = () => {
               </thead>
               <tbody>{renderModules(companyModules)}</tbody>
             </Table>
-            <Button variant="primary" type="submit">
+            <Button
+              variant="primary"
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/settings/admin/roles"); // Replace "/home" with your desired URL
+              }}
+            >
               Back
             </Button>
           </Form>
