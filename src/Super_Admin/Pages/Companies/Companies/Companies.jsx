@@ -291,8 +291,8 @@ const Companies = () => {
                       >
                         {formatTimestamp(item.company.created_at)}
                       </td>
-                      <td className="text-center">0</td>
-                      <td className="text-center">0</td>
+                      <td className="text-center">{item.user_counts.field_user || 0}</td>
+                      <td className="text-center">{item.user_counts.office_user || 0}</td>
                       <td className="text-center">0</td>
                       <td className="text-center">0</td>
                       <td className="text-center">0</td>

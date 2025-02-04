@@ -351,12 +351,7 @@ const CreateWorkOrder = () => {
                           <Col md={12}>
                             <Form.Group className="mb-3">
                               <Form.Label>Service Items:</Form.Label>
-                              <Button
-                                variant="outline-primary"
-                                onClick={handleAddItem}
-                              >
-                                <span>+</span> Custom
-                              </Button>
+                              
                             </Form.Group>
                           </Col>
                         </Row>
@@ -366,9 +361,14 @@ const CreateWorkOrder = () => {
                               <th>Sub Items</th>
                               <th>Price</th>
                               <th>Quantity</th>
-                              <th>Amount</th>
+                              <th>Total Amount</th>
                               <th>Remarks</th>
-                              <th>Actions</th>
+                              <th><Button
+                                variant="outline-primary"
+                                onClick={handleAddItem}
+                              >
+                                <span>+</span> Custom
+                              </Button></th>
                             </tr>
                           </thead>
                           <tbody>
