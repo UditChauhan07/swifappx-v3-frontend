@@ -675,15 +675,61 @@ const CreateCompany = () => {
       };
 
       console.log("Final Data:", companyData, userdata);
+      const result = await Swal.fire({
+              title: "Are you sure?",
+              text: "Do you want to create this company?",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Yes, create it!",
+              cancelButtonText: "No, cancel",
+            });
+      
+            if (!result.isConfirmed) {
+              console.log("Company creation cancelled");
+              return;
+            }
+      
+            // Show loading alert while API is executing
+            Swal.fire({
+              title: "Processing...",
+              text: "Creating company, please wait.",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
 
       // ✅ Send as JSON (No FormData needed)
       const response = await createCompanyApi({ companyData, userdata }, token);
       console.log("response", response);
-
-      // const responseData = await response.json();
+      Swal.close();
+      if (response.success) {
+              Swal.fire({
+                title: "Success!",
+                text: "Company created successfully.",
+                icon: "success",
+                confirmButtonText: "OK",
+              }).then(() => {
+                navigate("/company/companies"); // Navigate after confirmation
+              });
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: response.message || "There was an error creating the company.",
+                icon: "error",
+                confirmButtonText: "Try Again",
+              });
+            }
       console.log("Response:", response);
     } catch (error) {
       console.error("Error submitting data:", error);
+      Swal.close();
+      Swal.fire({
+        title: "API Error!",
+        text: "Something went wrong. Please try again later.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
 

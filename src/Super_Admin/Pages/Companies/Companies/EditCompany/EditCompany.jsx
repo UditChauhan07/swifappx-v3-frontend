@@ -19,8 +19,8 @@ const EditCompany = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const { state } = useLocation();
   const { company = {}, user = {} } = state.company || {};
-  console.log("Company------", state.company);
-  const [companyId, setcompanyId] = useState(state.company.company.company_id)
+  // console.log("Company------", state.company);
+  const [companyId, setcompanyId] = useState(state.company.company.id)
 
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -85,7 +85,7 @@ const EditCompany = () => {
         // Step 1: Super Admin Details
         firstName: user.first_name || "",
         lastName: user.last_name || "",
-        profilePicture: user.profile_picture || null,
+        profilePicture:  null,
         contactNumber: user.contact_number || "",
         email: user.email || "",
         address: user.Address || "",
@@ -96,7 +96,7 @@ const EditCompany = () => {
 
         // Step 2: Company Basic Details
         companyName: company.company_name || "",
-        companyLogo: company.company_logo || null,
+        companyLogo: null,
         currency: company.currency || "",
         timeZone: company.time_zone || "",
         taxName: company.tax_name || "",
@@ -647,8 +647,29 @@ const EditCompany = () => {
 
     return newErrors;
   };
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      if (!(file instanceof Blob)) {
+              return null;
+      }
+  
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
   const handleSubmit = async () => {
+    console.log('Submit---',formData)
+    const profilePictureBase64 = formData.profilePicture
+    ? await fileToBase64(formData.profilePicture)
+    : null;
+
+  const companyLogoBase64 = formData.companyLogo
+    ? await fileToBase64(formData.companyLogo)
+    : null;
+
     const allCertificates = [
       {
         name: formData.certificationName,
@@ -659,7 +680,7 @@ const EditCompany = () => {
 
     const companyData = {
       company_name: formData.companyName,
-      company_logo: formData.companyLogo,
+      company_logo: companyLogoBase64,
       currency: formData.currency,
       time_zone: formData.timeZone,
       tax_name: formData.taxName,
@@ -701,21 +722,22 @@ const EditCompany = () => {
       email: formData.email,
       // password: formData.password,
       zip_code: formData.zip,
+      profile_picture: profilePictureBase64,
     };
 
     console.log("Transformed finalData", companyData, "\navigator", userdata);
 
-    const formDataToSend = new FormData();
-    formDataToSend.append("userdata", JSON.stringify(userdata)); // Stringify userdata
-    formDataToSend.append("companyData", JSON.stringify(companyData)); // Stringify companyData
-    if (formData.profilePicture) {
-      formDataToSend.append("profile_picture", formData.profilePicture);
-    }
-    if (formData.companyLogo) {
-      formDataToSend.append("company_logo", formData.companyLogo);
-    }
+    // const formDataToSend = new FormData();
+    // formDataToSend.append("userdata", JSON.stringify(userdata)); // Stringify userdata
+    // formDataToSend.append("companyData", JSON.stringify(companyData)); // Stringify companyData
+    // if (formData.profilePicture) {
+    //   formDataToSend.append("profile_picture", formData.profilePicture);
+    // }
+    // if (formData.companyLogo) {
+    //   formDataToSend.append("company_logo", formData.companyLogo);
+    // }
 
-    console.log("Final FormData: ", formDataToSend);
+    console.log("Final FormData: ", {companyData,userdata});
     try {
       // Show confirmation alert before API call
       const result = await Swal.fire({
@@ -744,7 +766,7 @@ const EditCompany = () => {
 
       // Call API
       console.log('companyId: ', companyId);
-      const response = await editCompanyApi(companyId,formDataToSend, token);
+      const response = await editCompanyApi(companyId,{companyData,userdata}, token);
       console.log("response", response);
 
       // Close loading alert
