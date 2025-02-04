@@ -585,7 +585,10 @@ const CreateWorkOrder = () => {
             {/* Submit Workorder */}
             <div className="text-center mb-4">
               <Button
-                variant="primary"
+                // variant="primary"
+                style={{
+                  backgroundColor:"#2e2e32", border:"none"
+                }}
                 onClick={handleSubmitWorkOrder}
                 disabled={!selectedCategory || !selectedService}
               >

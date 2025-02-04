@@ -150,7 +150,7 @@ const CreateCustomer = () => {
             <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",
@@ -235,7 +235,7 @@ const CreateCustomer = () => {
                   type="submit"
                   className="me-2"
                   style={{
-                    background: "#8d28dd",
+                    background: "#2e2e32",
                     border: "none",
                   }}
                 >

@@ -153,7 +153,7 @@ const CustomerList = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button variant="primary" onClick={handleClear}>
+              <Button variant="secondary" onClick={handleClear}>
                 Clear
               </Button>
             </div>

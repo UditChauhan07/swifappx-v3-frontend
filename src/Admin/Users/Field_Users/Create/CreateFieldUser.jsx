@@ -193,7 +193,7 @@ const CreateFieldUser = () => {
             <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",

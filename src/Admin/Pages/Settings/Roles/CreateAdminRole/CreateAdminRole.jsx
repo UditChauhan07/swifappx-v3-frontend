@@ -25,28 +25,10 @@ const CreateAdminRole = () => {
       actions: ["view", "create", "edit", "delete"],
     },
     {
-      name: "Company Quotations Module",
+      name: "Company Work Order Module",
       actions: ["view", "create", "edit", "delete"],
     },
-    { name: "Company Contract Module", actions: ["view", "create", "edit"] },
-    { name: "Company Work Order Module", actions: ["view", "create", "edit"] },
-    {
-      name: "Company Field User Module",
-      actions: ["view", "create", "edit", "delete"],
-    },
-    {
-      name: "Company Request Work Order Module (Rescheduled/Cancelled)",
-      actions: ["view", "edit"],
-    },
-    { name: "Company Reports Module", actions: ["view", "create", "edit"] },
-    {
-      name: "Company Master Setting Module",
-      actions: ["view", "create", "edit", "delete"],
-    },
-    {
-      name: "Company HR Setting Module",
-      actions: ["view", "create", "edit", "delete"],
-    },
+    
   ];
 
   const handlePermissionChange = (module, action) => {
@@ -251,7 +233,7 @@ const CreateAdminRole = () => {
           <div
             className="form-header mb-4"
             style={{
-              backgroundColor: "#8d28dd",
+              backgroundColor: "#2e2e32",
               color: "white",
               padding: "10px 20px",
               borderRadius: "8px",

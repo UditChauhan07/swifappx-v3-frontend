@@ -29,12 +29,12 @@ const AdminDashboard = () => {
       {
         label: "Submitted Quotation",
         data: [2, 4, 6, 3, 5, 2, 7],
-        backgroundColor: "#FFC107",
+        backgroundColor: "#2e2e32",
       },
       {
         label: "Converted Quotations",
         data: [1, 2, 3, 2, 4, 1, 6],
-        backgroundColor: "#17A2B8",
+        backgroundColor: "grey",
       },
     ],
   };
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
           <Container fluid>
             <Row className="mb-4">
               <Col md={4}>
-                <Card style={{ backgroundColor: "#5497d4", color: "white" }}>
+                <Card style={{ backgroundColor: "#2e2e32", color: "white" }}>
                   <Card.Body>
                     <h5>Work Orders Scheduled</h5>
                     <hr style={{ borderColor: "white" }} />
@@ -71,7 +71,7 @@ const AdminDashboard = () => {
                 </Card>
               </Col>
               <Col md={4}>
-                <Card style={{ backgroundColor: "#3fa957", color: "white" }}>
+                <Card style={{ backgroundColor: "#2e2e32", color: "white" }}>
                   <Card.Body>
                     <h5>Work Orders Completed</h5>
                     <hr style={{ borderColor: "white" }} />
@@ -82,7 +82,7 @@ const AdminDashboard = () => {
                 </Card>
               </Col>
               <Col md={4}>
-                <Card style={{ backgroundColor: "#c94350", color: "white" }}>
+                <Card style={{ backgroundColor: "#2e2e32", color: "white" }}>
                   <Card.Body>
                     <h5>Work Orders Cancelled</h5>
                     <hr style={{ borderColor: "white" }} />

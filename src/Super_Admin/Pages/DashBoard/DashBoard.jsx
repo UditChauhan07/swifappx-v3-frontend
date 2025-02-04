@@ -8,11 +8,7 @@ import { getCompanyListApi } from "../../../lib/store";
 const DashBoard = () => {
   const stats = {
     totalCompanies: 27,
-    activeCompanies: 27,
-    totalQuotations: 85,
-    avgQuotations: 3,
     totalWorkOrders: 6414,
-    avgWorkOrders: 238,
   };
 
   const [companyList, setCompanyList] = useState([]);
@@ -85,7 +81,7 @@ const DashBoard = () => {
                       />
                       <Card.Body>
                         <Card.Title
-                          style={{ textAlign: "center", color: "#8d28dd" }}
+                          style={{ textAlign: "center", color: "black" }}
                         >
                           <strong>{company.company.company_name}</strong>
                         </Card.Title>
