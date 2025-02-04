@@ -1,35 +1,42 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import Header from "../../../../Components/Header/Header";
-import { delete_FieldUser, fetch_FieldUserOfCompany } from "../../../../lib/store";
+import {
+  delete_FieldUser,
+  fetch_FieldUserOfCompany,
+} from "../../../../lib/store";
 import { FaInfoCircle, FaEdit, FaClipboardList } from "react-icons/fa";
 import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-
-
 const FieldUserList = () => {
   const [isLoading, setLoading] = useState(true);
-  const [tableData, setTableData] =useState([]);
+  const [tableData, setTableData] = useState([]);
+  console.log("dadsaasd", tableData);
+  const [searchQuery, setSearchQuery] = useState("");
   const token = localStorage.getItem("UserToken");
-  const company_id=localStorage.getItem("companyId")||null;
-  const navigate=useNavigate();
+  const company_id = localStorage.getItem("companyId") || null;
+  const navigate = useNavigate();
 
- const fetchData = () =>{
-  const response = fetch_FieldUserOfCompany(company_id,token)
-  .then((response) => {
-  if (response.success === true) {
-    setTableData(response.data)
-  }
-  })
-  .catch((error) => {console.log('error', error)})
-  .finally(() => {setLoading(false)});
- } 
- 
-useEffect(() =>{
-  fetchData()
-},[]);
+  const fetchData = () => {
+    const response = fetch_FieldUserOfCompany(company_id, token)
+      .then((response) => {
+        if (response.success === true) {
+          setTableData(response.data);
+        }
+      })
+      .catch((error) => {
+        console.log("error", error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   const tableHeaders = [
     "Full Name & Location",
     "Email Address",
@@ -39,7 +46,6 @@ useEffect(() =>{
     "Created By",
     "Action",
   ];
-
 
   // const tableData = [
   //   {
@@ -110,39 +116,49 @@ useEffect(() =>{
   //     ),
   //   },
   // ];
-const handleToPreview=async (row) => {
-  navigate('/users/field/list/view',{ state: { row } })
-}
+  const handleToPreview = async (row) => {
+    navigate("/users/field/list/view", { state: { row } });
+  };
 
-const handleDelete = (id) => {
-  // Show confirmation dialog
-  Swal.fire({
-    title: 'Are you sure?',
-    text: "You won't be able to revert this!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, delete it!',
-    cancelButtonText: 'Cancel',
-    reverseButtons: true, // Reverse the order of the buttons (Cancel left, Confirm right)
-  }).then((result) => {
-    if (result.isConfirmed) {
-      delete_FieldUser(id,token)
-      .then((result) => {
-        if (result.success === true) {
-          fetchData();
-        } else {
-          Swal.fire("Error", result.message, "error");
-        }
-      })
-      
-      Swal.fire('Deleted!', 'Your user has been deleted.', 'success');
-    }
-  });
-};
+  const handleDelete = (id) => {
+    // Show confirmation dialog
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      reverseButtons: true, // Reverse the order of the buttons (Cancel left, Confirm right)
+    }).then((result) => {
+      if (result.isConfirmed) {
+        delete_FieldUser(id, token).then((result) => {
+          if (result.success === true) {
+            fetchData();
+          } else {
+            Swal.fire("Error", result.message, "error");
+          }
+        });
 
-const handleEdit = (row) => {
-  navigate('/users/field/edit', { state: { row } })
-}
+        Swal.fire("Deleted!", "Your user has been deleted.", "success");
+      }
+    });
+  };
+
+  const handleEdit = (row) => {
+    navigate("/users/field/edit", { state: { row } });
+  };
+
+  const filteredtable = tableData.filter(
+    (tableData) =>
+      tableData.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tableData.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleClear = () => {
+    setSearchQuery("");
+  };
+  console.log("filterDataa", filteredtable);
 
   return (
     <>
@@ -165,8 +181,12 @@ const handleEdit = (row) => {
                   placeholder="Search..."
                   className="me-2"
                   style={{ width: "200px" }}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <Button variant="secondary">Clear</Button>
+                <Button variant="secondary" onClick={handleClear}>
+                  Clear
+                </Button>
               </div>
             </div>
             <Table hover responsive className="align-middle">
@@ -189,9 +209,8 @@ const handleEdit = (row) => {
                   ))}
                 </tr>
               </thead>
-            {
-              isLoading ?
-                  <tr>
+              {isLoading ? (
+                <tr>
                   <td colSpan="7" className="text-center py-5">
                     <BeatLoader
                       size={12}
@@ -201,151 +220,154 @@ const handleEdit = (row) => {
                     <p className="mt-2">Loading...</p>
                   </td>
                 </tr>
-              :
-              <>
-              <tbody>
-                {tableData.length>0 ? tableData.map((row, index) => (
-                  <tr
-                    key={index}
-                    style={{
-                      backgroundColor: "#fff",
-                      borderRadius: "10px",
-                      boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
-                    }}
-                  >
-                    <td
-                      style={{
-                        textAlign: "left",
-                        padding: "15px",
-                        fontSize: "0.9rem",
-                        color: "#4B5563",
-                      }}
-                    >
-                       <div>
-                        <strong>{row.name}</strong>
-                        <br />
-                        {row.address}
-                      </div>
-                    </td>
-                    <td
-                      style={{
-                        textAlign: "left",
-                        padding: "15px",
-                        fontSize: "0.9rem",
-                        color: "#4B5563",
-                      }}
-                    >
-                      {row.email}
-                    </td>
-                    <td
-                      style={{
-                        textAlign: "left",
-                        padding: "15px",
-                        fontSize: "0.9rem",
-                        color: "#4B5563",
-                      }}
-                    >
-                      {row.username}
-                    </td>
-                    <td
-                      style={{
-                        textAlign: "center",
-                        padding: "15px",
-                        fontSize: "0.9rem",
-                        color: "#4B5563",
-                      }}
-                    >
-                       <Form.Check
-                          type="switch"
-                          id="status-switch"
-                          label={row.isActive==1?"Active":"Unactive"}
-                          checked={row.isActive==1?"Active":"Unactive"}
-                        />
-                    </td>
-                    <td
-                      style={{
-                        textAlign: "left",
-                        padding: "15px",
-                        fontSize: "0.9rem",
-                        color: "#4B5563",
-                      }}
-                    >
-                      {row.country}
-                    </td>
-                    <td
-                      style={{
-                        textAlign: "left",
-                        padding: "15px",
-                        fontSize: "0.9rem",
-                        color: "#4B5563",
-                      }}
-                    >
-                      {row.created_by}
-                    </td>
-                    <td style={{ textAlign: "center", padding: "15px" }}>
-                    <div className="d-flex gap-2 justify-content-center">
-                      <Button
-                        variant="outline-secondary"
-                        size="sm"
-                        style={{
-                          borderRadius: "50%",
-                          width: "35px",
-                          height: "35px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                        onClick={()=>handleToPreview(row)}
-                      >
-                        <i className="bi bi-info-circle"></i>
-                        <FaInfoCircle />
-                      </Button>
-                      <Button
-                        variant="warning"
-                        size="sm"
-                        onClick={()=>handleEdit(row)}
-                        style={{
-                          borderRadius: "50%",
-                          width: "35px",
-                          height: "35px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <i className="bi bi-pencil"></i>
-                        <FaEdit />
-                      </Button>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={()=>handleDelete(row.id)}
-                        style={{
-                          borderRadius: "50%",
-                          width: "35px",
-                          height: "35px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                         
-                        }}
-                      >
-                        <i className="bi bi-trash"></i>
-                         <FaClipboardList />
-                      </Button>
-                    </div>
-                    </td>
-                  </tr>
-                ))
-              :
-              <tr>
-                <td colSpan="7" className="text-center py-5">
-                  No data found
-                </td>
-              </tr>}
-              </tbody>
-              </>
-            }
+              ) : (
+                <>
+                  <tbody>
+                    {filteredtable.length > 0 ? (
+                      filteredtable.map((row, index) => (
+                        <tr
+                          key={index}
+                          style={{
+                            backgroundColor: "#fff",
+                            borderRadius: "10px",
+                            boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
+                          }}
+                        >
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "15px",
+                              fontSize: "0.9rem",
+                              color: "#4B5563",
+                            }}
+                          >
+                            <div>
+                              <strong>{row.name}</strong>
+                              <br />
+                              {row.address}
+                            </div>
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "15px",
+                              fontSize: "0.9rem",
+                              color: "#4B5563",
+                            }}
+                          >
+                            {row.email}
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "15px",
+                              fontSize: "0.9rem",
+                              color: "#4B5563",
+                            }}
+                          >
+                            {row.username}
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "center",
+                              padding: "15px",
+                              fontSize: "0.9rem",
+                              color: "#4B5563",
+                            }}
+                          >
+                            <Form.Check
+                              type="switch"
+                              id="status-switch"
+                              label={row.isActive == 1 ? "Active" : "Unactive"}
+                              checked={
+                                row.isActive == 1 ? "Active" : "Unactive"
+                              }
+                            />
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "15px",
+                              fontSize: "0.9rem",
+                              color: "#4B5563",
+                            }}
+                          >
+                            {row.country}
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              padding: "15px",
+                              fontSize: "0.9rem",
+                              color: "#4B5563",
+                            }}
+                          >
+                            {row.created_by}
+                          </td>
+                          <td style={{ textAlign: "center", padding: "15px" }}>
+                            <div className="d-flex gap-2 justify-content-center">
+                              <Button
+                                variant="outline-secondary"
+                                size="sm"
+                                style={{
+                                  borderRadius: "50%",
+                                  width: "35px",
+                                  height: "35px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                                onClick={() => handleToPreview(row)}
+                              >
+                                <i className="bi bi-info-circle"></i>
+                                <FaInfoCircle />
+                              </Button>
+                              <Button
+                                variant="warning"
+                                size="sm"
+                                onClick={() => handleEdit(row)}
+                                style={{
+                                  borderRadius: "50%",
+                                  width: "35px",
+                                  height: "35px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <i className="bi bi-pencil"></i>
+                                <FaEdit />
+                              </Button>
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() => handleDelete(row.id)}
+                                style={{
+                                  borderRadius: "50%",
+                                  width: "35px",
+                                  height: "35px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <i className="bi bi-trash"></i>
+                                <FaClipboardList />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" className="text-center py-5">
+                          No data found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </>
+              )}
             </Table>
             <div className="d-flex justify-content-between align-items-center mt-3">
               <span>Showing 1 to 1 of 1 items</span>

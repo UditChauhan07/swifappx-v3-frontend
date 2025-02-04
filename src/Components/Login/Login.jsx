@@ -106,12 +106,12 @@ const Login = () => {
 
                 {error && <div className="text-danger mb-3">{error}</div>}
 
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                  <Form.Check type="checkbox" label="Remember me" />
+                {/* <div className="d-flex justify-content-between align-items-center mb-3"> */}
+                  {/* <Form.Check type="checkbox" label="Remember me" /> */}
                   {/* <a href="#forgot-password" className="text-decoration-none">
                     Forgot your password?
                   </a> */}
-                </div>
+                {/* </div> */}
 
                 <div className="d-grid mb-3">
                   <Button variant="dark" type="submit" disabled={isLoading}>

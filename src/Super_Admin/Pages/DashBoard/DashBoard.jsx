@@ -18,13 +18,13 @@ const DashBoard = () => {
   const companies = [
     {
       id: 1,
-      name: "mussorie company",
+      name: "Mussorie Company",
       address: "address, , city, state, India, 654321",
       admin: "mussorie admin",
       totalUsers: 116,
       quotations: 2,
       workOrders: 3801,
-      logo: "https://via.placeholder.com/100",
+      logo: "https://swif.truet.net/public/swifCompany/noLogo.jpg",
     },
     {
       id: 2,
@@ -34,37 +34,37 @@ const DashBoard = () => {
       totalUsers: 5,
       quotations: 6,
       workOrders: 867,
-      logo: "https://via.placeholder.com/100",
+      logo: "https://swif.truet.net/public/swifCompany/noLogo.jpg",
     },
     {
       id: 3,
-      name: "oramcompany",
+      name: "Oram Company",
       address: "mohali, punjab, haryana, zirakpur, India, 23802",
       admin: "Surbhi singh",
       totalUsers: 1,
       quotations: 0,
       workOrders: 282,
-      logo: "https://via.placeholder.com/100",
+      logo: "https://swif.truet.net/public/swifCompany/noLogo.jpg",
     },
     {
       id: 4,
-      name: "l;kl",
+      name: "Iktaa Company",
       address: "hjhj, , klkl, klkl, Andorra, 898989",
       admin: "ghghgh ghghh",
       totalUsers: 1,
       quotations: 0,
       workOrders: 220,
-      logo: "https://via.placeholder.com/100",
+      logo: "https://swif.truet.net/public/swifCompany/noLogo.jpg",
     },
     {
       id: 5,
-      name: "orangecompany",
+      name: "Orange Company",
       address: "mohali, punjab, haryana, zirakpur, India, 23802",
       admin: "first name",
       totalUsers: 1,
       quotations: 10,
       workOrders: 114,
-      logo: "https://via.placeholder.com/100",
+      logo: "https://swif.truet.net/public/swifCompany/noLogo.jpg",
     },
   ];
 
@@ -92,30 +92,52 @@ const DashBoard = () => {
             </Row>
             <Row>
               {companies.map((company) => (
-                <Col md={4} key={company.id}>
+                <Col md={3} key={company.id}>
                   <Card className="company-card">
                     <Card.Img
+                      style={{ padding: "40px 40px 10px 40px" }}
                       variant="top"
-                      src={company.logo}
+                      src={
+                        company.logo ||
+                        "https://swif.truet.net/public/swifCompany/noLogo.jpg"
+                      }
                       alt={`${company.name} logo`}
                     />
                     <Card.Body>
-                      <Card.Title>{company.name}</Card.Title>
-                      <Card.Text>{company.address}</Card.Text>
+                      <Card.Title
+                        style={{ textAlign: "center", color: "#8d28dd" }}
+                      >
+                        <strong>{company.name}</strong>
+                      </Card.Title>
+                      <Card.Text
+                        style={{ textAlign: "center", minHeight: "50px" }}
+                      >
+                        {company.address}
+                      </Card.Text>
+
+                      <div
+                        className="company-stats d-flex justify-content-around border rounded "
+                        style={{
+                          margin: "0px -16px 10px -16px",
+                        }}
+                      >
+                        <div className="stat-item text-center border-end ">
+                          <strong>{company.totalUsers}</strong>
+                          <div>Total User</div>
+                        </div>
+                        <div className="stat-item text-center border-end ">
+                          <strong>{company.quotations}</strong>
+                          <div>Quotations</div>
+                        </div>
+                        <div className="stat-item text-center">
+                          <strong>{company.workOrders}</strong>
+                          <div>Work Orders</div>
+                        </div>
+                      </div>
+
                       <Card.Text>
                         <strong>Admin:</strong> {company.admin}
                       </Card.Text>
-                      <div className="company-stats">
-                        <div>
-                          <strong>{company.totalUsers}</strong> Users
-                        </div>
-                        <div>
-                          <strong>{company.quotations}</strong> Quotations
-                        </div>
-                        <div>
-                          <strong>{company.workOrders}</strong> Work Orders
-                        </div>
-                      </div>
                     </Card.Body>
                   </Card>
                 </Col>

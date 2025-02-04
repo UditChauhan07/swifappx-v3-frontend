@@ -161,9 +161,9 @@ const CreateFieldUser = () => {
           formData.append(key, values[key]);
         }
       }
-
       console.log('Form', values);
-      const response =await create_FieldUser(formData,token);
+      
+      const response =await create_FieldUser(values,token);
         if(response.success){
            Swal.fire({
             title: 'Success',
@@ -284,7 +284,7 @@ const CreateFieldUser = () => {
                   </Form.Group>
                 </Col>
 
-                <Col md={6}>
+                {/* <Col md={6}>
                   <Form.Group className="mb-3" controlId="formProfilePicture">
                     <Form.Label>Profile Picture</Form.Label>
                     <Form.Control
@@ -293,7 +293,7 @@ const CreateFieldUser = () => {
                       onChange={(e) => formik.setFieldValue("profilePicture", e.target.files[0])}
                     />
                   </Form.Group>
-                </Col>
+                </Col> */}
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formCountry">

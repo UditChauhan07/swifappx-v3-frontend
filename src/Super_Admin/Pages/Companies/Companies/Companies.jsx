@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 const Companies = () => {
   const navigate = useNavigate();
   const [companyList, setCompanyList] = useState([]);
+  console.log("cascasc",companyList)
   const [token, setToken] = useState(localStorage.getItem("UserToken"));
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -290,8 +291,8 @@ const Companies = () => {
                       >
                         {formatTimestamp(item.company.created_at)}
                       </td>
-                      <td className="text-center">0</td>
-                      <td className="text-center">0</td>
+                      <td className="text-center">{item.user_counts.field_user || 0}</td>
+                      <td className="text-center">{item.user_counts.office_user || 0}</td>
                       <td className="text-center">0</td>
                       <td className="text-center">0</td>
                       <td className="text-center">0</td>
