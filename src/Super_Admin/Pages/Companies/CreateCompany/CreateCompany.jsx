@@ -416,8 +416,6 @@ const CreateCompany = () => {
       }
       return newErrors;
     });
-
-    
   };
 
   const validateStep = (step) => {
@@ -589,137 +587,240 @@ const CreateCompany = () => {
 
     return newErrors;
   };
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
   const handleSubmit = async () => {
-    const allCertificates = [
-      {
-        name: formData.certificationName,
-        number: formData.certificationNumber,
-      },
-      ...formData.additionalCertifications,
-    ];
-
-    const companyData = {
-      company_name: formData.companyName,
-      company_logo: formData.companyLogo,
-      currency: formData.currency,
-      time_zone: formData.timeZone,
-      tax_name: formData.taxName,
-      tax_percentage: formData.taxPercentage,
-      certificates: allCertificates,
-
-      address_line_1: formData.addressLine1,
-      address_line_2: formData.addressLine2,
-      city: formData.contactCity,
-      country: formData.contactCountry,
-      zip_postal_code: formData.contactZip,
-
-      company_contact_person_name: formData.contactPerson,
-      contact_person_phone: formData.contactPhone,
-      company_office_phone: formData.officePhone,
-      company_office_email: formData.officeEmail,
-
-      package: formData.package,
-      packageDescritption: formData.packageDescritption,
-      workOrderTime: formData.workOrderTime,
-      primaryWorkOrderCost: formData.primaryWorkOrderCost,
-      quotationCost: formData.quotationCost,
-      executionWorkOrderCost: formData.executionWorkOrderCost,
-      freeQuotations: formData.freeQuotations,
-      freeWorkOrders: formData.freeWorkOrders,
-      customerAddressFormat: formData.customerAddressFormat,
-      workingDays: formData.workingDays,
-      companyStatus: formData.companyStatus,
-      companyState:formData.companyState
-    };
-    const userdata = {
-      first_name: formData.firstName,
-      last_name: formData.lastName,
-      Address: formData.address,
-      city: formData.city,
-      state: formData.state,
-      contact_number: formData.contactNumber,
-      country: formData.country,
-      email: formData.email,
-      password: formData.password,
-      zip_code: formData.zip,
-    };
-
-    console.log("Transformed finalData", companyData, "\navigator", userdata);
-
-    const formDataToSend = new FormData();
-    formDataToSend.append("userdata", JSON.stringify(userdata)); // Stringify userdata
-    formDataToSend.append("companyData", JSON.stringify(companyData)); // Stringify companyData
-    if (formData.profilePicture) {
-      formDataToSend.append("profile_picture", formData.profilePicture);
-    }
-    if (formData.companyLogo) {
-      formDataToSend.append("company_logo", formData.companyLogo);
-    }
-
-    console.log("Final FormData: ", formDataToSend);
     try {
-      // Show confirmation alert before API call
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "Do you want to create this company?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, create it!",
-        cancelButtonText: "No, cancel",
-      });
+      // ✅ Convert files to Base64 (if they exist)
+      const profilePictureBase64 = formData.profilePicture
+        ? await fileToBase64(formData.profilePicture)
+        : null;
 
-      if (!result.isConfirmed) {
-        console.log("Company creation cancelled");
-        return;
-      }
-
-      // Show loading alert while API is executing
-      Swal.fire({
-        title: "Processing...",
-        text: "Creating company, please wait.",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
+      const companyLogoBase64 = formData.companyLogo
+        ? await fileToBase64(formData.companyLogo)
+        : null;
+      const allCertificates = [
+        {
+          name: formData.certificationName,
+          number: formData.certificationNumber,
         },
-      });
+        ...formData.additionalCertifications,
+      ];
+      const companyData = {
+        company_name: formData.companyName,
+        company_logo: companyLogoBase64,
+        currency: formData.currency,
+        time_zone: formData.timeZone,
+        tax_name: formData.taxName,
+        tax_percentage: formData.taxPercentage,
+        certificates: allCertificates,
 
-      // Call API
-      const response = await createCompanyApi(formDataToSend, token);
+        address_line_1: formData.addressLine1,
+        address_line_2: formData.addressLine2,
+        city: formData.contactCity,
+        country: formData.contactCountry,
+        zip_postal_code: formData.contactZip,
+
+        company_contact_person_name: formData.contactPerson,
+        contact_person_phone: formData.contactPhone,
+        company_office_phone: formData.officePhone,
+        company_office_email: formData.officeEmail,
+
+        package: formData.package,
+        packageDescritption: formData.packageDescritption,
+        workOrderTime: formData.workOrderTime,
+        primaryWorkOrderCost: formData.primaryWorkOrderCost,
+        quotationCost: formData.quotationCost,
+        executionWorkOrderCost: formData.executionWorkOrderCost,
+        freeQuotations: formData.freeQuotations,
+        freeWorkOrders: formData.freeWorkOrders,
+        customerAddressFormat: formData.customerAddressFormat,
+        workingDays: formData.workingDays,
+        companyStatus: formData.companyStatus,
+        companyState: formData.companyState,
+      };
+      // const companyData = {
+      //   company_name: formData.companyName,
+      //   currency: formData.currency,
+      //   time_zone: formData.timeZone,
+      //   tax_name: formData.taxName,
+      //   tax_percentage: formData.taxPercentage,
+      //   // ✅ Store as Base64
+      //   address_line_1: formData.addressLine1,
+      //   address_line_2: formData.addressLine2,
+      //   city: formData.contactCity,
+      //   country: formData.contactCountry,
+      //   zip_postal_code: formData.contactZip,
+      // };
+
+      const userdata = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        Address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        contact_number: formData.contactNumber,
+        country: formData.country,
+        email: formData.email,
+        password: formData.password,
+        zip_code: formData.zip,
+        profile_picture: profilePictureBase64, // ✅ Store as Base64
+      };
+
+      console.log("Final Data:", companyData, userdata);
+
+      // ✅ Send as JSON (No FormData needed)
+      const response = await createCompanyApi({ companyData, userdata }, token);
       console.log("response", response);
 
-      // Close loading alert
-      Swal.close();
-
-      if (response.success) {
-        Swal.fire({
-          title: "Success!",
-          text: "Company created successfully.",
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then(() => {
-          navigate("/company/companies"); // Navigate after confirmation
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: response.message || "There was an error creating the company.",
-          icon: "error",
-          confirmButtonText: "Try Again",
-        });
-      }
+      // const responseData = await response.json();
+      console.log("Response:", response);
     } catch (error) {
-      Swal.close(); // Ensure loading is closed
-      console.error("Error creating company", error);
-
-      Swal.fire({
-        title: "API Error!",
-        text: "Something went wrong. Please try again later.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      console.error("Error submitting data:", error);
     }
   };
+
+  // const handleSubmit = async () => {
+  //   const allCertificates = [
+  //     {
+  //       name: formData.certificationName,
+  //       number: formData.certificationNumber,
+  //     },
+  //     ...formData.additionalCertifications,
+  //   ];
+
+  //   const companyData = {
+  //     company_name: formData.companyName,
+  //     // company_logo: formData.companyLogo,
+  //     currency: formData.currency,
+  //     time_zone: formData.timeZone,
+  //     tax_name: formData.taxName,
+  //     tax_percentage: formData.taxPercentage,
+  //     certificates: allCertificates,
+
+  //     address_line_1: formData.addressLine1,
+  //     address_line_2: formData.addressLine2,
+  //     city: formData.contactCity,
+  //     country: formData.contactCountry,
+  //     zip_postal_code: formData.contactZip,
+
+  //     company_contact_person_name: formData.contactPerson,
+  //     contact_person_phone: formData.contactPhone,
+  //     company_office_phone: formData.officePhone,
+  //     company_office_email: formData.officeEmail,
+
+  //     package: formData.package,
+  //     packageDescritption: formData.packageDescritption,
+  //     workOrderTime: formData.workOrderTime,
+  //     primaryWorkOrderCost: formData.primaryWorkOrderCost,
+  //     quotationCost: formData.quotationCost,
+  //     executionWorkOrderCost: formData.executionWorkOrderCost,
+  //     freeQuotations: formData.freeQuotations,
+  //     freeWorkOrders: formData.freeWorkOrders,
+  //     customerAddressFormat: formData.customerAddressFormat,
+  //     workingDays: formData.workingDays,
+  //     companyStatus: formData.companyStatus,
+  //     companyState:formData.companyState
+  //   };
+  //   const userdata = {
+  //     first_name: formData.firstName,
+  //     last_name: formData.lastName,
+  //     Address: formData.address,
+  //     city: formData.city,
+  //     state: formData.state,
+  //     contact_number: formData.contactNumber,
+  //     country: formData.country,
+  //     email: formData.email,
+  //     password: formData.password,
+  //     zip_code: formData.zip,
+  //   };
+
+  //   console.log("Transformed finalData", companyData, "\navigator", userdata);
+
+  //   const formDataToSend = new FormData();
+  //   formDataToSend.append("userdata", JSON.stringify(userdata)); // Stringify userdata
+  //   formDataToSend.append("companyData", JSON.stringify(companyData)); // Stringify companyData
+  //   if (formData.profilePicture) {
+  //     formDataToSend.append("profile_picture", formData.profilePicture);
+  //   }else{
+  //     formDataToSend.append("profile_picture", null);
+  //   }
+  //   if (formData.companyLogo) {
+  //     formDataToSend.append("company_logo", formData.companyLogo);
+  //   }else{
+  //     formDataToSend.append("company_logo", null)
+  //   }
+
+  //   console.log("Final FormData: ", formDataToSend);
+  //   try {
+  //     // Show confirmation alert before API call
+  //     const result = await Swal.fire({
+  //       title: "Are you sure?",
+  //       text: "Do you want to create this company?",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "Yes, create it!",
+  //       cancelButtonText: "No, cancel",
+  //     });
+
+  //     if (!result.isConfirmed) {
+  //       console.log("Company creation cancelled");
+  //       return;
+  //     }
+
+  //     // Show loading alert while API is executing
+  //     Swal.fire({
+  //       title: "Processing...",
+  //       text: "Creating company, please wait.",
+  //       allowOutsideClick: false,
+  //       didOpen: () => {
+  //         Swal.showLoading();
+  //       },
+  //     });
+
+  //     // Call API
+  //     const response = await createCompanyApi(formDataToSend , token);
+  //     console.log("response", response);
+
+  //     // Close loading alert
+  //     Swal.close();
+
+  //     if (response.success) {
+  //       Swal.fire({
+  //         title: "Success!",
+  //         text: "Company created successfully.",
+  //         icon: "success",
+  //         confirmButtonText: "OK",
+  //       }).then(() => {
+  //         navigate("/company/companies"); // Navigate after confirmation
+  //       });
+  //     } else {
+  //       Swal.fire({
+  //         title: "Error!",
+  //         text: response.message || "There was an error creating the company.",
+  //         icon: "error",
+  //         confirmButtonText: "Try Again",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     Swal.close(); // Ensure loading is closed
+  //     console.error("Error creating company", error);
+
+  //     Swal.fire({
+  //       title: "API Error!",
+  //       text: "Something went wrong. Please try again later.",
+  //       icon: "error",
+  //       confirmButtonText: "OK",
+  //     });
+  //   }
+  // };
 
   return (
     <>
