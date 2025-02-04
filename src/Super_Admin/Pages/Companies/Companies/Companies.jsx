@@ -276,9 +276,9 @@ const Companies = () => {
                           color: "#4B5563",
                         }}
                       >
-                        {item.user.first_name || "null"} [
-                        {item.user.contact_number || "null"},{" "}
-                        {item.user.email || "null"}]
+                        {item?.user?.first_name || "null"} [
+                        {item?.user?.contact_number || "null"},{" "}
+                        {item?.user?.email || "null"}]
                       </td>
 
                       <td
