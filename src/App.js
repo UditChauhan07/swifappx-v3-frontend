@@ -41,6 +41,7 @@ import EditAdminRole from "./Admin/Pages/Settings/Roles/EditAdminRole/EditAdminR
 import CreateWorkOrder from "./Admin/Pages/WorkOrders/CreateWorkOrder/CreateWorkOrder";
 import WorkOrderList from './Admin/Pages/WorkOrders/WorkOrderList/WorkOrderList';
 import DraftWorkOrder from './Admin/Pages/WorkOrders/DraftWorkOrder/DraftWorkOrder';
+import AdminDashboard from "./Admin/Pages/DashBoard/adminDashBoard";
 
 function App() {
   return (
@@ -49,7 +50,7 @@ function App() {
         <Routes>
         <Route path="/changepassword" element={<ChangePassword />} />
 
-          {/* Super Admin */}
+                          {/* Super Admin */}
           <Route path="/" element={<Login />} />
 
           <Route path="/header" element={<Header />} />
@@ -70,6 +71,9 @@ function App() {
           <Route path="/settings/roles/edit" element={<EditRoles />} />
 
                       {/* Admin */}
+
+          {/* DashBoard */}
+          <Route path="/dashboard/admin" element={<PrivateRoute element={AdminDashboard} />} />
           
           {/* Users */}
           {/* Ofice */}

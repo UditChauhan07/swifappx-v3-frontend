@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Form, Button,Spinner  } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Spinner } from "react-bootstrap";
 import "./Login.css";
 import axios from "axios";
 import { LoginApi } from "../../lib/store";
@@ -43,7 +43,11 @@ const Login = () => {
         localStorage.setItem("companyId", response.company_id);
 
         setisLoading(false);
-        Navigate("/dashboard");
+        if (response.user.role === "Admin") {
+          Navigate("/dashboard/admin");
+        } else {
+          Navigate("/dashboard");
+        }
       } else {
         setError(response.message);
       }
@@ -107,8 +111,8 @@ const Login = () => {
                 {error && <div className="text-danger mb-3">{error}</div>}
 
                 {/* <div className="d-flex justify-content-between align-items-center mb-3"> */}
-                  {/* <Form.Check type="checkbox" label="Remember me" /> */}
-                  {/* <a href="#forgot-password" className="text-decoration-none">
+                {/* <Form.Check type="checkbox" label="Remember me" /> */}
+                {/* <a href="#forgot-password" className="text-decoration-none">
                     Forgot your password?
                   </a> */}
                 {/* </div> */}

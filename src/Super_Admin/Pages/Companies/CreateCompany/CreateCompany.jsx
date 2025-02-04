@@ -676,50 +676,50 @@ const CreateCompany = () => {
 
       console.log("Final Data:", companyData, userdata);
       const result = await Swal.fire({
-              title: "Are you sure?",
-              text: "Do you want to create this company?",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonText: "Yes, create it!",
-              cancelButtonText: "No, cancel",
-            });
-      
-            if (!result.isConfirmed) {
-              console.log("Company creation cancelled");
-              return;
-            }
-      
-            // Show loading alert while API is executing
-            Swal.fire({
-              title: "Processing...",
-              text: "Creating company, please wait.",
-              allowOutsideClick: false,
-              didOpen: () => {
-                Swal.showLoading();
-              },
-            });
+        title: "Are you sure?",
+        text: "Do you want to create this company?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, create it!",
+        cancelButtonText: "No, cancel",
+      });
+
+      if (!result.isConfirmed) {
+        console.log("Company creation cancelled");
+        return;
+      }
+
+      // Show loading alert while API is executing
+      Swal.fire({
+        title: "Processing...",
+        text: "Creating company, please wait.",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
 
       // ✅ Send as JSON (No FormData needed)
       const response = await createCompanyApi({ companyData, userdata }, token);
       console.log("response", response);
       Swal.close();
       if (response.success) {
-              Swal.fire({
-                title: "Success!",
-                text: "Company created successfully.",
-                icon: "success",
-                confirmButtonText: "OK",
-              }).then(() => {
-                navigate("/company/companies"); // Navigate after confirmation
-              });
-            } else {
-              Swal.fire({
-                title: "Error!",
-                text: response.message || "There was an error creating the company.",
-                icon: "error",
-                confirmButtonText: "Try Again",
-              });
-            }
+        Swal.fire({
+          title: "Success!",
+          text: "Company created successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/company/companies"); // Navigate after confirmation
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: response.message || "There was an error creating the company.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
       console.log("Response:", response);
     } catch (error) {
       console.error("Error submitting data:", error);
@@ -904,6 +904,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin First Name"
                       value={formData.firstName}
+                      maxLength={50}
                       onChange={(e) =>
                         handleChange("firstName", e.target.value)
                       }
@@ -922,6 +923,7 @@ const CreateCompany = () => {
                     <Form.Control
                       type="text"
                       placeholder="Enter Super Admin Last Name"
+                      maxLength={50}
                       value={formData.lastName}
                       onChange={(e) => handleChange("lastName", e.target.value)}
                       isInvalid={!!errors.lastName}
@@ -953,6 +955,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin Contact Number"
                       value={formData.contactNumber}
+                      maxLength={15}
                       onChange={(e) =>
                         handleChange("contactNumber", e.target.value)
                       }
@@ -974,6 +977,7 @@ const CreateCompany = () => {
                       type="email"
                       placeholder="Enter Super Admin Email Address"
                       value={formData.email}
+                      maxLength={30}
                       onChange={(e) => handleChange("email", e.target.value)}
                       isInvalid={!!errors.email}
                     />
@@ -991,6 +995,7 @@ const CreateCompany = () => {
                       type="password"
                       placeholder="Enter Super Admin Password"
                       value={formData.password}
+                      maxLength={20}
                       onChange={(e) => handleChange("password", e.target.value)}
                       isInvalid={!!errors.password}
                     />
@@ -1008,6 +1013,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin Address"
                       value={formData.address}
+                      maxLength={50}
                       onChange={(e) => handleChange("address", e.target.value)}
                     />
                   </Form.Group>
@@ -1019,6 +1025,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin City"
                       value={formData.city}
+                      maxLength={15}
                       onChange={(e) => handleChange("city", e.target.value)}
                     />
                   </Form.Group>
@@ -1032,6 +1039,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin State"
                       value={formData.state}
+                      maxLength={15}
                       onChange={(e) => handleChange("state", e.target.value)}
                     />
                   </Form.Group>
@@ -1060,6 +1068,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin Zipcode"
                       value={formData.zip}
+                      maxLength={10}
                       onChange={(e) => handleChange("zip", e.target.value)}
                     />
                   </Form.Group>
@@ -1103,6 +1112,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Name"
                       value={formData.companyName}
+                      maxLength={20}
                       onChange={(e) =>
                         handleChange("companyName", e.target.value)
                       }
@@ -1179,6 +1189,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Tax Name"
                       value={formData.taxName}
+                      maxLength={10}
                       onChange={(e) => handleChange("taxName", e.target.value)}
                       isInvalid={!!errors.taxName}
                     />
@@ -1228,6 +1239,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Certification Name"
                       value={formData.certificationName}
+                      maxLength={30}
                       onChange={(e) =>
                         handleChange("certificationName", e.target.value)
                       }
@@ -1241,6 +1253,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Certification Num"
                       value={formData.certificationNumber}
+                      maxLength={20}
                       onChange={(e) =>
                         handleChange("certificationNumber", e.target.value)
                       }
@@ -1282,6 +1295,7 @@ const CreateCompany = () => {
                         type="text"
                         placeholder="Enter Additional Certification Name"
                         value={cert.name}
+                        maxLength={30}
                         onChange={(e) => {
                           const updatedCertifications = [
                             ...formData.additionalCertifications,
@@ -1302,6 +1316,7 @@ const CreateCompany = () => {
                         type="text"
                         placeholder="Enter Additional Certification Number"
                         value={cert.number}
+                        maxLength={20}
                         onChange={(e) => {
                           const updatedCertifications = [
                             ...formData.additionalCertifications,
@@ -1381,6 +1396,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Address"
                       value={formData.addressLine1}
+                      maxLength={50}
                       onChange={(e) =>
                         handleChange("addressLine1", e.target.value)
                       }
@@ -1396,6 +1412,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Address line 2"
                       value={formData.addressLine2}
+                      maxLength={40}
                       onChange={(e) =>
                         handleChange("addressLine2", e.target.value)
                       }
@@ -1409,6 +1426,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Address's City"
                       value={formData.contactCity}
+                      maxLength={15}
                       onChange={(e) =>
                         handleChange("contactCity", e.target.value)
                       }
@@ -1426,6 +1444,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Address's State"
                       value={formData.companyState}
+                      maxLength={15}
                       onChange={(e) =>
                         handleChange("companyState", e.target.value)
                       }
@@ -1465,6 +1484,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Address's Zipcode"
                       value={formData.contactZip}
+                      maxLength={20}
                       onChange={(e) =>
                         handleChange("contactZip", e.target.value)
                       }
@@ -1487,6 +1507,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Contact Person"
                       value={formData.contactPerson}
+                      maxLength={30}
                       onChange={(e) =>
                         handleChange("contactPerson", e.target.value)
                       }
@@ -1505,6 +1526,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Person Phone"
                       value={formData.contactPhone}
+                      maxLength={15}
                       onChange={(e) =>
                         handleChange("contactPhone", e.target.value)
                       }
@@ -1523,6 +1545,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Office Phone"
                       value={formData.officePhone}
+                      maxLength={15}
                       onChange={(e) =>
                         handleChange("officePhone", e.target.value)
                       }
@@ -1541,6 +1564,7 @@ const CreateCompany = () => {
                       type="email"
                       placeholder="Enter Company Office Email Address"
                       value={formData.officeEmail}
+                      maxLength={30}
                       onChange={(e) =>
                         handleChange("officeEmail", e.target.value)
                       }

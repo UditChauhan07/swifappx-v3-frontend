@@ -58,7 +58,13 @@ const CompanyDetails = () => {
                       rounded
                     />
                   ) : (
-                    "No Logo"
+                    <Image
+                      src="https://swif.truet.net/public/swifCompany/noLogo.jpg"
+                      alt="Logo"
+                      fluid
+                      rounded
+                      style={{height:"100px",width:"200px"}}
+                    />
                   )}
                 </Col>
               </Row>
