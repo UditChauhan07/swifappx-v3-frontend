@@ -872,7 +872,7 @@ const EditCompany = () => {
                 </Col>
               </Row>
               <Row>
-                {/* <Col md={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Profile Picture:</Form.Label>
                     <Form.Control
@@ -882,7 +882,7 @@ const EditCompany = () => {
                       }
                     />
                   </Form.Group>
-                </Col> */}
+                </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
@@ -1043,7 +1043,7 @@ const EditCompany = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
-                {/* <Col md={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Company Logo:</Form.Label>
                     <Form.Control
@@ -1053,7 +1053,7 @@ const EditCompany = () => {
                       }
                     />
                   </Form.Group>
-                </Col> */}
+                </Col>
               </Row>
 
               <Row>

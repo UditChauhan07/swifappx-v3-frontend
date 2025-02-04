@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 // import { jwtDecode } from 'jwt-decode';
-import { Url } from '../lib/store';
+import { fetchRolesList, Url } from '../lib/store';
 
 const PermissionsContext = createContext();
 const userDataKey = 'userId';
@@ -18,13 +18,14 @@ export const PermissionsProvider = ({ children }) => {
         // console.log(`userid: ${userID}  `);
         const token = localStorage.getItem('UserToken');
         const url = `${Url}/srw4rdxkh8/ywqg21sh72?userId=${encodeURIComponent(userID)}`;
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        console.log('response',response.data.data);
-        setRoles(response?.data?.data || []);
+        const response=await fetchRolesList(userID,)
+        // const response = await axios.get(url, {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // });
+        console.log('responsesss',response);
+        setRoles(response || []);
         setUserRole(response?.data?.data?.roleName || null);
       } catch (error) {
         console.error('Error fetching permissions:', error);
@@ -47,6 +48,7 @@ export const PermissionsProvider = ({ children }) => {
 //   }, []);
 
   useEffect(() => {
+    console.log('hit 1',user)
     if (roles.length === 0 && user) {
       getRoles(user);
     }
