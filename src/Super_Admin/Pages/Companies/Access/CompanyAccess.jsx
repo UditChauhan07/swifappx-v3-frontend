@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Card, Row, Col, Form, InputGroup, Button, Spinner } from "react-bootstrap";
+import {
+  Card,
+  Row,
+  Col,
+  Form,
+  InputGroup,
+  Button,
+  Spinner,
+} from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import Header from "../../../../Components/Header/Header";
 import { getCompanyListApi } from "../../../../lib/store";
 
 const CompanyAccess = () => {
   const [companyList, setCompanyList] = useState([]);
+  console.log("dsadad", companyList);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [token, setToken] = useState(localStorage.getItem("UserToken"));
   const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +25,7 @@ const CompanyAccess = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(true);  // Set loading to true before API hit
+        setIsLoading(true); // Set loading to true before API hit
         const response = await getCompanyListApi(token);
         if (response.status === true) {
           setCompanyList(response?.data || []);
@@ -25,7 +34,7 @@ const CompanyAccess = () => {
       } catch (error) {
         console.error("API Error:", error);
       } finally {
-        setIsLoading(false);  // Set loading to false once data is fetched
+        setIsLoading(false); // Set loading to false once data is fetched
       }
     };
 
@@ -36,7 +45,7 @@ const CompanyAccess = () => {
     const query = event.target.value;
     setSearchQuery(query);
     const filtered = companyList.filter((company) =>
-      company.company_name.toLowerCase().includes(query.toLowerCase())
+      company.company.company_name.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredCompanies(filtered);
     setCurrentPage(1); // Reset to the first page when searching
@@ -45,16 +54,27 @@ const CompanyAccess = () => {
   // Get current companies based on page number
   const indexOfLastCompany = currentPage * companiesPerPage;
   const indexOfFirstCompany = indexOfLastCompany - companiesPerPage;
-  const currentCompanies = filteredCompanies.slice(indexOfFirstCompany, indexOfLastCompany);
+  const currentCompanies = filteredCompanies.slice(
+    indexOfFirstCompany,
+    indexOfLastCompany
+  );
 
   // Pagination logic
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Total number of pages
   const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(filteredCompanies.length / companiesPerPage); i++) {
+  for (
+    let i = 1;
+    i <= Math.ceil(filteredCompanies.length / companiesPerPage);
+    i++
+  ) {
     pageNumbers.push(i);
   }
+
+  // const handleClear = () => {
+  //   setSearchQuery("");
+  // };
 
   return (
     <>
@@ -66,17 +86,17 @@ const CompanyAccess = () => {
               <h2 className="mb-0">Manage Companies</h2>
             </Col>
             <Col md="auto">
-              <InputGroup style={{ maxWidth: "300px" }}>
+              <div className="d-flex gap-2">
                 <Form.Control
+                  type="text"
+                  placeholder="Search..."
+                  className=""
+                  style={{ width: "200px" }}
                   value={searchQuery}
                   onChange={handleSearch}
-                  placeholder="Filter Company..."
-                  aria-label="Filter Company"
                 />
-                <InputGroup.Text>
-                  <FaSearch />
-                </InputGroup.Text>
-              </InputGroup>
+                <Button variant="secondary">Clear</Button>
+              </div>
             </Col>
           </Row>
 
@@ -125,7 +145,8 @@ const CompanyAccess = () => {
                       <Card
                         className="h-100 shadow-sm border-0"
                         style={{
-                          transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                          transition:
+                            "transform 0.3s ease, box-shadow 0.3s ease",
                           width: "90%",
                         }}
                         onMouseEnter={(e) => {
@@ -156,8 +177,9 @@ const CompanyAccess = () => {
                             {company.company.company_name}
                           </Card.Title>
                           <Card.Text className="text-muted">
-                            {company.company.address_line_1} , {company.company.city} ,{" "}
-                            {company.company.country} , {company.company.zip_postal_code}
+                            {company.company.address_line_1} ,{" "}
+                            {company.company.city} , {company.company.country} ,{" "}
+                            {company.company.zip_postal_code}
                           </Card.Text>
                         </Card.Body>
                         <div
@@ -183,7 +205,9 @@ const CompanyAccess = () => {
                         <Card.Footer className="bg-light">
                           <small className="text-muted">
                             Admin:{" "}
-                            <span className="fw-bold">{company.company.adminName}</span>
+                            <span className="fw-bold">
+                              {company.company.adminName}
+                            </span>
                           </small>
                         </Card.Footer>
                       </Card>

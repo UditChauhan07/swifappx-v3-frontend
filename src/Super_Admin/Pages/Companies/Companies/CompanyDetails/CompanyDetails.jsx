@@ -6,7 +6,8 @@ import { useLocation } from "react-router-dom";
 const CompanyDetails = () => {
   const location = useLocation();
   const { company } = location.state || {};
-  console.log(company);
+  console.log('company',company);
+  const base64String =company.company.company_logo
 
   function formatTimestamp(timestamp) {
     // Extract seconds and nanoseconds
@@ -49,7 +50,7 @@ const CompanyDetails = () => {
                   Company Logo:
                 </Col>
                 <Col>
-                  {company.company_logo ? (
+                  {company.company.company_logo ? (
                     <Image
                       src={company.company.company_logo}
                       alt="Logo"
@@ -57,7 +58,13 @@ const CompanyDetails = () => {
                       rounded
                     />
                   ) : (
-                    "No Logo"
+                    <Image
+                      src="https://swif.truet.net/public/swifCompany/noLogo.jpg"
+                      alt="Logo"
+                      fluid
+                      rounded
+                      style={{height:"100px",width:"200px"}}
+                    />
                   )}
                 </Col>
               </Row>

@@ -347,7 +347,7 @@ const Header = () => {
               <>
                 {/* Dashboard */}
                 <Link
-                  to="/dashboard"
+                  to="/dashboard/admin"
                   className="sidebar-link"
                   activeClassName="active"
                 >

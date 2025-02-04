@@ -276,9 +276,9 @@ const Companies = () => {
                           color: "#4B5563",
                         }}
                       >
-                        {item.user.first_name || "null"} [
-                        {item.user.contact_number || "null"},{" "}
-                        {item.user.email || "null"}]
+                        {item?.user?.first_name || "null"} [
+                        {item?.user?.contact_number || "null"},{" "}
+                        {item?.user?.email || "null"}]
                       </td>
 
                       <td
@@ -291,8 +291,8 @@ const Companies = () => {
                       >
                         {formatTimestamp(item.company.created_at)}
                       </td>
-                      <td className="text-center">0</td>
-                      <td className="text-center">0</td>
+                      <td className="text-center">{item.user_counts.field_user || 0}</td>
+                      <td className="text-center">{item.user_counts.office_user || 0}</td>
                       <td className="text-center">0</td>
                       <td className="text-center">0</td>
                       <td className="text-center">0</td>

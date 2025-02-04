@@ -416,8 +416,6 @@ const CreateCompany = () => {
       }
       return newErrors;
     });
-
-    
   };
 
   const validateStep = (step) => {
@@ -589,82 +587,94 @@ const CreateCompany = () => {
 
     return newErrors;
   };
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
 
   const handleSubmit = async () => {
-    const allCertificates = [
-      {
-        name: formData.certificationName,
-        number: formData.certificationNumber,
-      },
-      ...formData.additionalCertifications,
-    ];
-
-    const companyData = {
-      company_name: formData.companyName,
-      company_logo: formData.companyLogo,
-      currency: formData.currency,
-      time_zone: formData.timeZone,
-      tax_name: formData.taxName,
-      tax_percentage: formData.taxPercentage,
-      certificates: allCertificates,
-
-      address_line_1: formData.addressLine1,
-      address_line_2: formData.addressLine2,
-      city: formData.contactCity,
-      country: formData.contactCountry,
-      zip_postal_code: formData.contactZip,
-
-      company_contact_person_name: formData.contactPerson,
-      contact_person_phone: formData.contactPhone,
-      company_office_phone: formData.officePhone,
-      company_office_email: formData.officeEmail,
-
-      package: formData.package,
-      packageDescritption: formData.packageDescritption,
-      workOrderTime: formData.workOrderTime,
-      primaryWorkOrderCost: formData.primaryWorkOrderCost,
-      quotationCost: formData.quotationCost,
-      executionWorkOrderCost: formData.executionWorkOrderCost,
-      freeQuotations: formData.freeQuotations,
-      freeWorkOrders: formData.freeWorkOrders,
-      customerAddressFormat: formData.customerAddressFormat,
-      workingDays: formData.workingDays,
-      companyStatus: formData.companyStatus,
-      companyState:formData.companyState
-    };
-    const userdata = {
-      first_name: formData.firstName,
-      last_name: formData.lastName,
-      Address: formData.address,
-      city: formData.city,
-      state: formData.state,
-      contact_number: formData.contactNumber,
-      country: formData.country,
-      email: formData.email,
-      password: formData.password,
-      zip_code: formData.zip,
-    };
-
-    const finaldata = {
-      companyData,
-      userdata
-    }
-
-    console.log("Transformed finalData", companyData, "\navigator", userdata);
-
-    const formDataToSend = new FormData();
-    formDataToSend.append("userdata", JSON.stringify(userdata)); // Stringify userdata
-    formDataToSend.append("companyData", JSON.stringify(companyData)); // Stringify companyData
-    if (formData.profilePicture) {
-      formDataToSend.append("profile_picture", formData.profilePicture);
-    }
-    if (formData.companyLogo) {
-      formDataToSend.append("company_logo", formData.companyLogo);
-    }
-
-    console.log("Final FormData: ", formDataToSend);
     try {
-      // Show confirmation alert before API call
+      // ✅ Convert files to Base64 (if they exist)
+      const profilePictureBase64 = formData.profilePicture
+        ? await fileToBase64(formData.profilePicture)
+        : null;
+
+      const companyLogoBase64 = formData.companyLogo
+        ? await fileToBase64(formData.companyLogo)
+        : null;
+      const allCertificates = [
+        {
+          name: formData.certificationName,
+          number: formData.certificationNumber,
+        },
+        ...formData.additionalCertifications,
+      ];
+      const companyData = {
+        company_name: formData.companyName,
+        company_logo: companyLogoBase64,
+        currency: formData.currency,
+        time_zone: formData.timeZone,
+        tax_name: formData.taxName,
+        tax_percentage: formData.taxPercentage,
+        certificates: allCertificates,
+
+        address_line_1: formData.addressLine1,
+        address_line_2: formData.addressLine2,
+        city: formData.contactCity,
+        country: formData.contactCountry,
+        zip_postal_code: formData.contactZip,
+
+        company_contact_person_name: formData.contactPerson,
+        contact_person_phone: formData.contactPhone,
+        company_office_phone: formData.officePhone,
+        company_office_email: formData.officeEmail,
+
+        package: formData.package,
+        packageDescritption: formData.packageDescritption,
+        workOrderTime: formData.workOrderTime,
+        primaryWorkOrderCost: formData.primaryWorkOrderCost,
+        quotationCost: formData.quotationCost,
+        executionWorkOrderCost: formData.executionWorkOrderCost,
+        freeQuotations: formData.freeQuotations,
+        freeWorkOrders: formData.freeWorkOrders,
+        customerAddressFormat: formData.customerAddressFormat,
+        workingDays: formData.workingDays,
+        companyStatus: formData.companyStatus,
+        companyState: formData.companyState,
+      };
+      // const companyData = {
+      //   company_name: formData.companyName,
+      //   currency: formData.currency,
+      //   time_zone: formData.timeZone,
+      //   tax_name: formData.taxName,
+      //   tax_percentage: formData.taxPercentage,
+      //   // ✅ Store as Base64
+      //   address_line_1: formData.addressLine1,
+      //   address_line_2: formData.addressLine2,
+      //   city: formData.contactCity,
+      //   country: formData.contactCountry,
+      //   zip_postal_code: formData.contactZip,
+      // };
+
+      const userdata = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        Address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        contact_number: formData.contactNumber,
+        country: formData.country,
+        email: formData.email,
+        password: formData.password,
+        zip_code: formData.zip,
+        profile_picture: profilePictureBase64, // ✅ Store as Base64
+      };
+
+      console.log("Final Data:", companyData, userdata);
       const result = await Swal.fire({
         title: "Are you sure?",
         text: "Do you want to create this company?",
@@ -689,13 +699,10 @@ const CreateCompany = () => {
         },
       });
 
-      // Call API
-      const response = await createCompanyApi(finaldata, token);
+      // ✅ Send as JSON (No FormData needed)
+      const response = await createCompanyApi({ companyData, userdata }, token);
       console.log("response", response);
-
-      // Close loading alert
       Swal.close();
-
       if (response.success) {
         Swal.fire({
           title: "Success!",
@@ -713,10 +720,10 @@ const CreateCompany = () => {
           confirmButtonText: "Try Again",
         });
       }
+      console.log("Response:", response);
     } catch (error) {
-      Swal.close(); // Ensure loading is closed
-      console.error("Error creating company", error);
-
+      console.error("Error submitting data:", error);
+      Swal.close();
       Swal.fire({
         title: "API Error!",
         text: "Something went wrong. Please try again later.",
@@ -725,6 +732,141 @@ const CreateCompany = () => {
       });
     }
   };
+
+  // const handleSubmit = async () => {
+  //   const allCertificates = [
+  //     {
+  //       name: formData.certificationName,
+  //       number: formData.certificationNumber,
+  //     },
+  //     ...formData.additionalCertifications,
+  //   ];
+
+  //   const companyData = {
+  //     company_name: formData.companyName,
+  //     // company_logo: formData.companyLogo,
+  //     currency: formData.currency,
+  //     time_zone: formData.timeZone,
+  //     tax_name: formData.taxName,
+  //     tax_percentage: formData.taxPercentage,
+  //     certificates: allCertificates,
+
+  //     address_line_1: formData.addressLine1,
+  //     address_line_2: formData.addressLine2,
+  //     city: formData.contactCity,
+  //     country: formData.contactCountry,
+  //     zip_postal_code: formData.contactZip,
+
+  //     company_contact_person_name: formData.contactPerson,
+  //     contact_person_phone: formData.contactPhone,
+  //     company_office_phone: formData.officePhone,
+  //     company_office_email: formData.officeEmail,
+
+  //     package: formData.package,
+  //     packageDescritption: formData.packageDescritption,
+  //     workOrderTime: formData.workOrderTime,
+  //     primaryWorkOrderCost: formData.primaryWorkOrderCost,
+  //     quotationCost: formData.quotationCost,
+  //     executionWorkOrderCost: formData.executionWorkOrderCost,
+  //     freeQuotations: formData.freeQuotations,
+  //     freeWorkOrders: formData.freeWorkOrders,
+  //     customerAddressFormat: formData.customerAddressFormat,
+  //     workingDays: formData.workingDays,
+  //     companyStatus: formData.companyStatus,
+  //     companyState:formData.companyState
+  //   };
+  //   const userdata = {
+  //     first_name: formData.firstName,
+  //     last_name: formData.lastName,
+  //     Address: formData.address,
+  //     city: formData.city,
+  //     state: formData.state,
+  //     contact_number: formData.contactNumber,
+  //     country: formData.country,
+  //     email: formData.email,
+  //     password: formData.password,
+  //     zip_code: formData.zip,
+  //   };
+
+  //   console.log("Transformed finalData", companyData, "\navigator", userdata);
+
+  //   const formDataToSend = new FormData();
+  //   formDataToSend.append("userdata", JSON.stringify(userdata)); // Stringify userdata
+  //   formDataToSend.append("companyData", JSON.stringify(companyData)); // Stringify companyData
+  //   if (formData.profilePicture) {
+  //     formDataToSend.append("profile_picture", formData.profilePicture);
+  //   }else{
+  //     formDataToSend.append("profile_picture", null);
+  //   }
+  //   if (formData.companyLogo) {
+  //     formDataToSend.append("company_logo", formData.companyLogo);
+  //   }else{
+  //     formDataToSend.append("company_logo", null)
+  //   }
+
+  //   console.log("Final FormData: ", formDataToSend);
+  //   try {
+  //     // Show confirmation alert before API call
+  //     const result = await Swal.fire({
+  //       title: "Are you sure?",
+  //       text: "Do you want to create this company?",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonText: "Yes, create it!",
+  //       cancelButtonText: "No, cancel",
+  //     });
+
+  //     if (!result.isConfirmed) {
+  //       console.log("Company creation cancelled");
+  //       return;
+  //     }
+
+  //     // Show loading alert while API is executing
+  //     Swal.fire({
+  //       title: "Processing...",
+  //       text: "Creating company, please wait.",
+  //       allowOutsideClick: false,
+  //       didOpen: () => {
+  //         Swal.showLoading();
+  //       },
+  //     });
+
+  //     // Call API
+  //     const response = await createCompanyApi(formDataToSend , token);
+  //     console.log("response", response);
+
+  //     // Close loading alert
+  //     Swal.close();
+
+  //     if (response.success) {
+  //       Swal.fire({
+  //         title: "Success!",
+  //         text: "Company created successfully.",
+  //         icon: "success",
+  //         confirmButtonText: "OK",
+  //       }).then(() => {
+  //         navigate("/company/companies"); // Navigate after confirmation
+  //       });
+  //     } else {
+  //       Swal.fire({
+  //         title: "Error!",
+  //         text: response.message || "There was an error creating the company.",
+  //         icon: "error",
+  //         confirmButtonText: "Try Again",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     Swal.close(); // Ensure loading is closed
+  //     console.error("Error creating company", error);
+
+  //     Swal.fire({
+  //       title: "API Error!",
+  //       text: "Something went wrong. Please try again later.",
+  //       icon: "error",
+  //       confirmButtonText: "OK",
+  //     });
+  //   }
+  // };
 
   return (
     <>
@@ -762,6 +904,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin First Name"
                       value={formData.firstName}
+                      maxLength={50}
                       onChange={(e) =>
                         handleChange("firstName", e.target.value)
                       }
@@ -780,6 +923,7 @@ const CreateCompany = () => {
                     <Form.Control
                       type="text"
                       placeholder="Enter Super Admin Last Name"
+                      maxLength={50}
                       value={formData.lastName}
                       onChange={(e) => handleChange("lastName", e.target.value)}
                       isInvalid={!!errors.lastName}
@@ -791,7 +935,7 @@ const CreateCompany = () => {
                 </Col>
               </Row>
               <Row>
-                {/* <Col md={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Profile Picture:</Form.Label>
                     <Form.Control
@@ -801,7 +945,7 @@ const CreateCompany = () => {
                       }
                     />
                   </Form.Group>
-                </Col> */}
+                </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
@@ -811,6 +955,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin Contact Number"
                       value={formData.contactNumber}
+                      maxLength={15}
                       onChange={(e) =>
                         handleChange("contactNumber", e.target.value)
                       }
@@ -832,6 +977,7 @@ const CreateCompany = () => {
                       type="email"
                       placeholder="Enter Super Admin Email Address"
                       value={formData.email}
+                      maxLength={30}
                       onChange={(e) => handleChange("email", e.target.value)}
                       isInvalid={!!errors.email}
                     />
@@ -849,6 +995,7 @@ const CreateCompany = () => {
                       type="password"
                       placeholder="Enter Super Admin Password"
                       value={formData.password}
+                      maxLength={20}
                       onChange={(e) => handleChange("password", e.target.value)}
                       isInvalid={!!errors.password}
                     />
@@ -866,6 +1013,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin Address"
                       value={formData.address}
+                      maxLength={50}
                       onChange={(e) => handleChange("address", e.target.value)}
                     />
                   </Form.Group>
@@ -877,6 +1025,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin City"
                       value={formData.city}
+                      maxLength={15}
                       onChange={(e) => handleChange("city", e.target.value)}
                     />
                   </Form.Group>
@@ -890,6 +1039,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin State"
                       value={formData.state}
+                      maxLength={15}
                       onChange={(e) => handleChange("state", e.target.value)}
                     />
                   </Form.Group>
@@ -918,6 +1068,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Super Admin Zipcode"
                       value={formData.zip}
+                      maxLength={10}
                       onChange={(e) => handleChange("zip", e.target.value)}
                     />
                   </Form.Group>
@@ -961,6 +1112,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Name"
                       value={formData.companyName}
+                      maxLength={20}
                       onChange={(e) =>
                         handleChange("companyName", e.target.value)
                       }
@@ -971,7 +1123,7 @@ const CreateCompany = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
-                {/* <Col md={6}>
+                <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Company Logo:</Form.Label>
                     <Form.Control
@@ -981,7 +1133,7 @@ const CreateCompany = () => {
                       }
                     />
                   </Form.Group>
-                </Col> */}
+                </Col>
               </Row>
 
               <Row>
@@ -1037,6 +1189,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Tax Name"
                       value={formData.taxName}
+                      maxLength={10}
                       onChange={(e) => handleChange("taxName", e.target.value)}
                       isInvalid={!!errors.taxName}
                     />
@@ -1086,6 +1239,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Certification Name"
                       value={formData.certificationName}
+                      maxLength={30}
                       onChange={(e) =>
                         handleChange("certificationName", e.target.value)
                       }
@@ -1099,6 +1253,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Certification Num"
                       value={formData.certificationNumber}
+                      maxLength={20}
                       onChange={(e) =>
                         handleChange("certificationNumber", e.target.value)
                       }
@@ -1140,6 +1295,7 @@ const CreateCompany = () => {
                         type="text"
                         placeholder="Enter Additional Certification Name"
                         value={cert.name}
+                        maxLength={30}
                         onChange={(e) => {
                           const updatedCertifications = [
                             ...formData.additionalCertifications,
@@ -1160,6 +1316,7 @@ const CreateCompany = () => {
                         type="text"
                         placeholder="Enter Additional Certification Number"
                         value={cert.number}
+                        maxLength={20}
                         onChange={(e) => {
                           const updatedCertifications = [
                             ...formData.additionalCertifications,
@@ -1239,6 +1396,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Address"
                       value={formData.addressLine1}
+                      maxLength={50}
                       onChange={(e) =>
                         handleChange("addressLine1", e.target.value)
                       }
@@ -1254,6 +1412,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Address line 2"
                       value={formData.addressLine2}
+                      maxLength={40}
                       onChange={(e) =>
                         handleChange("addressLine2", e.target.value)
                       }
@@ -1267,6 +1426,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Address's City"
                       value={formData.contactCity}
+                      maxLength={15}
                       onChange={(e) =>
                         handleChange("contactCity", e.target.value)
                       }
@@ -1284,6 +1444,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Address's State"
                       value={formData.companyState}
+                      maxLength={15}
                       onChange={(e) =>
                         handleChange("companyState", e.target.value)
                       }
@@ -1323,6 +1484,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Address's Zipcode"
                       value={formData.contactZip}
+                      maxLength={20}
                       onChange={(e) =>
                         handleChange("contactZip", e.target.value)
                       }
@@ -1345,6 +1507,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Contact Person"
                       value={formData.contactPerson}
+                      maxLength={30}
                       onChange={(e) =>
                         handleChange("contactPerson", e.target.value)
                       }
@@ -1363,6 +1526,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Person Phone"
                       value={formData.contactPhone}
+                      maxLength={15}
                       onChange={(e) =>
                         handleChange("contactPhone", e.target.value)
                       }
@@ -1381,6 +1545,7 @@ const CreateCompany = () => {
                       type="text"
                       placeholder="Enter Company Office Phone"
                       value={formData.officePhone}
+                      maxLength={15}
                       onChange={(e) =>
                         handleChange("officePhone", e.target.value)
                       }
@@ -1399,6 +1564,7 @@ const CreateCompany = () => {
                       type="email"
                       placeholder="Enter Company Office Email Address"
                       value={formData.officeEmail}
+                      maxLength={30}
                       onChange={(e) =>
                         handleChange("officeEmail", e.target.value)
                       }

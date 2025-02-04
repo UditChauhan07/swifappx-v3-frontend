@@ -317,7 +317,7 @@ useEffect(() => {
                 
              
                 const submitData=await createOfficeUser(finalData,token)
-            
+                console.log("submitDataa",submitData)
                 // console.log('response',submitData)
                 if(submitData.status){
                   Swal.fire({
@@ -330,7 +330,6 @@ useEffect(() => {
                   values.profilePicture = null;
                   resetForm();
                   const roleName = roles?.find((role) => role.id === values.role)?.roleName;
-                  console.log('roleName',roleName)
                   setTimeout(()=>{
                     
                     navigate(`/users/office/${roleName}?id=${values.role}`)

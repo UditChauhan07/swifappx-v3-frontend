@@ -133,6 +133,10 @@ const CustomerList = () => {
     }
   };
 
+  const handleClear = ()=>{
+    setSearchQuery("")
+  }
+
   return (
     <>
       <Header />
@@ -149,8 +153,8 @@ const CustomerList = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button variant="primary">
-                <i className="bi bi-search"></i>
+              <Button variant="primary" onClick={handleClear}>
+                Clear
               </Button>
             </div>
           </div>
@@ -298,7 +302,7 @@ const CustomerList = () => {
                         >
                           <FaUserEdit />
                         </Button>
-                        <Button
+                        {/* <Button
                           variant="outline-secondary"
                           size="sm"
                           style={{
@@ -308,7 +312,7 @@ const CustomerList = () => {
                           }}
                         >
                           <FaAddressBook />
-                        </Button>
+                        </Button> */}
                         <Button
                           variant="outline-secondary"
                           size="sm"

@@ -6,6 +6,7 @@ import { fetch_officeUsersByRoleId } from "../../../../lib/store";
 
 const StaffAdmin = () => {
   const [tableData, setTableData] = React.useState([]);
+  console.log("tableDaataa",tableData)
   const [isLoading, setIsLoading] = useState(true);
 
   const token = localStorage.getItem("UserToken");
@@ -25,8 +26,8 @@ const StaffAdmin = () => {
   ];
 
    const fetchData = () =>{
-    console.log('staff admin hit');
-    const response = fetch_officeUsersByRoleId(id,token)
+     console.log('staff admin hit');
+     const response = fetch_officeUsersByRoleId(id,token)
     .then((response) => {
     if (response.status === true) {
 
@@ -34,6 +35,7 @@ const StaffAdmin = () => {
     }else{
       setTableData([]);
     }
+    console.log("dasda",response)
     })
     .catch((error) => {console.log('error', error)})
     .finally(() => {setIsLoading(false)});
