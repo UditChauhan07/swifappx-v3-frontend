@@ -48,17 +48,28 @@ const Header = () => {
       setExpandedDropdown("company");
     } else if (location.pathname.startsWith("/users")) {
       setExpandedDropdown("users");
+      if (location.pathname.startsWith("/users/office")) {
+        setNestedDropdown("officeUsers");
+      }
+      if (location.pathname.startsWith("/users/field")) {
+        setNestedDropdown("fieldUsers");
+      }
     } else if (location.pathname.startsWith("/customers")) {
       setExpandedDropdown("customers");
     } else if (location.pathname.startsWith("/reports")) {
       setExpandedDropdown("reports");
     } else if (location.pathname.startsWith("/settings")) {
       setExpandedDropdown("settings");
+      if (location.pathname.startsWith("/settings/admin/roles")) {
+        setNestedDropdown("roles");
+      }
     } else if (location.pathname.startsWith("/workorder")) {
       setExpandedDropdown("workOrder");
     } else {
       setExpandedDropdown("");
+      setNestedDropdown("");
     }
+
     window.scroll(0, 0);
   }, [location]);
 
@@ -185,11 +196,12 @@ const Header = () => {
                 {/* Dashboard */}
                 <Link
                   to="/dashboard"
-                  className="sidebar-link"
+                  className="dropdown dropdown-title"
                   activeClassName="active"
+                  style={{ textDecoration: "none" }}
                 >
                   {t("Dashboard")}
-                  <MdDashboard />
+                  <MdDashboard size={20} />
                 </Link>
 
                 {/* Company Dropdown */}
@@ -239,10 +251,12 @@ const Header = () => {
                 {/* Dashboard */}
                 <Link
                   to="/dashboard/admin"
-                  className="sidebar-link"
+                  className="dropdown dropdown-title"
                   activeClassName="active"
+                  style={{ textDecoration: "none" }}
                 >
                   {t("Dashboard")}
+                  <MdDashboard size={20} />
                 </Link>
 
                 {/* Users */}
@@ -384,7 +398,7 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ {t("Create")}
+                      <div>▣ {t("Create")}</div>
                     </Link>
                     <Link
                       to="/customers/list"
@@ -430,6 +444,7 @@ const Header = () => {
                     </Link>
                   </div>
                 </div>
+
                 {/* Settings */}
                 <div
                   className={`dropdown ${

@@ -55,8 +55,8 @@ function App() {
 
           <Route path="/header" element={<Header />} />
 
-          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-          <Route path="/dashboard" element={<PrivateRoute element={Dashboard} />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* <Route path="/dashboard" element={<PrivateRoute element={Dashboard} />} /> */}
 
           {/* Companies */}
           <Route path="/company/create" element={<CreateCompany />} />
