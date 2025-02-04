@@ -164,7 +164,7 @@ const Header = () => {
         </Navbar.Collapse>
       </Navbar>
 
-      {/* Sidebar */}
+      {/* Sidebar. */}
       <div className="sidebar">
         <div className="sidebar-links">
           <Nav className="flex-column">
