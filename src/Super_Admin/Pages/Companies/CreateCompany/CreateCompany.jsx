@@ -14,8 +14,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { createCompanyApi } from "../../../../lib/store";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 
 const CreateCompany = () => {
+  const { t, i18n } = useTranslation();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -74,7 +77,7 @@ const CreateCompany = () => {
   });
   const navigate = useNavigate();
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
-  console.log("formData", formData);
+  // console.log("formData", formData);
   const [errors, setErrors] = useState({});
 
   const handleNext = () => {
@@ -891,18 +894,20 @@ const CreateCompany = () => {
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Company Super Admin Details</h4>
+              <h4 className="mb-0">{t("Company Super Admin Details")}</h4>
             </div>
             <Form>
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> First Name:
+                      <span className="text-danger">*</span> {t("First Name")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Super Admin First Name"
+                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                        "First Name"
+                      )}`}
                       value={formData.firstName}
                       maxLength={50}
                       onChange={(e) =>
@@ -918,11 +923,13 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Last Name:
+                      <span className="text-danger">*</span> {t("Last Name")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Super Admin Last Name"
+                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                        "Last Name"
+                      )}`}
                       maxLength={50}
                       value={formData.lastName}
                       onChange={(e) => handleChange("lastName", e.target.value)}
@@ -937,7 +944,7 @@ const CreateCompany = () => {
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Profile Picture:</Form.Label>
+                    <Form.Label>{t("Profile Picture")}:</Form.Label>
                     <Form.Control
                       type="file"
                       onChange={(e) =>
@@ -949,11 +956,14 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Contact Number:
+                      <span className="text-danger">*</span>{" "}
+                      {t("Contact Number")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Super Admin Contact Number"
+                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                        "Contact Number"
+                      )}`}
                       value={formData.contactNumber}
                       maxLength={15}
                       onChange={(e) =>
@@ -971,11 +981,14 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Email Address:
+                      <span className="text-danger">*</span>{" "}
+                      {t("Email Address")}:
                     </Form.Label>
                     <Form.Control
                       type="email"
-                      placeholder="Enter Super Admin Email Address"
+                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                        "Email Address"
+                      )}`}
                       value={formData.email}
                       maxLength={30}
                       onChange={(e) => handleChange("email", e.target.value)}
@@ -989,11 +1002,14 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Admin Password:
+                      <span className="text-danger">*</span>{" "}
+                      {t("Admin Password")}:
                     </Form.Label>
                     <Form.Control
                       type="password"
-                      placeholder="Enter Super Admin Password"
+                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                        "Password"
+                      )}`}
                       value={formData.password}
                       maxLength={20}
                       onChange={(e) => handleChange("password", e.target.value)}
@@ -1008,10 +1024,12 @@ const CreateCompany = () => {
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Address:</Form.Label>
+                    <Form.Label>{t("Address")}:</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Super Admin Address"
+                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                        "Address"
+                      )}`}
                       value={formData.address}
                       maxLength={50}
                       onChange={(e) => handleChange("address", e.target.value)}
@@ -1020,10 +1038,12 @@ const CreateCompany = () => {
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>City:</Form.Label>
+                    <Form.Label>{t("City")}:</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Super Admin City"
+                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                        "City"
+                      )}`}
                       value={formData.city}
                       maxLength={15}
                       onChange={(e) => handleChange("city", e.target.value)}
@@ -1034,10 +1054,12 @@ const CreateCompany = () => {
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>State:</Form.Label>
+                    <Form.Label>{t("State")}:</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Super Admin State"
+                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                        "State"
+                      )}`}
                       value={formData.state}
                       maxLength={15}
                       onChange={(e) => handleChange("state", e.target.value)}
@@ -1046,16 +1068,16 @@ const CreateCompany = () => {
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Country:</Form.Label>
+                    <Form.Label>{t("Country")}:</Form.Label>
                     <Form.Select
                       value={formData.country}
                       onChange={(e) => handleChange("country", e.target.value)}
                     >
-                      <option>Select Country</option>
-                      <option>India</option>
-                      <option>USA</option>
-                      <option>UK</option>
-                      <option>Canada</option>
+                      <option>{t("Select Country")}</option>
+                      <option>{t("India")}</option>
+                      <option>{t("USA")}</option>
+                      <option>{t("UK")}</option>
+                      <option>{t("Canada")}</option>
                     </Form.Select>
                   </Form.Group>
                 </Col>
@@ -1063,10 +1085,12 @@ const CreateCompany = () => {
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>ZIP/Postal Code:</Form.Label>
+                    <Form.Label>{t("ZIP/Postal Code")}:</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Super Admin Zipcode"
+                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                        "ZIP/Postal Code"
+                      )}`}
                       value={formData.zip}
                       maxLength={10}
                       onChange={(e) => handleChange("zip", e.target.value)}
@@ -1075,8 +1099,8 @@ const CreateCompany = () => {
                 </Col>
               </Row>
             </Form>
-            <Button variant="primary" onClick={handleNext}>
-              Next
+            <Button type="submit" onClick={handleNext}>
+              {t("Next")}
             </Button>
           </Container>
         )}
@@ -1093,24 +1117,25 @@ const CreateCompany = () => {
             <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Company Basic Details (Mandatory)</h4>
+              <h4 className="mb-0">{t("Company Basic Details (Mandatory)")}</h4>
             </div>
             <Form className="mb-3">
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Company Name:
+                      <span className="text-danger">*</span> {t("Company Name")}
+                      :
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Name"
+                      placeholder={t("Enter Company Name")}
                       value={formData.companyName}
                       maxLength={20}
                       onChange={(e) =>
@@ -1125,7 +1150,7 @@ const CreateCompany = () => {
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Company Logo:</Form.Label>
+                    <Form.Label>{t("Company Logo")}:</Form.Label>
                     <Form.Control
                       type="file"
                       onChange={(e) =>
@@ -1140,14 +1165,14 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Currency:
+                      <span className="text-danger">*</span> {t("Currency")}:
                     </Form.Label>
                     <Form.Select
                       value={formData.currency}
                       onChange={(e) => handleChange("currency", e.target.value)}
                       isInvalid={!!errors.currency}
                     >
-                      <option value="">Select Currency</option>
+                      <option value="">{t("Select Currency")}</option>
                       <option value="USD">USD</option>
                       <option value="EUR">EUR</option>
                       <option value="INR">INR</option>
@@ -1160,14 +1185,14 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Time Zone:
+                      <span className="text-danger">*</span> {t("Time Zone")}:
                     </Form.Label>
                     <Form.Select
                       value={formData.timeZone}
                       onChange={(e) => handleChange("timeZone", e.target.value)}
                       isInvalid={!!errors.timeZone}
                     >
-                      <option value="">Select Time Zone</option>
+                      <option value="">{t("Select Time Zone")}</option>
                       <option value="GMT">GMT</option>
                       <option value="PST">PST</option>
                       <option value="IST">IST</option>
@@ -1183,11 +1208,11 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Tax Name:
+                      <span className="text-danger">*</span> {t("Tax Name")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Tax Name"
+                      placeholder={t("Enter Company Tax Name")}
                       value={formData.taxName}
                       maxLength={10}
                       onChange={(e) => handleChange("taxName", e.target.value)}
@@ -1201,7 +1226,8 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Tax Percentage:
+                      <span className="text-danger">*</span>{" "}
+                      {t("Tax Percentage")}:
                       <span
                         className="text-muted"
                         style={{ fontSize: "0.85rem" }}
@@ -1213,7 +1239,7 @@ const CreateCompany = () => {
                     <InputGroup>
                       <Form.Control
                         type="number"
-                        placeholder="Enter Company Tax Percentage"
+                        placeholder={t("Enter Company Tax Percentage")}
                         value={formData.taxPercentage}
                         onChange={(e) =>
                           handleChange("taxPercentage", e.target.value)
@@ -1234,10 +1260,10 @@ const CreateCompany = () => {
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Certification Name:</Form.Label>
+                    <Form.Label>{t("Certification Name")}:</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Certification Name"
+                      placeholder={t("Enter Company Certification Name")}
                       value={formData.certificationName}
                       maxLength={30}
                       onChange={(e) =>
@@ -1248,10 +1274,10 @@ const CreateCompany = () => {
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Certification Number:</Form.Label>
+                    <Form.Label>{t("Certification Number")}:</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Certification Num"
+                      placeholder={t("Enter Company Certification Number")}
                       value={formData.certificationNumber}
                       maxLength={20}
                       onChange={(e) =>
@@ -1263,13 +1289,13 @@ const CreateCompany = () => {
               </Row>
 
               <Button
-                variant="outline-primary"
+                variant="primary"
                 type="button"
                 className="mt-3"
                 style={{
-                  borderColor: "#8d28dd",
-                  color: "#8d28dd",
-                  fontWeight: "bold",
+                  background:"#6c757d",
+                  border:"none",
+                  color: "white",
                 }}
                 onClick={() => {
                   const newCertification = { name: "", number: "" };
@@ -1283,17 +1309,19 @@ const CreateCompany = () => {
                   );
                 }}
               >
-                Add More
+                {t("Add More")}
               </Button>
 
               {formData.additionalCertifications?.map((cert, index) => (
                 <Row key={index} className="mt-3">
                   <Col md={5}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Additional Certification Name:</Form.Label>
+                      <Form.Label>
+                        {t("Additional Certification Name")}:
+                      </Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter Additional Certification Name"
+                        placeholder={t("Enter Additional Certification Name")}
                         value={cert.name}
                         maxLength={30}
                         onChange={(e) => {
@@ -1311,10 +1339,12 @@ const CreateCompany = () => {
                   </Col>
                   <Col md={5}>
                     <Form.Group className="mb-3">
-                      <Form.Label>Additional Certification Number:</Form.Label>
+                      <Form.Label>
+                        {t("Additional Certification Number")}:
+                      </Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="Enter Additional Certification Number"
+                        placeholder={t("Enter Additional Certification Number")}
                         value={cert.number}
                         maxLength={20}
                         onChange={(e) => {
@@ -1355,10 +1385,10 @@ const CreateCompany = () => {
               onClick={handlePrevious}
               className="me-2"
             >
-              Previous
+              {t("Previous")}
             </Button>
-            <Button variant="primary" onClick={handleNext}>
-              Next
+            <Button type="submit" onClick={handleNext}>
+              {t("Next")}
             </Button>
           </Container>
         )}
@@ -1376,13 +1406,13 @@ const CreateCompany = () => {
             <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Company Contact Information</h4>
+              <h4 className="mb-0">{t("Company Contact Information")}</h4>
             </div>
             <Form>
               <Row>
@@ -1390,11 +1420,12 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Address Line 1:
+                      <span className="text-danger">*</span> {t("Address Line")}{" "}
+                      1:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Address"
+                      placeholder={t("Enter Company Address")}
                       value={formData.addressLine1}
                       maxLength={50}
                       onChange={(e) =>
@@ -1407,10 +1438,10 @@ const CreateCompany = () => {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="mb-3">
-                    <Form.Label>Address Line 2:</Form.Label>
+                    <Form.Label>{t("Address Line")} 2:</Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Address line 2"
+                      placeholder={t("Enter Company Address line 2")}
                       value={formData.addressLine2}
                       maxLength={40}
                       onChange={(e) =>
@@ -1420,11 +1451,11 @@ const CreateCompany = () => {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> City:
+                      <span className="text-danger">*</span> {t("City")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Address's City"
+                      placeholder={t("Enter Company Address's City")}
                       value={formData.contactCity}
                       maxLength={15}
                       onChange={(e) =>
@@ -1438,11 +1469,11 @@ const CreateCompany = () => {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> State:
+                      <span className="text-danger">*</span> {t("State")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Address's State"
+                      placeholder={t("Enter Company Address's State")}
                       value={formData.companyState}
                       maxLength={15}
                       onChange={(e) =>
@@ -1457,7 +1488,7 @@ const CreateCompany = () => {
 
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Country:
+                      <span className="text-danger">*</span> {t("Country")}:
                     </Form.Label>
                     <Form.Select
                       value={formData.contactCountry}
@@ -1466,7 +1497,9 @@ const CreateCompany = () => {
                       }
                       isInvalid={!!errors.contactCountry}
                     >
-                      <option value="">Select Company Address's Country</option>
+                      <option value="">
+                        {t("Select Company Address's Country")}
+                      </option>
                       <option value="India">India</option>
                       <option value="USA">USA</option>
                       <option value="UK">UK</option>
@@ -1478,11 +1511,12 @@ const CreateCompany = () => {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> ZIP/Postal Code:
+                      <span className="text-danger">*</span>{" "}
+                      {t("ZIP/Postal Code")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Address's Zipcode"
+                      placeholder={t("Enter Company Address's Zipcode")}
                       value={formData.contactZip}
                       maxLength={20}
                       onChange={(e) =>
@@ -1500,12 +1534,12 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Company Contact
-                      Person:
+                      <span className="text-danger">*</span>{" "}
+                      {t("Company Contact Person")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Contact Person"
+                      placeholder={t("Enter Company Contact Person")}
                       value={formData.contactPerson}
                       maxLength={30}
                       onChange={(e) =>
@@ -1519,12 +1553,12 @@ const CreateCompany = () => {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Contact Person
-                      Phone:
+                      <span className="text-danger">*</span>{" "}
+                      {t("Contact Person Phone")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Person Phone"
+                      placeholder={t("Enter Company Person Phone")}
                       value={formData.contactPhone}
                       maxLength={15}
                       onChange={(e) =>
@@ -1538,12 +1572,12 @@ const CreateCompany = () => {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Company Office
-                      Phone:
+                      <span className="text-danger">*</span>{" "}
+                      {t("Company Office Phone")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Company Office Phone"
+                      placeholder={t("Enter Company Office Phone")}
                       value={formData.officePhone}
                       maxLength={15}
                       onChange={(e) =>
@@ -1557,12 +1591,12 @@ const CreateCompany = () => {
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      <span className="text-danger">*</span> Company Office
-                      Email Address:
+                      <span className="text-danger">*</span>{" "}
+                      {t("Company Office Email Address")}:
                     </Form.Label>
                     <Form.Control
                       type="email"
-                      placeholder="Enter Company Office Email Address"
+                      placeholder={t("Enter Company Office Email Address")}
                       value={formData.officeEmail}
                       maxLength={30}
                       onChange={(e) =>
@@ -1582,10 +1616,10 @@ const CreateCompany = () => {
               onClick={handlePrevious}
               className="me-2"
             >
-              Previous
+              {t("Previous")}
             </Button>
-            <Button variant="primary" onClick={handleNext}>
-              Next
+            <Button type="submit" onClick={handleNext}>
+              {t("Next")}
             </Button>
           </Container>
         )}
@@ -1602,20 +1636,20 @@ const CreateCompany = () => {
             <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Other Company Settings</h4>
+              <h4 className="mb-0">{t("Other Company Settings")}</h4>
             </div>
             <Form>
               {/* Select Package */}
               <Row className="mb-4">
                 <Col md={6}>
                   <Form.Group>
-                    <Form.Label>Select Package:</Form.Label>
+                    <Form.Label>{t("Select Package")}:</Form.Label>
                     <div>
                       <Button
                         variant={
@@ -1631,7 +1665,7 @@ const CreateCompany = () => {
                           ]);
                         }}
                       >
-                        CRM Only
+                        {t("CRM Only")}
                       </Button>
                       <Button
                         variant={
@@ -1649,7 +1683,7 @@ const CreateCompany = () => {
                           ]);
                         }}
                       >
-                        Field Pack
+                        {t("Field Pack")}
                       </Button>
                       <Button
                         variant={
@@ -1667,7 +1701,7 @@ const CreateCompany = () => {
                           ]);
                         }}
                       >
-                        Full Pack
+                        {t("Full Pack")}
                       </Button>
                     </div>
                   </Form.Group>
@@ -1678,40 +1712,35 @@ const CreateCompany = () => {
                     <ul className="mb-0">
                       {formData.package === "CRM Only" && (
                         <li>
-                          Each Quotation creation Charge will be 0.15/quotation.
+                          {t("Each Quotation creation Charge will be 0.15/quotation")}.
                         </li>
                       )}
                       {formData.package === "Field Pack" && (
                         <>
                           <li>
-                            Each Contract creation Charge will be 0.00/contract.
+                            {t("Each Contract creation Charge will be 0.00/contract")}.
                           </li>
                           <li>
-                            Each Work Order creation Charge will be 0.10/work
-                            order.
+                            {t("Each Work Order creation Charge will be 0.10/work order")}.
                           </li>
                           <li>
-                            Each Work Order charge further 0.40 after complete
-                            Work Order.
+                            {t("Each Work Order charge further 0.40 after complete Work Order")}.
                           </li>
                         </>
                       )}
                       {formData.package === "Full Pack" && (
                         <>
                           <li>
-                            Each Quotation creation Charge will be
-                            0.15/quotation.
+                            {t("Each Quotation creation Charge will be 0.15/quotation")}.
                           </li>
                           <li>
-                            Each Contract creation Charge will be 0.00/contract.
+                            {t("Each Contract creation Charge will be 0.00/contract")}.
                           </li>
                           <li>
-                            Each Work Order creation Charge will be 0.10/work
-                            order.
+                            {t("Each Work Order creation Charge will be 0.10/work order")}.
                           </li>
                           <li>
-                            Each Work Order charge further 0.40 after complete
-                            Work Order.
+                            {t("Each Work Order charge further 0.40 after complete Work Order")}.
                           </li>
                         </>
                       )}
@@ -1728,8 +1757,7 @@ const CreateCompany = () => {
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>
-                        <span className="text-danger">*</span> Default Work
-                        Order Time:
+                        <span className="text-danger">*</span> {t("Default Work Order Time")}:
                       </Form.Label>
                       <InputGroup>
                         <Form.Control
@@ -1755,8 +1783,7 @@ const CreateCompany = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>
-                          <span className="text-danger">*</span> Primary Work
-                          Order's Cost:
+                          <span className="text-danger">*</span> {t("Primary Work Order's Cost")}:
                         </Form.Label>
                         <InputGroup>
                           <Form.Control
@@ -1781,8 +1808,7 @@ const CreateCompany = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>
-                          <span className="text-danger">*</span> Execution Work
-                          Order's Cost:
+                          <span className="text-danger">*</span> {t("Execution Work Order's Cost")}:
                         </Form.Label>
                         <InputGroup>
                           <Form.Control
@@ -1810,7 +1836,7 @@ const CreateCompany = () => {
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>
-                        <span className="text-danger">*</span> Quotation's Cost:
+                        <span className="text-danger">*</span> {t("Quotation's Cost")}:
                       </Form.Label>
                       <InputGroup>
                         <Form.Control
@@ -1832,7 +1858,7 @@ const CreateCompany = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Free Quotations:</Form.Label>
+                    <Form.Label>{t("Free Quotations")}:</Form.Label>
                     <Form.Control
                       type="text"
                       value={formData.freeQuotations}
@@ -1845,7 +1871,7 @@ const CreateCompany = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Free Work Orders:</Form.Label>
+                    <Form.Label>{t("Free Work Orders")}:</Form.Label>
                     <Form.Control
                       type="text"
                       value={formData.freeWorkOrders}
@@ -1860,7 +1886,7 @@ const CreateCompany = () => {
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Customer Address Format:</Form.Label>
+                    <Form.Label>{t("Customer Address Format")}:</Form.Label>
                     <Form.Control
                       type="text"
                       value={formData.customerAddressFormat}
@@ -1872,7 +1898,7 @@ const CreateCompany = () => {
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Working Day:</Form.Label>
+                    <Form.Label>{t("Working Day")}:</Form.Label>
                     <div>
                       <ToggleButtonGroup
                         type="checkbox"
@@ -1936,7 +1962,7 @@ const CreateCompany = () => {
               onClick={handlePrevious}
               className="me-2"
             >
-              Previous
+              {t("Previous")}
             </Button>
             <Button
               variant="primary"
@@ -1945,7 +1971,7 @@ const CreateCompany = () => {
                 handleSubmit();
               }}
             >
-              Submit
+              {t("Submit")}
             </Button>
           </Container>
         )}
