@@ -224,6 +224,8 @@ const Create = () => {
 const token = localStorage.getItem("UserToken");
 const userid = localStorage.getItem("userId");
 const company_id=localStorage.getItem("companyId")||null;
+const [profile,setProfile]=useState(null)
+
 const navigate=useNavigate();
 
 useEffect(() => {
@@ -233,6 +235,15 @@ useEffect(() => {
     });
   }
 }, [userid]);
+
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
 
 
 
@@ -273,6 +284,14 @@ useEffect(() => {
               }}
               validationSchema={validationSchema}
               onSubmit={async(values, { setSubmitting,resetForm  }) => {
+                Swal.fire({
+                      title: "Creating...",
+                      text: "Creating Office User, please wait.",
+                      allowOutsideClick: false,
+                      didOpen: () => {
+                        Swal.showLoading();
+                      },
+                    });
                 setSubmitting(true);
                 const formData = new FormData();
                 formData.append("first_name", values.firstName);
@@ -289,8 +308,14 @@ useEffect(() => {
                 formData.append("isActive", values.activateUser?'1':'0');
                 formData.append("company_id",company_id);
                 // Append profile picture if selected
-                if (values.profilePicture) {
-                  formData.append("profilePicture", values.profilePicture);
+                if (values.profilePicture instanceof File) {
+                  try {
+                    const base64 = await fileToBase64(values.profilePicture);
+                    console.log(values.profilePicture,base64);
+                    setProfile(base64)
+                  } catch (error) {
+                    console.error("Error converting file to Base64:", error);
+                  }
                 }
                 console.log("formDataaaa",formData)
 
@@ -308,7 +333,7 @@ useEffect(() => {
                     Address:values.address,
                     country: values.country,
                     roleID: values.role,
-                    profile_picture: values.profilePicture,
+                    profile_picture: profile,
                     isActive: values.activateUser
                 }
                 
@@ -317,6 +342,7 @@ useEffect(() => {
                 
              
                 const submitData=await createOfficeUser(finalData,token)
+                Swal.close();
                 console.log("submitDataa",submitData)
                 // console.log('response',submitData)
                 if(submitData.status){
@@ -347,7 +373,7 @@ useEffect(() => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>First Name*</Form.Label>
-                        <Field className="form-control" type="text" name="firstName" />
+                        <Field className="form-control" type="text" name="firstName" maxLength={40}/>
                         <ErrorMessage name="firstName" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
@@ -355,7 +381,7 @@ useEffect(() => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>Last Name*</Form.Label>
-                        <Field className="form-control" type="text" name="lastName" />
+                        <Field className="form-control" type="text" name="lastName" maxLength={40}/>
                         <ErrorMessage name="lastName" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
@@ -363,7 +389,7 @@ useEffect(() => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>Email Address*</Form.Label>
-                        <Field className="form-control" type="email" name="email" />
+                        <Field className="form-control" type="email" name="email" maxLength={50}/>
                         <ErrorMessage name="email" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
@@ -371,7 +397,7 @@ useEffect(() => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>Password*</Form.Label>
-                        <Field className="form-control" type="password" name="password" />
+                        <Field className="form-control" type="password" name="password" maxLength={30}/>
                         <ErrorMessage name="password" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
@@ -379,15 +405,30 @@ useEffect(() => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>Contact Number*</Form.Label>
-                        <Field className="form-control" type="tel" name="contactNumber" />
+                        <Field className="form-control" type="tel" name="contactNumber" maxLength={20}/>
                         <ErrorMessage name="contactNumber" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
-
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Profile Picture</Form.Label>
+                        <input
+                          className="form-control"
+                          type="file"
+                          onChange={(event) => setFieldValue("profilePicture", event.target.files[0])}
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>User's Address  </Form.Label>
+                        <Field className="form-control" as="textarea" rows={2} name="address" maxLength={200} rows={1}/>
+                      </Form.Group>
+                    </Col>
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>City*</Form.Label>
-                        <Field className="form-control" type="text" name="city" />
+                        <Field className="form-control" type="text" name="city" maxLength={40}/>
                         <ErrorMessage name="city" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
@@ -395,7 +436,7 @@ useEffect(() => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>State*</Form.Label>
-                        <Field className="form-control" type="text" name="state" />
+                        <Field className="form-control" type="text" name="state" maxLength={40}/>
                         <ErrorMessage name="state" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
@@ -403,18 +444,12 @@ useEffect(() => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>ZIP/Postal Code*</Form.Label>
-                        <Field className="form-control" type="text" name="zip" />
+                        <Field className="form-control" type="text" name="zip" maxLength={10}/>
                         <ErrorMessage name="zip" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
 
-                    <Col md={12}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>User's Address  </Form.Label>
-                        <Field className="form-control" as="textarea" rows={2} name="address" />
-                      </Form.Group>
-                    </Col>
-
+                
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>Country*</Form.Label>
@@ -423,6 +458,8 @@ useEffect(() => {
                           <option value="USA">USA</option>
                           <option value="Canada">Canada</option>
                           <option value="India">India</option>
+                          <option value="India">Spain</option>
+                          <option value="India">France</option>
                         </Field>
                         <ErrorMessage name="country" component="div" className="text-danger" />
                       </Form.Group>
@@ -443,16 +480,7 @@ useEffect(() => {
                       </Form.Group>
                     </Col>
 
-                    {/* <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Profile Picture</Form.Label>
-                        <input
-                          className="form-control"
-                          type="file"
-                          onChange={(event) => setFieldValue("profilePicture", event.target.files[0])}
-                        />
-                      </Form.Group>
-                    </Col> */}
+               
 
                     <Col md={6} className="d-flex align-items-center">
                       <Field type="checkbox" name="activateUser" className="form-check-input" />
@@ -461,7 +489,7 @@ useEffect(() => {
                   </Row>
 
                   <div className="text-center">
-                    <Button variant="primary" type="submit" disabled={isSubmitting}>
+                    <Button variant="primary" type="submit" disabled={isSubmitting} className="me-2">
                       Save
                     </Button>
                     <Button variant="secondary" type="reset">

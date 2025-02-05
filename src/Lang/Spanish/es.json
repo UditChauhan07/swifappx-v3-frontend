@@ -1455,5 +1455,19 @@
     "Enter Additional Certification Number":"Ingrese el número de certificación adicional",
     "Enter Company Address's City":"Ingrese la ciudad de la dirección de la empresa",
     "Enter Company Address's State":"Ingrese el estado de la dirección de la empresa",
-    "Enter Company Address's Zipcode":"Ingrese el código postal de la dirección de la empresa"    
+    "Enter Company Address's Zipcode":"Ingrese el código postal de la dirección de la empresa",
+    "Creation Date": "Fecha de creación",
+    "Are you sure?": "¿Estás seguro?",
+    "You are about to delete this company": "Estás a punto de eliminar esta empresa",
+    "Yes, Delete it!": "Sí, elimínalo!",
+    "No, cancel": "No, cancelar",
+    "Deleting...": "Eliminando...",
+    "Please wait": "Por favor espera",
+    "Success!": "¡Éxito!",
+    "Error!": "¡Error!",
+    "Error deleting company.": "Error al eliminar la empresa.",
+    "Try Again": "Intentar de nuevo",
+    "API Error!": "Error de API!",
+    "Something went wrong. Try again later.": "Algo salió mal. Inténtalo de nuevo más tarde.",
+    "No Companies found": "No se encontraron empresas"
 }

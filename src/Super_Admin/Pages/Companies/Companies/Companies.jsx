@@ -7,8 +7,11 @@ import { BeatLoader } from "react-spinners";
 import { MdDelete } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 
 const Companies = () => {
+  const { t } = useTranslation(); // ✅ Translation Hook
+
   const navigate = useNavigate();
   const [companyList, setCompanyList] = useState([]);
   console.log("cascasc",companyList)
@@ -143,7 +146,7 @@ const Companies = () => {
       <Header />
       <div className="main-header-box mt-4">
         <div className="pages-box">
-          <h2 className="mb-4">Companies</h2>
+          <h2 className="mb-4">{t("Companies")}</h2>
           <div className="">
             <Table
               hover
@@ -152,77 +155,51 @@ const Companies = () => {
               style={{ minWidth: "1650px" }}
             >
               <thead>
-                <tr style={{ backgroundColor: "#E7EAF3", color: "#3C3C3C" }}>
-                  <th
-                    style={{
-                      width: "26%",
-                      textAlign: "left",
-                      background: "#e5e5e5",
-                    }}
-                  >
-                    Company Name & Address
-                  </th>
-                  <th
-                    style={{
-                      width: "20%",
-                      textAlign: "left",
-                      background: "#e5e5e5",
-                    }}
-                  >
-                    Admin
-                  </th>
-                  <th
-                    style={{
-                      width: "10%",
-                      textAlign: "left",
-                      background: "#e5e5e5",
-                    }}
-                  >
-                    Creation
-                  </th>
-                  <th
-                    className="text-center"
-                    style={{ width: "7%", background: "#e5e5e5" }}
-                  >
-                    Field Users
-                  </th>
-                  <th
-                    className="text-center"
-                    style={{ width: "7%", background: "#e5e5e5" }}
-                  >
-                    Office Users
-                  </th>
-                  <th
-                    className="text-center"
-                    style={{ width: "7%", background: "#e5e5e5" }}
-                  >
-                    Customers
-                  </th>
-                  <th
-                    className="text-center"
-                    style={{ width: "7%", background: "#e5e5e5" }}
-                  >
-                    Quotations
-                  </th>
-                  <th
-                    className="text-center"
-                    style={{ width: "7%", background: "#e5e5e5" }}
-                  >
-                    Contracts
-                  </th>
-                  <th
-                    className="text-center"
-                    style={{ width: "10%", background: "#e5e5e5" }}
-                  >
-                    Work Orders
-                  </th>
-                  <th
-                    className="text-center"
-                    style={{ width: "10%", background: "#e5e5e5" }}
-                  >
-                    Action
-                  </th>
-                </tr>
+              <tr style={{ backgroundColor: "#E7EAF3", color: "#3C3C3C" }}>
+            <th
+              style={{
+                width: "26%",
+                textAlign: "left",
+                background: "#e5e5e5",
+              }}
+            >
+              {t("Company Name & Address")}
+            </th>
+            <th
+              style={{
+                width: "20%",
+                textAlign: "left",
+                background: "#e5e5e5",
+              }}
+            >
+              {t("Admin")}
+            </th>
+              <th
+                style={{
+                  width: "10%",
+                  textAlign: "left",
+                  background: "#e5e5e5",
+                }}
+              >
+                {t("Creation")}
+              </th>
+              <th className="text-center" style={{ width: "7%", background: "#e5e5e5" }}>
+                {t("Field Users")}
+              </th>
+              <th className="text-center" style={{ width: "7%", background: "#e5e5e5" }}>
+                {t("Office Users")}
+              </th>
+              <th className="text-center" style={{ width: "7%", background: "#e5e5e5" }}>
+                {t("Customers")}
+              </th>
+              <th className="text-center" style={{ width: "10%", background: "#e5e5e5" }}>
+                {t("Work Orders")}
+              </th>
+              <th className="text-center" style={{ width: "10%", background: "#e5e5e5" }}>
+                {t("Action")}
+              </th>
+            </tr>
+
               </thead>
 
               <tbody>
@@ -293,8 +270,6 @@ const Companies = () => {
                       </td>
                       <td className="text-center">{item.user_counts.field_user || 0}</td>
                       <td className="text-center">{item.user_counts.office_user || 0}</td>
-                      <td className="text-center">0</td>
-                      <td className="text-center">0</td>
                       <td className="text-center">0</td>
                       <td className="text-center">0</td>
                       <td className="text-center">
@@ -381,3 +356,4 @@ const Companies = () => {
 };
 
 export default Companies;
+

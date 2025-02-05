@@ -210,6 +210,7 @@ const CreateFieldUser = () => {
                       type="text"
                       placeholder="Enter Name"
                       name="name"
+                      maxLength={40}
                       value={formik.values.name}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.name && formik.errors.name}
@@ -225,6 +226,7 @@ const CreateFieldUser = () => {
                       type="email"
                       placeholder="Enter Email"
                       name="email"
+                      maxLength={50}
                       value={formik.values.email}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.email && formik.errors.email}
@@ -243,6 +245,7 @@ const CreateFieldUser = () => {
                       type="text"
                       placeholder="Enter Username"
                       name="username"
+                      maxLength={20}
                       value={formik.values.username}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.username && formik.errors.username}
@@ -261,6 +264,7 @@ const CreateFieldUser = () => {
                       type="password"
                       placeholder="Enter Password"
                       name="password"
+                      maxLength={30}
                       value={formik.values.password}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.password && formik.errors.password}
@@ -276,6 +280,7 @@ const CreateFieldUser = () => {
                       type="tel"
                       placeholder="Enter Contact Number"
                       name="contact_number"
+                      maxLength={16}
                       value={formik.values.contact_number}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.contact_number && formik.errors.contact_number}
@@ -321,6 +326,7 @@ const CreateFieldUser = () => {
                       rows={2}
                       placeholder="Enter Address"
                       name="address"
+                      maxLength={150}
                       value={formik.values.address}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.address && formik.errors.address}

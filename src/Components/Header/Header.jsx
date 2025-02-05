@@ -236,13 +236,13 @@ const Header = () => {
                     >
                       ▣ {t("Companies")}
                     </Link>
-                    <Link
+                    {/* <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Access")}
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               </>

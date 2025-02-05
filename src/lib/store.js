@@ -1,7 +1,7 @@
 import axios from "axios";
 // export const Url = "http://localhost:2525";
-// export const Url = "https://test-hl3bjt37ia-uc.a.run.app/";
-export const Url = "http://127.0.0.1:5001/swif-v2/us-central1/test"
+export const Url = "https://apiv4-hl3bjt37ia-uc.a.run.app/";
+// export const Url = "http://127.0.0.1:5001/swif-v2/us-central1/test"
 
 // Admin Login APi
 export const LoginApi = async (formData) => {
@@ -216,11 +216,16 @@ export const getRoles = async (finalData) => {
 };
 
 // Edit Role Edit
-export const roleEditApi = async (roleId, finalData) => {
+export const roleEditApi = async (roleId, finalData,token) => {
   try {
     const response = await axios.patch(
       `${Url}/ed6tmki8gy/${roleId}`,
-      finalData
+      finalData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     // console.log(response.data, "login api data");
     return response.data;
@@ -315,9 +320,13 @@ export const DeleteCustomerApi = async (userId, token) => {
 };
 
 // Work Order Create
-export const createWorkOrderApi = async (finalData) => {
+export const createWorkOrderApi = async (finalData,token) => {
   try {
-    const response = await axios.post(`${Url}/cwok3245tr`, finalData);
+    const response = await axios.post(`${Url}/cwok3245tr`, finalData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     // console.log(response.data, "login api data");
     return response.data;
   } catch (error) {
@@ -443,6 +452,7 @@ export const delete_OfficeUser = async (userId, token) => {
 };
 
 export const edit_OfficeUser = async (formdata, userId, token) => {
+  console.log("user",userId)
   try {
     const response = await axios.put(`${Url}/smjg8g43me/${userId}`, formdata, {
       headers: {

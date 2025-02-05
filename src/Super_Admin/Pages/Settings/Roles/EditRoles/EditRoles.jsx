@@ -17,6 +17,8 @@ const EditRoles = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { role } = location.state || {};
+  const [token, settoken] = useState(localStorage.getItem("UserToken"));
+  
   // const [roleType, setRoleType] = useState("saas");
   // const [permissions, setPermissions] = useState({});
   const [roleId, setroleId] = useState(role.id)
@@ -287,7 +289,7 @@ const EditRoles = () => {
     });
 
     try {
-      const response = await roleEditApi(roleId,roleData);
+      const response = await roleEditApi(roleId,roleData,token);
 
       Swal.close();
 
