@@ -1,6 +1,6 @@
 import axios from "axios";
-// export const Url = "http://localhost:2525";
-export const Url = "https://test-hl3bjt37ia-uc.a.run.app/";
+export const Url = "http://localhost:3232";
+// export const Url = "https://test-hl3bjt37ia-uc.a.run.app/";
 // export const Url = "http://127.0.0.1:5001/swif-v2/us-central1/test"
 
 // Admin Login APi

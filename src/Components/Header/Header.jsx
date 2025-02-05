@@ -118,7 +118,7 @@ const Header = () => {
   const languageNames = {
     en: "English",
     es: "Spanish",
-    fr: "French",
+    // fr: "French",
   };
 
   const getItemClass = (lng) => {
@@ -183,7 +183,7 @@ const Header = () => {
             <div className="py-4 px-4">
               <img
                 width={"40px"}
-                src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct-dark.png"
+                src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct.png"
                 alt="Logo"
                 className="logo"
                 style={{ marginRight: "10px" }}

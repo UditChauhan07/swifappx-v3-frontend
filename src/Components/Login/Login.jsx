@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Form, Button, Spinner } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Spinner,
+  Card,
+} from "react-bootstrap";
 import "./Login.css";
 import axios from "axios";
 import { LoginApi } from "../../lib/store";
@@ -61,94 +69,77 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <Container fluid className="vh-100">
-        <Row className="h-100">
-          
+      <Container className="d-flex justify-content-center align-items-center vh-100">
+        <Card className="shadow-lg p-4 rounded-4 w-50">
+          <div className="text-center mb-3">
+            <img
+              src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct-dark.png"
+              alt="Logo"
+              width="80"
+            />
+          </div>
 
-          <Col
-            md={12}
-            className="d-flex align-items-center justify-content-center bg-white"
-          >
-            <div className="p-4 border rounded shadow-sm w-50">
-              <div className="text-center mb-4">
-                <img
-                  width={"100px"}
-                  src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct-dark.png"
-                  alt="Logo"
-                />
-              </div>
+          <h4 className="text-center fw-bold mb-4">Sign in to Your Account</h4>
 
-              <h5 className="mb-3 fw-bold text-center">Access My Account</h5>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="formUsername">
-                  <Form.Label>
-                    <i className="bi bi-person-circle me-2"></i>Username
-                  </Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter your username"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" controlId="formEmail">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter your email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formPassword">
-                  <Form.Label>
-                    <i className="bi bi-lock-fill me-2"></i>Password
-                  </Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Enter your password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
-                </Form.Group>
+            <Form.Group className="mb-3" controlId="formPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter your password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
 
-                {error && <div className="text-danger mb-3">{error}</div>}
+            {error && (
+              <div className="text-danger mb-3 text-center">{error}</div>
+            )}
 
-                {/* <div className="d-flex justify-content-between align-items-center mb-3"> */}
-                {/* <Form.Check type="checkbox" label="Remember me" /> */}
-                {/* <a href="#forgot-password" className="text-decoration-none">
-                    Forgot your password?
-                  </a> */}
-                {/* </div> */}
-
-                <div className="d-grid mb-3">
-                  <Button variant="dark" type="submit" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Spinner
-                          animation="border"
-                          size="sm"
-                          className="me-2"
-                        />
-                        Loading...
-                      </>
-                    ) : (
-                      "LOGIN"
-                    )}
-                  </Button>
-                </div>
-              </Form>
-
-              <div className="text-center mt-4">
-                <small className="text-muted">
-                  By signing in or clicking "Login", you agree to our{" "}
-                  <a href="#terms" className="text-decoration-none">
-                    Terms of Service
-                  </a>
-                  . Please also read our{" "}
-                  <a href="#privacy" className="text-decoration-none">
-                    Privacy Policy
-                  </a>
-                  .
-                </small>
-              </div>
+            <div className="d-grid">
+              <Button
+                variant="dark"
+                type="submit"
+                disabled={isLoading}
+                className="rounded-pill"
+              >
+                {isLoading ? (
+                  <Spinner animation="border" size="sm" className="me-2" />
+                ) : (
+                  "Login"
+                )}
+              </Button>
             </div>
-          </Col>
-        </Row>
+          </Form>
+
+          <div className="text-center mt-4">
+            <small className="text-muted">
+              By signing in or clicking "Login", you agree to our{" "}
+              <a href="#terms" className="text-decoration-none">
+                Terms of Service
+              </a>
+              . Please also read our{" "}
+              <a href="#privacy" className="text-decoration-none">
+                Privacy Policy
+              </a>
+              .
+            </small>
+          </div>
+        </Card>
       </Container>
     </div>
   );

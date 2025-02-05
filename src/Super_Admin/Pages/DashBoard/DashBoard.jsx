@@ -4,8 +4,10 @@ import Header from "../../../Components/Header/Header";
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
 import "./DashBoard.css";
 import { getCompanyListApi } from "../../../lib/store";
+import { useTranslation } from "react-i18next";
 
 const DashBoard = () => {
+  const { t, i18n } = useTranslation();
   const stats = {
     totalCompanies: 27,
     totalWorkOrders: 6414,
@@ -47,9 +49,9 @@ const DashBoard = () => {
                     <Card.Body>
                       <h3>{value}</h3>
                       <p>
-                        {key
+                        {t(key
                           .replace(/([A-Z])/g, " $1")
-                          .replace(/^./, (str) => str.toUpperCase())}
+                          .replace(/^./, (str) => str.toUpperCase()))}
                       </p>
                     </Card.Body>
                   </Card>
@@ -61,9 +63,9 @@ const DashBoard = () => {
             {loading ? (
               <div className="text-center my-5">
                 <Spinner animation="border" role="status">
-                  <span className="visually-hidden">Loading...</span>
+                  <span className="visually-hidden">{t("Loading")}...</span>
                 </Spinner>
-                <p>Loading Companies...</p>
+                <p>{t("Loading")} {t("Companies")}...</p>
               </div>
             ) : (
               <Row>
@@ -103,20 +105,20 @@ const DashBoard = () => {
                         >
                           <div className="stat-item text-center border-end">
                             <strong>{company.totalUsers || "0"}</strong>
-                            <div>Total User</div>
+                            <div>{t("Total User")}</div>
                           </div>
                           <div className="stat-item text-center border-end">
                             <strong>{company.quotations || "0"}</strong>
-                            <div>Quotations</div>
+                            <div>{t("Quotations")}</div>
                           </div>
                           <div className="stat-item text-center">
                             <strong>{company.workOrders || "0"}</strong>
-                            <div>Work Orders</div>
+                            <div>{t("Work Orders")}</div>
                           </div>
                         </div>
 
                         <Card.Text>
-                          <strong>Admin:</strong> {company.user.first_name}{" "}
+                          <strong>{t("Admin")}:</strong> {company.user.first_name}{" "}
                           {company.user.last_name}
                         </Card.Text>
                       </Card.Body>
