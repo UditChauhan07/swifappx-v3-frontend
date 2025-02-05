@@ -63,19 +63,17 @@ const Login = () => {
     <div className="login-container">
       <Container fluid className="vh-100">
         <Row className="h-100">
-          <Col md={6} className="login-left d-none d-md-block">
-            <div className="left-image-wrapper"></div>
-          </Col>
+          
 
           <Col
-            md={6}
+            md={12}
             className="d-flex align-items-center justify-content-center bg-white"
           >
-            <div className="p-4 border rounded shadow-sm w-75">
+            <div className="p-4 border rounded shadow-sm w-50">
               <div className="text-center mb-4">
                 <img
-                  width={"150px"}
-                  src="https://swif.truet.net/public/swifCompany/logo/logo.png"
+                  width={"100px"}
+                  src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct-dark.png"
                   alt="Logo"
                 />
               </div>
