@@ -334,7 +334,7 @@ const Companies = () => {
                 onClick={() => handlePageChange("previous")}
                 disabled={currentPage === 1}
               >
-                &laquo; Previous
+                &laquo; {t("Previous")}
               </Button>
               <Button variant="outline-secondary" size="sm" className="me-2">
                 {currentPage}
@@ -345,7 +345,7 @@ const Companies = () => {
                 onClick={() => handlePageChange("next")}
                 disabled={currentPage * rowsPerPage >= companyList.length}
               >
-                Next &raquo;
+                {t("Next")} &raquo;
               </Button>
             </div>
           </div>

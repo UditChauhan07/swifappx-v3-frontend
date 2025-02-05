@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import Header from "../../../../../Components/Header/Header";
 import { Container, Row, Col, Image, Card } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 
 const CustomerDetails = () => {
+  const { t } = useTranslation(); 
+  
   const location = useLocation();
   const { customer } = location.state || {};
   console.log(customer);
@@ -34,37 +38,37 @@ const CustomerDetails = () => {
       <Header />
       <div className="main-header-box mt-4">
         <div className="pages-box">
-          <h4 className="mb-4">Customer Details</h4>
+          <h4 className="mb-4">{t("Customer Details")}</h4>
           <Container className="mt-4">
             <Card className="p-2 shadow-sm">
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Name:
+                  {t("Name")}:
                 </Col>
                 <Col>{customer.name}</Col>
               </Row>
 
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Type:
+                  {t("Type")}:
                 </Col>
                 <Col>{customer.type}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Email Address:
+                  {t("Email Address")}:
                 </Col>
                 <Col>{customer.email}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Initial Remarks:
+                  {t("Initial Remarks")}:
                 </Col>
                 <Col>{customer.initial_remarks || "--"}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Created At:
+                  {t("Created At")}:
                 </Col>
                 <Col>{formatTimestamp(customer.created_at)}</Col>
               </Row>

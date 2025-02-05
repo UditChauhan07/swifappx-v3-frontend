@@ -4,8 +4,12 @@ import Header from "../../../../Components/Header/Header";
 import { createCustomerApi } from "../../../../lib/store";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 
 const CreateCustomer = () => {
+  const { t } = useTranslation(); 
+  
   const navigate = useNavigate()
   const [adminName, setadminName] = useState(localStorage.getItem("name"))
   const [formData, setFormData] = useState({
@@ -156,18 +160,18 @@ const CreateCustomer = () => {
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Enter Customer Details</h4>
+              <h4 className="mb-0">{t("Enter Customer Details")}</h4>
             </div>
             <Form onSubmit={handleSubmit}>
               <Row>
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formName">
                     <Form.Label>
-                      Name<span className="text-danger">*</span>
+                      {t("Name")}<span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Name"
+                      placeholder={t("Enter Name")}
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
@@ -182,7 +186,7 @@ const CreateCustomer = () => {
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formType">
                     <Form.Label>
-                      Type<span className="text-danger">*</span>
+                      {t("Type")}<span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Select
                       name="type"
@@ -190,8 +194,8 @@ const CreateCustomer = () => {
                       onChange={handleInputChange}
                       required
                     >
-                      <option value="Individual">Individual</option>
-                      <option value="Company">Company</option>
+                      <option value="Individual">{t("Individual")}</option>
+                      <option value="Company">{t("Company")}</option>
                     </Form.Select>
                   </Form.Group>
                 </Col>
@@ -199,11 +203,11 @@ const CreateCustomer = () => {
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formEmail">
                     <Form.Label>
-                      Email Address<span className="text-danger">*</span>
+                      {t("Email Address")}<span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       type="email"
-                      placeholder="Enter Email Address"
+                      placeholder={t("Enter Email Address")}
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
@@ -217,11 +221,11 @@ const CreateCustomer = () => {
 
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="forminitial_remarks">
-                    <Form.Label>Initial Remarks</Form.Label>
+                    <Form.Label>{t("Initial Remarks")}</Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={3}
-                      placeholder="Enter Initial initial_remarks"
+                      placeholder={t("Enter Initial Remarks")}
                       name="initial_remarks"
                       value={formData.initial_remarks}
                       onChange={handleInputChange}
@@ -239,10 +243,10 @@ const CreateCustomer = () => {
                     border: "none",
                   }}
                 >
-                  Save
+                  {t("Save")}
                 </Button>
                 <Button variant="secondary" type="button">
-                  Back to Customer List
+                  {t("Back to Customer List")}
                 </Button>
               </div>
             </Form>

@@ -603,12 +603,12 @@ const CreateCompany = () => {
 
       console.log("Final Data:", companyData, userdata);
       const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "Do you want to create this company?",
-        icon: "warning",
+        title: t("Are you sure?"),
+        text: t("Do you want to create this company?"),
+        icon: t("warning"),
         showCancelButton: true,
-        confirmButtonText: "Yes, create it!",
-        cancelButtonText: "No, cancel",
+        confirmButtonText: t("Yes, create it!"),
+        cancelButtonText: t("No, cancel"),
       });
 
       if (!result.isConfirmed) {
@@ -1134,7 +1134,7 @@ const CreateCompany = () => {
                             variant="outline-primary"
                             className="me-2 mb-2"
                           >
-                            {day}
+                            {t(day)}
                           </ToggleButton>
                         ))}
                         {["Saturday", "Sunday"].map((day, index) => (
@@ -1145,7 +1145,7 @@ const CreateCompany = () => {
                             variant="outline-secondary"
                             className="me-2 mb-2"
                           >
-                            {day}
+                            {t(day)}
                           </ToggleButton>
                         ))}
                       </ToggleButtonGroup>

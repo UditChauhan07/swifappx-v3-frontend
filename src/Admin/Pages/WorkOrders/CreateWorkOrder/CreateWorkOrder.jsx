@@ -9,8 +9,12 @@ import {
   getCustomerList,
 } from "../../../../lib/store";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
+
 
 const CreateWorkOrder = () => {
+    const { t } = useTranslation(); 
+  
   const [userId, setuserId] = useState(localStorage.getItem("userId"));
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
   const company_id = localStorage.getItem("companyId") || null;
@@ -236,14 +240,14 @@ const CreateWorkOrder = () => {
             {/* Customer Detail Section */}
             <Card className="mb-4">
               <Card.Header className="bg-purple text-white">
-                Customer Detail Section
+                {t("Customer Detail Section")}
               </Card.Header>
               <Card.Body>
                 <Form>
                   {/* Customer Type */}
                   <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
-                      Customer Type:
+                      {t("Customer Type")}:
                     </Form.Label>
                     <Col sm={9}>
                       <Form.Check
@@ -270,14 +274,14 @@ const CreateWorkOrder = () => {
                   {/* Select Customer */}
                   <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
-                      Select Customer:
+                      {t("Select Customer")}:
                     </Form.Label>
                     <Col sm={9}>
                       <Form.Select
                         value={selectedCustomer}
                         onChange={handleCustomerChange}
                       >
-                        <option value="">Select Customer</option>
+                        <option value="">{t("Select Customer")}</option>
                         {customersList?.map((customer) => (
                           <option key={customer.id} value={customer.id}>
                             {customer.name}
@@ -296,13 +300,13 @@ const CreateWorkOrder = () => {
                   {/* Customer Address as a textarea */}
                   <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
-                      Customer Address:
+                      {t("Customer Address")}:
                     </Form.Label>
                     <Col sm={9}>
                       <Form.Control
                         as="textarea"
                         rows={2}
-                        placeholder="Enter Customer Address"
+                        placeholder={t("Enter Customer Address")}
                         value={selectedCustomerAddress}
                         onChange={(e) => {
                           setSelectedCustomerAddress(e.target.value);
@@ -321,13 +325,13 @@ const CreateWorkOrder = () => {
                   {/* Billing Address as a textarea */}
                   <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
-                      Billing Address:
+                      {t("Billing Address")}:
                     </Form.Label>
                     <Col sm={9}>
                       <Form.Control
                         as="textarea"
                         rows={2}
-                        placeholder="Enter Billing Address"
+                        placeholder={t("Enter Billing Address")}
                         value={selectedBillingAddress}
                         onChange={(e) => {
                           setSelectedBillingAddress(e.target.value);
@@ -346,7 +350,7 @@ const CreateWorkOrder = () => {
                   {/* Send Notification */}
                   <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
-                      Send Notification to Customer?
+                      {t("Send Notification to Customer")}?
                     </Form.Label>
                     <Col sm={9}>
                       <Form.Check
@@ -376,7 +380,7 @@ const CreateWorkOrder = () => {
             {/* Basic Workorder Details */}
             <Card className="mb-4">
               <Card.Header className="bg-purple text-white">
-                Basic Workorder Details
+                {t("Basic Workorder Details")}
               </Card.Header>
               <Card.Body>
                 <Form>
@@ -384,7 +388,7 @@ const CreateWorkOrder = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Start Date:
+                          {t("Start Date")}:
                         </Form.Label>
                         <Form.Control
                           type="date"
@@ -402,7 +406,7 @@ const CreateWorkOrder = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Start Time:
+                          {t("Start Time")}:
                         </Form.Label>
                         <Form.Control
                           type="time"
@@ -423,7 +427,7 @@ const CreateWorkOrder = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Expected Time Required:
+                          {t("Expected Time Required")}:
                         </Form.Label>
                         <Form.Control
                           type="time"
@@ -447,7 +451,7 @@ const CreateWorkOrder = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Sales Person:
+                          {("Sales Person")}:
                         </Form.Label>
                         <Form.Control
                           type="text"
@@ -466,7 +470,7 @@ const CreateWorkOrder = () => {
                     </Col>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Sales Person Contact:</Form.Label>
+                        <Form.Label>{t("Sales Person Contact")}:</Form.Label>
                         <Form.Control
                           type="text"
                           value={salesPersonContact}
@@ -483,13 +487,13 @@ const CreateWorkOrder = () => {
                     <Col md={12}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Select Workers:
+                          {t("Select Workers")}:
                         </Form.Label>
                         <Form.Select
                           value={selectedWorkers}
                           onChange={handleWorkerChange}
                         >
-                          <option value="">Select Workers</option>
+                          <option value="">{t("Select Workers")}</option>
                           {workersLsit?.map((worker) => (
                             <option key={worker.id} value={worker.id}>
                               {worker.name}
@@ -512,7 +516,7 @@ const CreateWorkOrder = () => {
             {/* Workorder Details */}
             <Card className="mb-4">
               <Card.Header className="bg-purple text-white">
-                Workorder Details
+                {t("Workorder Details")}
               </Card.Header>
               <Card.Body>
                 <Form>
@@ -520,11 +524,11 @@ const CreateWorkOrder = () => {
                     <Col md={4}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Service Category:
+                          {t("Service Category")}:
                         </Form.Label>
                         <Form.Control
                           type="text"
-                          placeholder="Enter Service Category"
+                          placeholder={t("Enter Service Category")}
                           value={selectedCategory}
                           onChange={(e) => {
                             setSelectedCategory(e.target.value);
@@ -541,11 +545,11 @@ const CreateWorkOrder = () => {
                     <Col md={4}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Select Service:
+                          {t("Select Service")}:
                         </Form.Label>
                         <Form.Control
                           type="text"
-                          placeholder="Enter Service Name"
+                          placeholder={t("Enter Service Name")}
                           value={selectedService}
                           onChange={(e) => {
                             handleServiceChange(e);
@@ -561,11 +565,11 @@ const CreateWorkOrder = () => {
                     <Col md={4}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Price:
+                          {t("Price")}:
                         </Form.Label>
                         <Form.Control
                           type="number"
-                          placeholder="Enter Price"
+                          placeholder={t("Enter Price")}
                           value={price}
                           onChange={(e) => {
                             setPrice(e.target.value);
@@ -592,7 +596,7 @@ const CreateWorkOrder = () => {
                 onClick={handleSubmitWorkOrder}
                 disabled={!selectedCategory || !selectedService}
               >
-                Submit Workorder
+                {t("Submit Workorder")}
               </Button>
             </div>
           </Container>

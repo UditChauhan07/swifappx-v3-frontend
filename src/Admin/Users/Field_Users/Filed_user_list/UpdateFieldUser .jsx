@@ -6,8 +6,12 @@ import Header from "../../../../Components/Header/Header";
 import { update_FieldUser } from "../../../../lib/store"; // Assuming this is your update API function
 import Swal from "sweetalert2";
 import { useNavigate ,useLocation} from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 
 const UpdateFieldUser = () => {
+    const { t } = useTranslation(); 
+  
   const navigate = useNavigate();
   const token = localStorage.getItem("UserToken");
   const location = useLocation();
@@ -79,22 +83,22 @@ const UpdateFieldUser = () => {
             <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Update Field User Details</h4>
+              <h4 className="mb-0">{t("Update Field User Details")}</h4>
             </div>
             <Form onSubmit={formik.handleSubmit}>
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formName">
-                    <Form.Label>Name<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Name")}<span className="text-danger">*</span></Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Name"
+                      placeholder={t("Enter Name")}
                       name="name"
                       maxLength={40}
                       value={formik.values.name}
@@ -107,10 +111,10 @@ const UpdateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formEmail">
-                    <Form.Label>Email<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Email")}<span className="text-danger">*</span></Form.Label>
                     <Form.Control
                       type="email"
-                      placeholder="Enter Email"
+                      placeholder={t("Enter Email")}
                       name="email"
                       maxLength={50}
                       value={formik.values.email}
@@ -123,13 +127,13 @@ const UpdateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formUsername">
-                    <Form.Label>Username<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Username")}<span className="text-danger">*</span></Form.Label>
                     <Form.Text className="d-block mb-1 text-muted">
-                      Field User can login via this Username
+                      {t("Field User can login via this Username")}
                     </Form.Text>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Username"
+                      placeholder={t("Enter Username")}
                       name="username"
                       maxLength={20}
                       value={formik.values.username}
@@ -142,13 +146,13 @@ const UpdateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formPassword">
-                    <Form.Label>Password<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Password")}<span className="text-danger">*</span></Form.Label>
                     <Form.Text className="d-block mb-1 text-muted">
-                      Leave blank to keep the current password
+                      {t("Leave blank to keep the current password")}
                     </Form.Text>
                     <Form.Control
                       type="password"
-                      placeholder="Enter Password"
+                      placeholder={t("Enter Password")}
                       name="password"
                       maxLength={30}
                       value={formik.values.password}
@@ -161,10 +165,10 @@ const UpdateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formContactNumber">
-                    <Form.Label>Contact Number<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Contact Number")}<span className="text-danger">*</span></Form.Label>
                     <Form.Control
                       type="tel"
-                      placeholder="Enter Contact Number"
+                      placeholder={t("Enter Contact Number")}
                       name="contact_number"
                       maxLength={16}
                       value={formik.values.contact_number}
@@ -188,14 +192,14 @@ const UpdateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formCountry">
-                    <Form.Label>Country<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Country")}<span className="text-danger">*</span></Form.Label>
                     <Form.Select
                       name="country"
                       value={formik.values.country}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.country && formik.errors.country}
                     >
-                      <option value="">Select Country</option>
+                      <option value="">{t("Select Country")}</option>
                       <option value="USA">USA</option>
                       <option value="Canada">Canada</option>
                       <option value="India">India</option>
@@ -206,11 +210,11 @@ const UpdateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formAddress">
-                    <Form.Label>Address<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Address")}<span className="text-danger">*</span></Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={2}
-                      placeholder="Enter Address"
+                      placeholder={t("Enter Address")}
                       name="address"
                       maxLength={150}
                       value={formik.values.address}
@@ -224,10 +228,10 @@ const UpdateFieldUser = () => {
 
               <div className="text-center">
                 <Button type="submit" className="me-2" style={{ backgroundColor: "#8d28dd", border: "none" }}>
-                  Update
+                  {t("Update")}
                 </Button>
                 <Button variant="secondary" type="button" onClick={() => navigate("/users/field/list")}>
-                  Cancel
+                  {t("Cancel")}
                 </Button>
               </div>
             </Form>

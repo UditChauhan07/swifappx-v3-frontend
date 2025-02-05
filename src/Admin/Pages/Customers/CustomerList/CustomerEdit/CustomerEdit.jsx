@@ -4,8 +4,12 @@ import Swal from "sweetalert2";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../../../Components/Header/Header";
 import { editCustomerApi } from "../../../../../lib/store";
+import { useTranslation } from "react-i18next";
+
 
 const CustomerEdit = () => {
+    const { t } = useTranslation(); 
+  
   const navigate = useNavigate();
   const location = useLocation();
   const { customer } = location.state || {};
@@ -153,24 +157,24 @@ const CustomerEdit = () => {
             <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Update Customer Details</h4>
+              <h4 className="mb-0">{t("Update Customer Details")}</h4>
             </div>
             <Form onSubmit={handleSubmit}>
               <Row>
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formName">
                     <Form.Label>
-                      Name<span className="text-danger">*</span>
+                      {t("Name")}<span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Name"
+                      placeholder={t("Enter Name")}
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
@@ -185,7 +189,7 @@ const CustomerEdit = () => {
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formType">
                     <Form.Label>
-                      Type<span className="text-danger">*</span>
+                      {t("Type")}<span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Select
                       name="type"
@@ -193,8 +197,8 @@ const CustomerEdit = () => {
                       onChange={handleInputChange}
                       required
                     >
-                      <option value="Individual">Individual</option>
-                      <option value="Company">Company</option>
+                      <option value="Individual">{t("Individual")}</option>
+                      <option value="Company">{t("Company")}</option>
                     </Form.Select>
                   </Form.Group>
                 </Col>
@@ -202,11 +206,11 @@ const CustomerEdit = () => {
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formEmail">
                     <Form.Label>
-                      Email Address<span className="text-danger">*</span>
+                      {t("Email Address")}<span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       type="email"
-                      placeholder="Enter Email Address"
+                      placeholder={t("Enter Email Address")}
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
@@ -220,11 +224,11 @@ const CustomerEdit = () => {
 
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="forminitial_remarks">
-                    <Form.Label>Initial Remarks</Form.Label>
+                    <Form.Label>{t("Initial Remarks")}</Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={3}
-                      placeholder="Enter Initial Remarks"
+                      placeholder={t("Enter Initial Remarks")}
                       name="initial_remarks"
                       value={formData.initial_remarks}
                       onChange={handleInputChange}
@@ -242,10 +246,10 @@ const CustomerEdit = () => {
                     border: "none",
                   }}
                 >
-                  Update
+                  {t("Update")}
                 </Button>
                 <Button variant="secondary" type="button">
-                  Back to Customer List
+                  {t("Back to Customer List")}
                 </Button>
               </div>
             </Form>

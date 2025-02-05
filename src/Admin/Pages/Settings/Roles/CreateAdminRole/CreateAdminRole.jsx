@@ -5,8 +5,12 @@ import { createUserRole } from "../../../../../lib/store";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { usePermissions } from "../../../../../context/PermissionContext";
+import { useTranslation } from "react-i18next";
+
 
 const CreateAdminRole = () => {
+    const { t } = useTranslation(); 
+  
   const {getRoles}=usePermissions();
   const navigate = useNavigate()
   const [permissions, setPermissions] = useState({});
@@ -19,13 +23,13 @@ const CreateAdminRole = () => {
   });
 
   const companyModules = [
-    { name: "Company Office User Module", actions: ["view", "create", "edit"] },
+    { name: t("Company Office User Module"), actions: ["view", "create", "edit"] },
     {
-      name: "Company Customers Module",
+      name: t("Company Customers Module"),
       actions: ["view", "create", "edit", "delete"],
     },
     {
-      name: "Company Work Order Module",
+      name: t("Company Work Order Module"),
       actions: ["view", "create", "edit", "delete"],
     },
     
@@ -61,7 +65,7 @@ const CreateAdminRole = () => {
           {module.actions.includes("view") && (
             <Form.Check
               inline
-              label="View"
+              label={t("View")}
               type="checkbox"
               onChange={() => handlePermissionChange(module.name, "view")}
               checked={permissions[module.name]?.view || false}
@@ -70,7 +74,7 @@ const CreateAdminRole = () => {
           {module.actions.includes("create") && (
             <Form.Check
               inline
-              label="Create"
+              label={t("Create")}
               type="checkbox"
               onChange={() => handlePermissionChange(module.name, "create")}
               checked={permissions[module.name]?.create || false}
@@ -79,7 +83,7 @@ const CreateAdminRole = () => {
           {module.actions.includes("edit") && (
             <Form.Check
               inline
-              label="Edit"
+              label={t("Edit")}
               type="checkbox"
               onChange={() => handlePermissionChange(module.name, "edit")}
               checked={permissions[module.name]?.edit || false}
@@ -88,7 +92,7 @@ const CreateAdminRole = () => {
           {module.actions.includes("delete") && (
             <Form.Check
               inline
-              label="Delete"
+              label={t("Delete")}
               type="checkbox"
               onChange={() => handlePermissionChange(module.name, "delete")}
               checked={permissions[module.name]?.delete || false}
@@ -239,16 +243,16 @@ const CreateAdminRole = () => {
               borderRadius: "8px",
             }}
           >
-            <h4 className="mb-0">Enter Staff Role Details</h4>
+            <h4 className="mb-0">{t("Enter Staff Role Details")}</h4>
           </div>
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Role Name</Form.Label>
+                  <Form.Label>{t("Role Name")}</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter Role Name"
+                    placeholder={t("Enter Role Name")}
                     onChange={() => handleOnChange("roleName")}
                     isInvalid={!!errors.roleName}
                   />
@@ -259,10 +263,10 @@ const CreateAdminRole = () => {
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Role Description</Form.Label>
+                  <Form.Label>{t("Role Description")}</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter Role Description"
+                    placeholder={t("Enter Role Description")}
                     onChange={() => handleOnChange("roleDescription")}
                     isInvalid={!!errors.roleDescription}
                   />
@@ -275,8 +279,8 @@ const CreateAdminRole = () => {
             <Table bordered>
               <thead>
                 <tr>
-                  <th>Module Name</th>
-                  <th>Module Actions</th>
+                  <th>{t("Module Name")}</th>
+                  <th>{t("Module Actions")}</th>
                 </tr>
               </thead>
               <tbody>{renderModules(companyModules)}</tbody>
@@ -289,7 +293,7 @@ const CreateAdminRole = () => {
               )}
             </div>
             <Button variant="primary" type="submit">
-              Submit
+              {t("Submit")}
             </Button>
           </Form>
         </Container>

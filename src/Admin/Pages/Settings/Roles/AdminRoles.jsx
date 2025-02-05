@@ -5,8 +5,12 @@ import { BeatLoader } from "react-spinners";
 import Header from "../../../../Components/Header/Header";
 import { Link, useNavigate } from "react-router-dom";
 import { getRoles } from "../../../../lib/store";
+import { useTranslation } from "react-i18next";
+
 
 const AdminRoles = () => {
+    const { t } = useTranslation(); 
+  
   const navigate = useNavigate()
   const [rolesList, setRolesList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,7 +59,7 @@ const AdminRoles = () => {
       <div className="main-header-box mt-4">
         <div className="pages-box">
           
-          <h2 className="mb-4">Staff Roles</h2>
+          <h2 className="mb-4">{t("Staff Roles")}</h2>
           <div className="">
             <Table
               hover
@@ -72,7 +76,7 @@ const AdminRoles = () => {
                       background: "#e5e5e5",
                     }}
                   >
-                    Role Name
+                    {t("Role Name")}
                   </th>
                   <th
                     style={{
@@ -81,7 +85,7 @@ const AdminRoles = () => {
                       background: "#e5e5e5",
                     }}
                   >
-                    Role Level
+                    {t("Role Level")}
                   </th>
                   <th
                     style={{
@@ -90,19 +94,19 @@ const AdminRoles = () => {
                       background: "#e5e5e5",
                     }}
                   >
-                    Role Description
+                    {t("Role Description")}
                   </th>
                   <th
                     className="text-center"
                     style={{ width: "10%", background: "#e5e5e5" }}
                   >
-                    # of Users
+                    # {t("of Users")}
                   </th>
                   <th
                     className="text-center"
                     style={{ width: "10%", background: "#e5e5e5" }}
                   >
-                    Action
+                    {t("Action")}
                   </th>
                 </tr>
               </thead>
@@ -114,7 +118,7 @@ const AdminRoles = () => {
                       <BeatLoader size={12} color={"#3C3C3C"} style={{
                         display:"flex",justifyContent:"center"
                       }}/>
-                      <p className="mt-2">Loading...</p>
+                      <p className="mt-2">{t("Loading...")}</p>
                     </td>
                   </tr>
                 ) : (
@@ -170,7 +174,7 @@ const AdminRoles = () => {
                   ))
                   :
                   <tr>
-                    <td colSpan="5" className="text-center py-5">No roles found.</td>
+                    <td colSpan="5" className="text-center py-5">{t("No roles found")}.</td>
                   </tr>
                 )}
               </tbody>
@@ -183,7 +187,7 @@ const AdminRoles = () => {
                 onClick={() => handlePageChange("previous")}
                 disabled={currentPage === 1}
               >
-                &laquo; Previous
+                &laquo; {t("Previous")}
               </Button>
               <Button variant="outline-secondary" size="sm" className="me-2">
                 {currentPage}
@@ -194,7 +198,7 @@ const AdminRoles = () => {
                 onClick={() => handlePageChange("next")}
                 disabled={currentPage * rowsPerPage >= rolesList?.length}
               >
-                Next &raquo;
+                {t("Next")} &raquo;
               </Button>
             </div>
           </div>

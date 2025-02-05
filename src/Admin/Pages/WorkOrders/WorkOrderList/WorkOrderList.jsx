@@ -9,8 +9,12 @@ import { FaInfoCircle, FaEdit, FaClipboardList } from "react-icons/fa";
 import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
+
 
 const WorkOrderList = () => {
+  const { t } = useTranslation(); 
+  
   const [isLoading, setLoading] = useState(true);
   const [tableData, setTableData] = useState([]);
   console.log("dadsaasd", tableData);
@@ -158,7 +162,7 @@ const WorkOrderList = () => {
   const handleClear = () => {
     setSearchQuery("");
   };
-  console.log("filterDataa", filteredtable);
+  // console.log("filterDataa", filteredtable);
 
   return (
     <>
@@ -174,18 +178,18 @@ const WorkOrderList = () => {
             }}
           >
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h4 className="mb-0">Work Order List</h4>
+              <h4 className="mb-0">{t("Work Order List")}</h4>
               <div className="d-flex gap-2">
                 <Form.Control
                   type="text"
-                  placeholder="Search..."
+                  placeholder={t("Search...")}
                   className="me-2"
                   style={{ width: "200px" }}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <Button variant="secondary" onClick={handleClear}>
-                  Clear
+                  {t("Clear")}
                 </Button>
               </div>
             </div>
@@ -204,7 +208,7 @@ const WorkOrderList = () => {
                         background: "#e5e5e5",
                       }}
                     >
-                      {header}
+                      {t(header)}
                     </th>
                   ))}
                 </tr>
@@ -217,7 +221,7 @@ const WorkOrderList = () => {
                       color={"#3C3C3C"}
                       style={{ display: "flex", justifyContent: "center" }}
                     />
-                    <p className="mt-2">Loading...</p>
+                    <p className="mt-2">{t("Loading...")}</p>
                   </td>
                 </tr>
               ) : (

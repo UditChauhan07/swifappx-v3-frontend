@@ -1226,7 +1226,7 @@ const { t, i18n } = useTranslation();
                             variant="outline-primary"
                             className="me-2 mb-2"
                           >
-                            {day}
+                            {t(day)}
                           </ToggleButton>
                         ))}
                         {["Saturday", "Sunday"].map((day, index) => (
@@ -1237,7 +1237,7 @@ const { t, i18n } = useTranslation();
                             variant="outline-secondary"
                             className="me-2 mb-2"
                           >
-                            {day}
+                            {t(day)}
                           </ToggleButton>
                         ))}
                       </ToggleButtonGroup>
@@ -1390,7 +1390,7 @@ const { t, i18n } = useTranslation();
               {t("Previous")}
             </Button>
             <Button
-              variant="primary"
+              type="submit"
               onClick={() => {
                 handleNext();
                 handleSubmit();

@@ -190,7 +190,7 @@
 
 
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -199,6 +199,8 @@ import { usePermissions } from "../../../../context/PermissionContext";
 import { createOfficeUser, fetchRolesList } from "../../../../lib/store";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 
 const validationSchema = Yup.object({
   firstName: Yup.string().trim().required("First Name is required").min(4,"Must be at least 4 characters"),
@@ -220,6 +222,7 @@ const validationSchema = Yup.object({
 
 
 const Create = () => {
+    const { t } = useTranslation(); 
   const [roles, setRoles] = useState([]);
 const token = localStorage.getItem("UserToken");
 const userid = localStorage.getItem("userId");
@@ -262,7 +265,7 @@ const fileToBase64 = (file) => {
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Enter User Details</h4>
+              <h4 className="mb-0">{t("Enter User Details")}</h4>
             </div>
 
             {/* Formik Form */}
@@ -372,7 +375,7 @@ const fileToBase64 = (file) => {
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>First Name*</Form.Label>
+                        <Form.Label>{t("First Name")}*</Form.Label>
                         <Field className="form-control" type="text" name="firstName" maxLength={40}/>
                         <ErrorMessage name="firstName" component="div" className="text-danger" />
                       </Form.Group>
@@ -380,7 +383,7 @@ const fileToBase64 = (file) => {
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Last Name*</Form.Label>
+                        <Form.Label>{t("Last Name")}*</Form.Label>
                         <Field className="form-control" type="text" name="lastName" maxLength={40}/>
                         <ErrorMessage name="lastName" component="div" className="text-danger" />
                       </Form.Group>
@@ -388,7 +391,7 @@ const fileToBase64 = (file) => {
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Email Address*</Form.Label>
+                        <Form.Label>{t("Email Address")}*</Form.Label>
                         <Field className="form-control" type="email" name="email" maxLength={50}/>
                         <ErrorMessage name="email" component="div" className="text-danger" />
                       </Form.Group>
@@ -396,7 +399,7 @@ const fileToBase64 = (file) => {
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Password*</Form.Label>
+                        <Form.Label>{t("Password")}*</Form.Label>
                         <Field className="form-control" type="password" name="password" maxLength={30}/>
                         <ErrorMessage name="password" component="div" className="text-danger" />
                       </Form.Group>
@@ -404,14 +407,14 @@ const fileToBase64 = (file) => {
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Contact Number*</Form.Label>
+                        <Form.Label>{t("Contact Number")}*</Form.Label>
                         <Field className="form-control" type="tel" name="contactNumber" maxLength={20}/>
                         <ErrorMessage name="contactNumber" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Profile Picture</Form.Label>
+                        <Form.Label>{t("Profile Picture")}</Form.Label>
                         <input
                           className="form-control"
                           type="file"
@@ -421,13 +424,13 @@ const fileToBase64 = (file) => {
                     </Col>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>User's Address  </Form.Label>
-                        <Field className="form-control" as="textarea" rows={2} name="address" maxLength={200} rows={1}/>
+                        <Form.Label>{t("User's Address")}  </Form.Label>
+                        <Field className="form-control" as="textarea" rows={2} name="address" maxLength={200} />
                       </Form.Group>
                     </Col>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>City*</Form.Label>
+                        <Form.Label>{t("City")}*</Form.Label>
                         <Field className="form-control" type="text" name="city" maxLength={40}/>
                         <ErrorMessage name="city" component="div" className="text-danger" />
                       </Form.Group>
@@ -435,7 +438,7 @@ const fileToBase64 = (file) => {
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>State*</Form.Label>
+                        <Form.Label>{t("State")}*</Form.Label>
                         <Field className="form-control" type="text" name="state" maxLength={40}/>
                         <ErrorMessage name="state" component="div" className="text-danger" />
                       </Form.Group>
@@ -443,7 +446,7 @@ const fileToBase64 = (file) => {
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>ZIP/Postal Code*</Form.Label>
+                        <Form.Label>{t("ZIP/Postal Code")}*</Form.Label>
                         <Field className="form-control" type="text" name="zip" maxLength={10}/>
                         <ErrorMessage name="zip" component="div" className="text-danger" />
                       </Form.Group>
@@ -452,9 +455,9 @@ const fileToBase64 = (file) => {
                 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Country*</Form.Label>
+                        <Form.Label>{t("Country")}*</Form.Label>
                         <Field as="select" className="form-control" name="country">
-                          <option value="">Select Country</option>
+                          <option value="">{t("Select Country")}</option>
                           <option value="USA">USA</option>
                           <option value="Canada">Canada</option>
                           <option value="India">India</option>
@@ -467,9 +470,9 @@ const fileToBase64 = (file) => {
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Choose Role*</Form.Label>
+                        <Form.Label>{t("Choose Role")}*</Form.Label>
                         <Field as="select" className="form-control" name="role">
-                          <option value="">Select Role</option>
+                          <option value="">{t("Select Role")}</option>
                           {roles.length>0 && roles?.map((role) => (
                             <option key={role.id} value={role.id}>
                               {role.roleName}
@@ -484,16 +487,16 @@ const fileToBase64 = (file) => {
 
                     <Col md={6} className="d-flex align-items-center">
                       <Field type="checkbox" name="activateUser" className="form-check-input" />
-                      <label className="form-check-label ms-2">Activate this User</label>
+                      <label className="form-check-label ms-2">{t("Activate this User")}</label>
                     </Col>
                   </Row>
 
                   <div className="text-center">
                     <Button variant="primary" type="submit" disabled={isSubmitting} className="me-2">
-                      Save
+                      {t("Save")}
                     </Button>
                     <Button variant="secondary" type="reset">
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                   </div>
                 </FormikForm>
