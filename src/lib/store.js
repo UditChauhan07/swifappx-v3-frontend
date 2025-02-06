@@ -184,9 +184,13 @@ export const fetchRolesList = async (userid, token) => {
 };
 
 // Create User Role
-export const createUserRole = async (finalData) => {
+export const createUserRole = async (finalData,token) => {
   try {
-    const response = await axios.post(`${Url}/cork654m78`, finalData);
+    const response = await axios.post(`${Url}/cork654m78`, finalData,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     // console.log(response.data, "login api data");
     return response.data;
   } catch (error) {
@@ -198,12 +202,18 @@ export const createUserRole = async (finalData) => {
 };
 
 // Get Role List
-export const getRoles = async (finalData) => {
+export const getRoles = async (finalData,token) => {
   // console.log("finalData", finalData);
   const userId = finalData;
   try {
     const response = await axios.get(`${Url}/ofmg4j3er6`, {
-      params: { userId },
+      params: { userId },headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     // console.log(response.data, "login api data");
     return response.data;
@@ -322,7 +332,46 @@ export const DeleteCustomerApi = async (userId, token) => {
 // Work Order Create
 export const createWorkOrderApi = async (finalData,token) => {
   try {
-    const response = await axios.post(`${Url}/cwok3245tr`, finalData, {
+    const response = await axios.post(`${Url}/cwok431m56`, finalData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Work Order List
+export const fetchWorkOrderList = async (companyId, token) => {
+  try {
+    const response = await axios.get(
+      `${Url}/gwok32m76nh/${companyId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Work Order Delete Api
+export const workOrderDeleteApi = async (userId, token) => {
+  try {
+    const response = await axios.delete(`${Url}/dwo32mt54f/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

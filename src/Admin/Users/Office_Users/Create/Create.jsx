@@ -495,7 +495,7 @@ const fileToBase64 = (file) => {
                     <Button variant="primary" type="submit" disabled={isSubmitting} className="me-2">
                       {t("Save")}
                     </Button>
-                    <Button variant="secondary" type="reset">
+                    <Button variant="secondary" type="reset" onClick={()=> navigate('/dashboard/admin')}>
                       {t("Cancel")}
                     </Button>
                   </div>

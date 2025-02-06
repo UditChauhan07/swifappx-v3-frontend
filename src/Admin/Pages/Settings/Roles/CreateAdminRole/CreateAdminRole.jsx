@@ -10,12 +10,12 @@ import { useTranslation } from "react-i18next";
 
 const CreateAdminRole = () => {
     const { t } = useTranslation(); 
-  
   const {getRoles}=usePermissions();
   const navigate = useNavigate()
   const [permissions, setPermissions] = useState({});
   const company_id=localStorage.getItem("companyId")||null;
   const [userId, setuserId] = useState(localStorage.getItem("userId"));
+  const [token, settoken] = useState(localStorage.getItem("UserToken"));
   const [errors, setErrors] = useState({
     roleName: "",
     roleDescription: "",
@@ -181,7 +181,7 @@ const CreateAdminRole = () => {
     });
 
     try {
-      const response = await createUserRole(roleData);
+      const response = await createUserRole(roleData,token);
 
       Swal.close();
 

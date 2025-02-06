@@ -18,7 +18,7 @@ export const PermissionsProvider = ({ children }) => {
         // console.log(`userid: ${userID}  `);
         const token = localStorage.getItem('UserToken');
         const url = `${Url}/srw4rdxkh8/ywqg21sh72?userId=${encodeURIComponent(userID)}`;
-        const response=await fetchRolesList(userID,)
+        const response=await fetchRolesList(userID,token)
         // const response = await axios.get(url, {
         //   headers: {
         //     Authorization: `Bearer ${token}`,

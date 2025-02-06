@@ -16,13 +16,14 @@ const AdminRoles = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setuserId] = useState(localStorage.getItem("userId"));
+  const [token, settoken] = useState(localStorage.getItem("UserToken"));
   const rowsPerPage = 4;
 
   useEffect(() => {
     const fetchRoles = async () => {
       setIsLoading(true);
       try {
-        const response = await getRoles(userId);
+        const response = await getRoles(userId,token);
         console.log("dasda", response);
         setRolesList(response?.data);
       } catch (error) {
@@ -155,7 +156,7 @@ const AdminRoles = () => {
                       >
                         {role.roleDescription}
                       </td>
-                      <td className="text-center">0</td>
+                      <td className="text-center">{role.userCount}</td>
                       <td className="text-center">
                         <Button
                           variant="outline-secondary"

@@ -1509,5 +1509,7 @@
     "List Roles":"Listar roles",
     "view":"vista",
     "Enter Role Name":"Introduzca el nombre del rol" ,
-    "No roles found":"No se encontraron roles"   
+    "No roles found":"No se encontraron roles",
+    "Enter Phone Number":"Ingrese el número de teléfono",
+    "Phone Number":"Número de teléfono"  
 }

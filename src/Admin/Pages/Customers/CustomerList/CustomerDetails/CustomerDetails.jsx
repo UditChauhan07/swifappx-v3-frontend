@@ -50,9 +50,9 @@ const CustomerDetails = () => {
 
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  {t("Type")}:
+                  {t("Phone Number")}:
                 </Col>
-                <Col>{customer.type}</Col>
+                <Col>{customer.phone}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
@@ -62,9 +62,9 @@ const CustomerDetails = () => {
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  {t("Initial Remarks")}:
+                  {t("Address")}:
                 </Col>
-                <Col>{customer.initial_remarks || "--"}</Col>
+                <Col>{customer.address || "--"}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">

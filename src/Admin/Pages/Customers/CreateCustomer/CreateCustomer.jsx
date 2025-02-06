@@ -6,33 +6,39 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-
 const CreateCustomer = () => {
-  const { t } = useTranslation(); 
-  
-  const navigate = useNavigate()
-  const [adminName, setadminName] = useState(localStorage.getItem("name"))
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [adminName] = useState(localStorage.getItem("name"));
   const [formData, setFormData] = useState({
     name: "",
-    type: "Individual",
     email: "",
-    initial_remarks: "",
+    phone: "", // Will store phone as a number once entered
+    address: "",
     company_id: localStorage.getItem("userId"),
-    created_by:adminName
+    created_by: adminName,
   });
-  const [token, settoken] = useState(localStorage.getItem("UserToken"))
+  const [token] = useState(localStorage.getItem("UserToken"));
 
+  // Errors for each field
   const [errors, setErrors] = useState({
     name: "",
     email: "",
+    phone: "",
+    address: "",
   });
 
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    let newValue = value;
+    // For the phone field, convert the value to a number (if not empty)
+    if (name === "phone") {
+      newValue = value === "" ? "" : Number(value);
+    }
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: newValue,
     });
 
     // Clear validation errors when the user starts typing
@@ -46,7 +52,12 @@ const CreateCustomer = () => {
 
   const validateForm = () => {
     let isValid = true;
-    const newErrors = { name: "", email: "" };
+    const newErrors = {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+    };
 
     // Validate name
     if (!formData.name.trim()) {
@@ -54,12 +65,28 @@ const CreateCustomer = () => {
       isValid = false;
     }
 
-    // Validate email
+    // Validate email using a stricter regex
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
       isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Email is invalid";
+      isValid = false;
+    }
+
+    // Validate phone: it must be a number and exactly 10 digits.
+    // Note: Using a number field means leading zeros may be lost.
+    if (formData.phone === "" || formData.phone === null) {
+      newErrors.phone = "Phone is required";
+      isValid = false;
+    } else if (!/^\d{10,15}$/.test(formData.phone)) {
+      newErrors.phone = "Phone must contain between 10 and 15 digits";
+      isValid = false;
+    }
+
+    // Validate address
+    if (!formData.address.trim()) {
+      newErrors.address = "Address is required";
       isValid = false;
     }
 
@@ -98,10 +125,10 @@ const CreateCustomer = () => {
     });
 
     try {
-      const response = await createCustomerApi(formData,token);
+      const response = await createCustomerApi(formData, token);
 
       Swal.close();
-      console.log("Form submitted successfully:", formData);
+      // console.log("Form submitted successfully:", formData);
 
       if (response.status === true) {
         Swal.fire({
@@ -110,13 +137,15 @@ const CreateCustomer = () => {
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
-          navigate("/customers/list"); // Navigate after confirmation
-        });;
+          navigate("/customers/list");
+        });
         setFormData({
           name: "",
-          type: "Individual",
           email: "",
-          initial_remarks: "",
+          phone: "",
+          address: "",
+          company_id: localStorage.getItem("userId"),
+          created_by: adminName,
         });
       } else {
         Swal.fire({
@@ -126,16 +155,9 @@ const CreateCustomer = () => {
           confirmButtonText: "Try Again",
         });
       }
-      setFormData({
-        name: "",
-        type: "Individual",
-        email: "",
-        initial_remarks: "",
-      });
     } catch (error) {
       Swal.close();
       console.error("API Error:", error);
-
       Swal.fire({
         title: "API Error!",
         text: "Something went wrong. Please try again later.",
@@ -164,10 +186,11 @@ const CreateCustomer = () => {
             </div>
             <Form onSubmit={handleSubmit}>
               <Row>
+                {/* Name Field */}
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formName">
                     <Form.Label>
-                      {t("Name")}<span className="text-danger">*</span>
+                      {t("Name")} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       type="text"
@@ -183,27 +206,12 @@ const CreateCustomer = () => {
                   </Form.Group>
                 </Col>
 
-                <Col md={12}>
-                  <Form.Group className="mb-3" controlId="formType">
-                    <Form.Label>
-                      {t("Type")}<span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Select
-                      name="type"
-                      value={formData.type}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="Individual">{t("Individual")}</option>
-                      <option value="Company">{t("Company")}</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-
+                {/* Email Field */}
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formEmail">
                     <Form.Label>
-                      {t("Email Address")}<span className="text-danger">*</span>
+                      {t("Email Address")}{" "}
+                      <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       type="email"
@@ -219,17 +227,43 @@ const CreateCustomer = () => {
                   </Form.Group>
                 </Col>
 
+                {/* Phone Field */}
                 <Col md={12}>
-                  <Form.Group className="mb-3" controlId="forminitial_remarks">
-                    <Form.Label>{t("Initial Remarks")}</Form.Label>
+                  <Form.Group className="mb-3" controlId="formPhone">
+                    <Form.Label>
+                      {t("Phone")} <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
-                      as="textarea"
-                      rows={3}
-                      placeholder={t("Enter Initial Remarks")}
-                      name="initial_remarks"
-                      value={formData.initial_remarks}
+                      type="number"
+                      placeholder={t("Enter Phone Number")}
+                      name="phone"
+                      value={formData.phone}
                       onChange={handleInputChange}
+                      isInvalid={!!errors.phone}
                     />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.phone}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+
+                {/* Address Field */}
+                <Col md={12}>
+                  <Form.Group className="mb-3" controlId="formAddress">
+                    <Form.Label>
+                      {t("Address")} <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder={t("Enter Address")}
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      isInvalid={!!errors.address}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.address}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
               </Row>
@@ -245,7 +279,11 @@ const CreateCustomer = () => {
                 >
                   {t("Save")}
                 </Button>
-                <Button variant="secondary" type="button">
+                <Button
+                  variant="secondary"
+                  type="button"
+                  onClick={() => navigate("/customers/list")}
+                >
                   {t("Back to Customer List")}
                 </Button>
               </div>

@@ -4,6 +4,8 @@ import Header from "../../../../Components/Header/Header";
 import {
   delete_FieldUser,
   fetch_FieldUserOfCompany,
+  fetchWorkOrderList,
+  workOrderDeleteApi,
 } from "../../../../lib/store";
 import { FaInfoCircle, FaEdit, FaClipboardList } from "react-icons/fa";
 import { BeatLoader } from "react-spinners";
@@ -11,23 +13,22 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 
-
 const WorkOrderList = () => {
-  const { t } = useTranslation(); 
-  
+  const { t } = useTranslation();
+
   const [isLoading, setLoading] = useState(true);
   const [tableData, setTableData] = useState([]);
-  console.log("dadsaasd", tableData);
+  console.log("tabledata", tableData);
   const [searchQuery, setSearchQuery] = useState("");
   const token = localStorage.getItem("UserToken");
   const company_id = localStorage.getItem("companyId") || null;
   const navigate = useNavigate();
 
   const fetchData = () => {
-    const response = fetch_FieldUserOfCompany(company_id, token)
+    const response = fetchWorkOrderList(company_id, token)
       .then((response) => {
         if (response.success === true) {
-          setTableData(response.data);
+          setTableData(response?.workOrders);
         }
       })
       .catch((error) => {
@@ -42,12 +43,12 @@ const WorkOrderList = () => {
     fetchData();
   }, []);
   const tableHeaders = [
-    "Full Name & Location",
-    "Email Address",
-    "Username",
+    "Work Order Num",
+    "Date & Time",
+    "Custome Name & Address",
+    "Work Item Name",
     "Status",
-    "Country",
-    "Created By",
+    "Worker Name",
     "Action",
   ];
 
@@ -120,8 +121,8 @@ const WorkOrderList = () => {
   //     ),
   //   },
   // ];
-  const handleToPreview = async (row) => {
-    navigate("/users/field/list/view", { state: { row } });
+  const handleToPreview = async (workOrder) => {
+    navigate("/workorder/list/details", { state: { workOrder } });
   };
 
   const handleDelete = (id) => {
@@ -136,8 +137,8 @@ const WorkOrderList = () => {
       reverseButtons: true, // Reverse the order of the buttons (Cancel left, Confirm right)
     }).then((result) => {
       if (result.isConfirmed) {
-        delete_FieldUser(id, token).then((result) => {
-          if (result.success === true) {
+        workOrderDeleteApi(id, token).then((result) => {
+          if (result.status === true) {
             fetchData();
           } else {
             Swal.fire("Error", result.message, "error");
@@ -150,14 +151,14 @@ const WorkOrderList = () => {
   };
 
   const handleEdit = (row) => {
-    navigate("/users/field/edit", { state: { row } });
+    navigate("/workorder/list/edit", { state: { row } });
   };
 
-  const filteredtable = tableData.filter(
-    (tableData) =>
-      tableData.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tableData.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredtable = tableData.filter(
+  //   (tableData) =>
+  //     tableData.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     tableData.email.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
 
   const handleClear = () => {
     setSearchQuery("");
@@ -227,8 +228,8 @@ const WorkOrderList = () => {
               ) : (
                 <>
                   <tbody>
-                    {filteredtable.length > 0 ? (
-                      filteredtable.map((row, index) => (
+                    {tableData.length > 0 ? (
+                      tableData.map((row, index) => (
                         <tr
                           key={index}
                           style={{
@@ -246,9 +247,8 @@ const WorkOrderList = () => {
                             }}
                           >
                             <div>
-                              <strong>{row.name}</strong>
-                              <br />
-                              {row.address}
+                              {/* <strong>{row.name}</strong> */}
+                              {row.id}
                             </div>
                           </td>
                           <td
@@ -259,7 +259,8 @@ const WorkOrderList = () => {
                               color: "#4B5563",
                             }}
                           >
-                            {row.email}
+                            {row.basicWorkorderDetails.startDate} &{" "}
+                            {row.basicWorkorderDetails.startTime}
                           </td>
                           <td
                             style={{
@@ -269,7 +270,8 @@ const WorkOrderList = () => {
                               color: "#4B5563",
                             }}
                           >
-                            {row.username}
+                            {row.customerDetailSection.CustomerName} , `[
+                            {row.customerDetailSection.CustomerAddress}]`
                           </td>
                           <td
                             style={{
@@ -278,15 +280,20 @@ const WorkOrderList = () => {
                               fontSize: "0.9rem",
                               color: "#4B5563",
                             }}
+                            title={row.workorderDetails
+                              .map((item) => item.workItem)
+                              .join(", ")} // Full list on hover
                           >
-                            <Form.Check
-                              type="switch"
-                              id="status-switch"
-                              label={row.isActive == 1 ? "Active" : "Unactive"}
-                              checked={
-                                row.isActive == 1 ? "Active" : "Unactive"
-                              }
-                            />
+                            {row.workorderDetails
+                              .slice(0, 2)
+                              .map((item, index) => (
+                                <span key={index}>
+                                  {item.workItem}
+                                  {index < 1 && row.workorderDetails.length > 2
+                                    ? ", ..."
+                                    : ""}
+                                </span>
+                              ))}
                           </td>
                           <td
                             style={{
@@ -296,7 +303,7 @@ const WorkOrderList = () => {
                               color: "#4B5563",
                             }}
                           >
-                            {row.country}
+                            {row.status}
                           </td>
                           <td
                             style={{
@@ -306,7 +313,7 @@ const WorkOrderList = () => {
                               color: "#4B5563",
                             }}
                           >
-                            {row.created_by}
+                            {row.basicWorkorderDetails.WorkerName}
                           </td>
                           <td style={{ textAlign: "center", padding: "15px" }}>
                             <div className="d-flex gap-2 justify-content-center">

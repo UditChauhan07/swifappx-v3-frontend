@@ -187,7 +187,7 @@ const CustomerList = () => {
                     background: "#e5e5e5",
                   }}
                 >
-                  {t("Type")}
+                  {t("Phone Number")}
                 </th>
                 <th
                   style={{
@@ -255,7 +255,7 @@ const CustomerList = () => {
                         color: "#4B5563",
                       }}
                     >
-                      {customer.type}
+                      {customer.phone}
                     </td>
                     <td
                       style={{

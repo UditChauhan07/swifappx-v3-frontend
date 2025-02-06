@@ -344,7 +344,7 @@ const CreateFieldUser = () => {
                 <Button type="submit" className="me-2" style={{ backgroundColor: "#8d28dd", border: "none" }}>
                   {t("Save")}
                 </Button>
-                <Button variant="secondary" type="button">
+                <Button variant="secondary" type="button" onClick={()=> navigate("/dashboard/admin")}>
                   {t("Cancel")}
                 </Button>
               </div>
