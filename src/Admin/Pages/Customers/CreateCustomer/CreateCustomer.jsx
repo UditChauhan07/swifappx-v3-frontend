@@ -102,12 +102,12 @@ const CreateCustomer = () => {
     }
 
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to create customer?",
+      title: t("Are you sure?"),
+      text: t("Do you want to create customer?"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, create it!",
-      cancelButtonText: "No, cancel",
+      confirmButtonText: t("Yes, create it!"),
+      cancelButtonText: t("No, cancel"),
     });
 
     if (!result.isConfirmed) {
@@ -116,8 +116,8 @@ const CreateCustomer = () => {
     }
 
     Swal.fire({
-      title: "Processing...",
-      text: "Creating Customer, please wait.",
+      title: t("Processing..."),
+      text: t("Creating Customer, please wait."),
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -132,10 +132,10 @@ const CreateCustomer = () => {
 
       if (response.status === true) {
         Swal.fire({
-          title: "Success!",
-          text: "Customer created successfully.",
+          title: t("Success!"),
+          text: t("Customer created successfully."),
           icon: "success",
-          confirmButtonText: "OK",
+          confirmButtonText: t("OK"),
         }).then(() => {
           navigate("/customers/list");
         });
@@ -150,19 +150,19 @@ const CreateCustomer = () => {
       } else {
         Swal.fire({
           title: "Error!",
-          text: response.message || "There was an error creating the Customer.",
+          text: response.message || t("There was an error creating the Customer."),
           icon: "error",
-          confirmButtonText: "Try Again",
+          confirmButtonText: t("Try Again"),
         });
       }
     } catch (error) {
       Swal.close();
       console.error("API Error:", error);
       Swal.fire({
-        title: "API Error!",
-        text: "Something went wrong. Please try again later.",
+        title: t("API Error!"),
+        text: t("Something went wrong. Please try again later."),
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: t("OK"),
       });
     }
   };

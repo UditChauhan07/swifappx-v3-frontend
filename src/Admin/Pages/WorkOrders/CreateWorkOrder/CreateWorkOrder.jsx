@@ -210,19 +210,19 @@ const CreateWorkOrder = () => {
     console.log("Final Data Sent:", finalData);
 
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to create Work Order?",
+      title: t("Are you sure?"),
+      text: t("Do you want to create Work Order?"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, create it!",
-      cancelButtonText: "No, cancel",
+      confirmButtonText: t("Yes, create it!"),
+      cancelButtonText: t("No, cancel"),
     });
 
     if (!result.isConfirmed) return;
 
     Swal.fire({
-      title: "Processing...",
-      text: "Creating Work Order, please wait.",
+      title: t("Processing..."),
+      text: t("Creating Work Order, please wait."),
       allowOutsideClick: false,
       didOpen: () => Swal.showLoading(),
     });
@@ -233,10 +233,10 @@ const CreateWorkOrder = () => {
 
       if (response.status === true) {
         Swal.fire({
-          title: "Success!",
-          text: "Work Order created successfully.",
+          title: t("Success!"),
+          text: t("Work Order created successfully."),
           icon: "success",
-          confirmButtonText: "OK",
+          confirmButtonText: t("OK"),
         }).then(() => {
           navigate("/workorder/list");
         });
@@ -244,7 +244,7 @@ const CreateWorkOrder = () => {
         Swal.fire({
           title: "Error!",
           text:
-            response.message || "There was an error creating the Work Order.",
+            response.message || t("There was an error creating the Work Order."),
           icon: "error",
           confirmButtonText: "Try Again",
         });
@@ -252,8 +252,8 @@ const CreateWorkOrder = () => {
     } catch (error) {
       Swal.close();
       Swal.fire({
-        title: "API Error!",
-        text: "Something went wrong. Please try again later.",
+        title: t("API Error!"),
+        text: t("Something went wrong. Please try again later."),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -357,7 +357,7 @@ const CreateWorkOrder = () => {
                     <Col sm={9}>
                       <Form.Check
                         type="radio"
-                        label="Yes"
+                        label={t("Yes")}
                         name="sendNotification"
                         id="notificationYes"
                         inline
@@ -366,7 +366,7 @@ const CreateWorkOrder = () => {
                       />
                       <Form.Check
                         type="radio"
-                        label="No"
+                        label={t("No")}
                         name="sendNotification"
                         id="notificationNo"
                         inline
@@ -604,7 +604,7 @@ const CreateWorkOrder = () => {
 
             {/* Submit Workorder */}
             <div className="text-center mb-4">
-              <Button onClick={handleSubmitWorkOrder}>
+              <Button onClick={handleSubmitWorkOrder} type="submit">
                 {t("Submit Workorder")}
               </Button>
             </div>

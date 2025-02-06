@@ -170,8 +170,8 @@ const CreateFieldUser = () => {
       const response =await create_FieldUser(values,token);
         if(response.success){
            Swal.fire({
-            title: 'Success',
-            text: 'Field User Created Successfully',
+            title: t("Success"),
+            text: t("Field User Created Successfully"),
             icon: 'success',
             timer: 1400, // Time in milliseconds (1400 ms = 1.4 seconds)
             showConfirmButton: false, // Optional: Hide the confirm button

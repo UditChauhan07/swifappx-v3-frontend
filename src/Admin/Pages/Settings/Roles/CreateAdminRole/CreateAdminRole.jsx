@@ -158,12 +158,12 @@ const CreateAdminRole = () => {
     };
 
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to create this role?",
+      title: t("Are you sure?"),
+      text: t("Do you want to create this role?"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, create it!",
-      cancelButtonText: "No, cancel",
+      confirmButtonText: t("Yes, create it!"),
+      cancelButtonText: t("No, cancel"),
     });
 
     if (!result.isConfirmed) {
@@ -172,8 +172,8 @@ const CreateAdminRole = () => {
     }
 
     Swal.fire({
-      title: "Processing...",
-      text: "Creating role, please wait.",
+      title: t("Processing..."),
+      text: t("Creating role, please wait."),
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -191,10 +191,10 @@ const CreateAdminRole = () => {
         setErrors({ roleName: "", roleDescription: "", permissions: "" });
 
         await Swal.fire({
-          title: "Success!",
-          text: "Role has been created successfully.",
+          title: t("Success!"),
+          text: t("Role has been created successfully."),
           icon: "success",
-          confirmButtonText: "OK",
+          confirmButtonText: t("OK"),
         }).then(() => {
           getRoles(userId)
           navigate("/settings/admin/roles"); // Navigate after confirmation
@@ -203,9 +203,9 @@ const CreateAdminRole = () => {
         // Show error message if response is not successful
         await Swal.fire({
           title: "Error!",
-          text: response.message || "There was an error creating the role.",
+          text: response.message || t("There was an error creating the role."),
           icon: "error",
-          confirmButtonText: "Try Again",
+          confirmButtonText: t("Try Again"),
         });
       }
     } catch (error) {
@@ -213,10 +213,10 @@ const CreateAdminRole = () => {
       console.error("API Error:", error);
 
       Swal.fire({
-        title: "API Error!",
-        text: "Something went wrong. Please try again later.",
+        title: t("API Error!"),
+        text: t("Something went wrong. Please try again later."),
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: t("OK"),
       });
     }
   };

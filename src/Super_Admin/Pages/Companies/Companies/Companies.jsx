@@ -82,12 +82,12 @@ const Companies = () => {
     // console.log("dddddd", item);
 
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You are about to delete this company",
+      title: t("Are you sure?"),
+      text: t("You are about to delete this company"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, Delete it!",
-      cancelButtonText: "No, cancel",
+      confirmButtonText: t("Yes, Delete it!"),
+      cancelButtonText: t("No, cancel"),
     });
 
     if (!result.isConfirmed) {
@@ -96,8 +96,8 @@ const Companies = () => {
     }
 
     Swal.fire({
-      title: "Deletingg...",
-      text: "Deleting Company, please wait.",
+      title: t("Deletingg..."),
+      text: t("Deleting Company, please wait."),
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -114,17 +114,17 @@ const Companies = () => {
           prevList.filter((company) => company.company.id !== item)
         );
         Swal.fire({
-          title: "Success!",
-          text: "Company Deleted successfully.",
+          title: t("Success!"),
+          text: t("Company Deleted successfully."),
           icon: "success",
-          confirmButtonText: "OK",
+          confirmButtonText: t("OK"),
         });
       } else {
         Swal.fire({
-          title: "Error!",
-          text: response.message || "There was an error Deleting company.",
+          title: t("Error!"),
+          text: response.message || t("There was an error Deleting company."),
           icon: "error",
-          confirmButtonText: "Try Again",
+          confirmButtonText: t("Try Again"),
         });
       }
     } catch (error) {
@@ -133,10 +133,10 @@ const Companies = () => {
       console.error("API Error:", error);
 
       Swal.fire({
-        title: "API Error!",
-        text: "Something went wrong. Please try again later.",
+        title: t("API Error!"),
+        text: t("Something went wrong. Please try again later."),
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: t("OK"),
       });
     }
   };

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
-import { Bar } from "react-chartjs-2";
+import { Container, Row, Col, Card, Dropdown } from "react-bootstrap";
+import { Line } from "react-chartjs-2";
 import Header from "../../../Components/Header/Header";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
@@ -20,7 +21,8 @@ import { getAdminDashboardDetails } from "../../../lib/store";
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  BarElement,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend
@@ -33,43 +35,31 @@ const AdminDashboard = () => {
   const userid = localStorage.getItem("userId");
   const companyId = localStorage.getItem("companyId");
 
-  // State to hold the dashboard data fetched from the API
+  // State for dashboard data
   const [dashboardData, setDashboardData] = useState({
     scheduled: { today: 0, thisWeek: 0, thisMonth: 0 },
     completed: { today: 0, thisWeek: 0, thisMonth: 0 },
     cancelled: { today: 0, thisWeek: 0, thisMonth: 0 },
   });
 
-  // Get user roles if a userId is available.
+  // Current selection for the chart (default: Scheduled)
+  const [selectedCategory, setSelectedCategory] = useState("scheduled");
+
   useEffect(() => {
     if (userid) {
       getRoles(userid);
     }
   }, [userid]);
 
-  // Fetch dashboard details from API
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getAdminDashboardDetails(companyId, token);
-        console.log("dasdsaa", response);
         if (response.success === true && response.data) {
           setDashboardData({
-            scheduled: {
-              today: response.data.scheduled.today,
-              thisWeek: response.data.scheduled.thisWeek,
-              thisMonth: response.data.scheduled.thisMonth,
-            },
-            completed: {
-              today: response.data.completed.today,
-              thisWeek: response.data.completed.thisWeek,
-              thisMonth: response.data.completed.thisMonth,
-            },
-            cancelled: {
-              today: response.data.cancelled.today,
-              thisWeek: response.data.cancelled.thisWeek,
-              thisMonth: response.data.cancelled.thisMonth,
-            },
+            scheduled: response.data.scheduled,
+            completed: response.data.completed,
+            cancelled: response.data.cancelled,
           });
         }
       } catch (error) {
@@ -80,27 +70,27 @@ const AdminDashboard = () => {
     fetchData();
   }, [token]);
 
-  // Chart data and options (static/dummy data for now)
+  // Chart data dynamically updates based on selectedCategory
   const chartData = {
-    labels: [
-      t("Day 1"),
-      t("Day 2"),
-      t("Day 3"),
-      t("Day 4"),
-      t("Day 5"),
-      t("Day 6"),
-      t("Day 7"),
-    ],
+    labels: [t("Today"), t("This Week"), t("This Month")],
     datasets: [
       {
-        label: t("Submitted Quotation"),
-        data: [2, 4, 6, 3, 5, 2, 7],
-        backgroundColor: "#2e2e32",
-      },
-      {
-        label: t("Converted Quotations"),
-        data: [1, 2, 3, 2, 4, 1, 6],
-        backgroundColor: "grey",
+        label: t(
+          selectedCategory === "scheduled"
+            ? "Work Orders Scheduled"
+            : selectedCategory === "completed"
+            ? "Work Orders Completed"
+            : "Work Orders Cancelled"
+        ),
+        data: [
+          dashboardData[selectedCategory].today,
+          dashboardData[selectedCategory].thisWeek,
+          dashboardData[selectedCategory].thisMonth,
+        ],
+        borderColor: selectedCategory === "scheduled" ? "#2e2e32" : "grey",
+        backgroundColor: selectedCategory === "scheduled" ? "#2e2e32" : "grey",
+        fill: true,
+        tension: 0.4, // Smooth curve
       },
     ],
   };
@@ -111,10 +101,7 @@ const AdminDashboard = () => {
       legend: { position: "top" },
     },
     scales: {
-      y: {
-        beginAtZero: true,
-        max: 10,
-      },
+      y: { beginAtZero: true },
     },
   };
 
@@ -124,9 +111,19 @@ const AdminDashboard = () => {
       <div className="main-header-box">
         <div className="mt-4 pages-box">
           <Container fluid>
+            {/* Stats Row */}
             <Row className="mb-4">
               <Col md={4}>
-                <Card style={{ backgroundColor: "#2e2e32", color: "white" }}>
+                <Card
+                  className="dashboard-card"
+                  onClick={() => setSelectedCategory("scheduled")}
+                  style={{
+                    backgroundColor:
+                      selectedCategory === "scheduled" ? "#2e2e32" : "grey",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
                   <Card.Body>
                     <h5>{t("Work Orders Scheduled")}</h5>
                     <hr style={{ borderColor: "white" }} />
@@ -143,7 +140,16 @@ const AdminDashboard = () => {
                 </Card>
               </Col>
               <Col md={4}>
-                <Card style={{ backgroundColor: "#2e2e32", color: "white" }}>
+                <Card
+                  className="dashboard-card"
+                  onClick={() => setSelectedCategory("completed")}
+                  style={{
+                    backgroundColor:
+                      selectedCategory === "completed" ? "#2e2e32" : "grey",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
                   <Card.Body>
                     <h5>{t("Work Orders Completed")}</h5>
                     <hr style={{ borderColor: "white" }} />
@@ -160,7 +166,16 @@ const AdminDashboard = () => {
                 </Card>
               </Col>
               <Col md={4}>
-                <Card style={{ backgroundColor: "#2e2e32", color: "white" }}>
+                <Card
+                  className="dashboard-card"
+                  onClick={() => setSelectedCategory("cancelled")}
+                  style={{
+                    backgroundColor:
+                      selectedCategory === "cancelled" ? "#2e2e32" : "grey",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
                   <Card.Body>
                     <h5>{t("Work Orders Cancelled")}</h5>
                     <hr style={{ borderColor: "white" }} />
@@ -178,12 +193,13 @@ const AdminDashboard = () => {
               </Col>
             </Row>
 
+            {/* Chart */}
             <Row>
               <Col md={12}>
                 <Card>
                   <Card.Body>
-                    <h5>{t("Quotation Chart")}</h5>
-                    <Bar data={chartData} options={chartOptions} />
+                    <h5>{t("Work Order Statistics")}</h5>
+                    <Line data={chartData} options={chartOptions} />
                   </Card.Body>
                 </Card>
               </Col>

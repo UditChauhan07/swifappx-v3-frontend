@@ -100,12 +100,12 @@ if (!formData.phone || String(formData.phone).trim() === "") {
     }
 
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to update this customer?",
+      title: t("Are you sure?"),
+      text: t("Do you want to update this customer?"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, update it!",
-      cancelButtonText: "No, cancel",
+      confirmButtonText: t("Yes, update it!"),
+      cancelButtonText: t("No, cancel"),
     });
 
     if (!result.isConfirmed) {
@@ -114,8 +114,8 @@ if (!formData.phone || String(formData.phone).trim() === "") {
     }
 
     Swal.fire({
-      title: "Processing...",
-      text: "Updating customer, please wait.",
+      title: t("Processing..."),
+      text: t("Updating customer, please wait."),
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -130,19 +130,19 @@ if (!formData.phone || String(formData.phone).trim() === "") {
 
       if (response.status === true) {
         Swal.fire({
-          title: "Success!",
-          text: "Customer updated successfully.",
+          title: t("Success!"),
+          text: t("Customer updated successfully."),
           icon: "success",
-          confirmButtonText: "OK",
+          confirmButtonText: t("OK"),
         }).then(() => {
           navigate("/customers/list");
         });
       } else {
         Swal.fire({
           title: "Error!",
-          text: response.message || "There was an error updating the customer.",
+          text: response.message || t("There was an error updating the customer."),
           icon: "error",
-          confirmButtonText: "Try Again",
+          confirmButtonText: t("Try Again"),
         });
       }
     } catch (error) {
@@ -150,10 +150,10 @@ if (!formData.phone || String(formData.phone).trim() === "") {
       console.error("API Error:", error);
 
       Swal.fire({
-        title: "API Error!",
-        text: "Something went wrong. Please try again later.",
+        title: t("API Error!"),
+        text: t("Something went wrong. Please try again later."),
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: t("OK"),
       });
     }
   };

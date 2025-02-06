@@ -128,12 +128,12 @@ const WorkOrderList = () => {
   const handleDelete = (id) => {
     // Show confirmation dialog
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: t("Are you sure?"),
+      text: t("You won't be able to revert this!"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      confirmButtonText: t("Yes, delete it!"),
+      cancelButtonText: t("Cancel"),
       reverseButtons: true, // Reverse the order of the buttons (Cancel left, Confirm right)
     }).then((result) => {
       if (result.isConfirmed) {
@@ -145,7 +145,7 @@ const WorkOrderList = () => {
           }
         });
 
-        Swal.fire("Deleted!", "Your user has been deleted.", "success");
+        Swal.fire(t("Deleted!"), t("Your user has been deleted."), "success");
       }
     });
   };

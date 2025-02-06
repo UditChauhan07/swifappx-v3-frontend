@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { FaInfoCircle, FaEdit, FaClipboardList } from "react-icons/fa";
 import { delete_OfficeUser } from "../../../lib/store";
+import { useTranslation } from "react-i18next";
+
 
 const UsersTabelComp = ({
   tableData,
@@ -18,6 +20,8 @@ const UsersTabelComp = ({
   const token = localStorage.getItem("UserToken");
   const company_id = localStorage.getItem("companyId") || null;
   const navigate = useNavigate();
+        const { t } = useTranslation(); 
+  
 
   const handleToPreview = async (row) => {
     navigate("/users/office/list/view", { state: { row } });
@@ -25,12 +29,12 @@ const UsersTabelComp = ({
 
   const handleDelete = (id) => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: t("Are you sure?"),
+      text: t("You won't be able to revert this!"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      confirmButtonText: t("Yes, delete it!"),
+      cancelButtonText: t("Cancel"),
       reverseButtons: true, // Reverse the order of the buttons (Cancel left, Confirm right)
     }).then((result) => {
       if (result.isConfirmed) {
@@ -44,8 +48,8 @@ const UsersTabelComp = ({
         });
 
         Swal.fire({
-          title: "Deleted!",
-          text: "Office user has been deleted.",
+          title: t("Deleted!"),
+          text: t("Office user has been deleted."),
           icon: "success",
           timer: 1400, // Time in milliseconds (1500 ms = 1.5 seconds)
           showConfirmButton: false, // Optional: Hide the confirm button
@@ -76,7 +80,7 @@ const UsersTabelComp = ({
                     background: "#e5e5e5",
                   }}
                 >
-                  {header}
+                  {t(header)}
                 </th>
               ))}
             </tr>
@@ -89,7 +93,7 @@ const UsersTabelComp = ({
                   color={"#3C3C3C"}
                   style={{ display: "flex", justifyContent: "center" }}
                 />
-                <p className="mt-2">Loading...</p>
+                <p className="mt-2">{t("Loading...")}</p>
               </td>
             </tr>
           ) : (

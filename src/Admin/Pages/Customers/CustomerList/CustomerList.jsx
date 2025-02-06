@@ -78,12 +78,12 @@ const CustomerList = () => {
     // console.log("dddddd", item);
 
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You are about to delete this Customer",
+      title: t("Are you sure?"),
+      text: t("You are about to delete this Customer"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, Delete it!",
-      cancelButtonText: "No, cancel",
+      confirmButtonText: t("Yes, Delete it!"),
+      cancelButtonText: t("No, cancel"),
     });
 
     if (!result.isConfirmed) {
@@ -92,8 +92,8 @@ const CustomerList = () => {
     }
 
     Swal.fire({
-      title: "Deletingg...",
-      text: "Deleting Customer, please wait.",
+      title: t("Deletingg..."),
+      text: t("Deleting Customer, please wait."),
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -110,15 +110,15 @@ const CustomerList = () => {
           prevList.filter((customer) => customer.id !== item)
         );
         Swal.fire({
-          title: "Success!",
-          text: "Customer Deleted successfully.",
+          title: t("Success!"),
+          text: t("Customer Deleted successfully."),
           icon: "success",
-          confirmButtonText: "OK",
+          confirmButtonText: t("OK"),
         });
       } else {
         Swal.fire({
           title: "Error!",
-          text: response.message || "There was an error Deleting Customer.",
+          text: response.message || t("There was an error Deleting Customer."),
           icon: "error",
           confirmButtonText: "Try Again",
         });
@@ -129,10 +129,10 @@ const CustomerList = () => {
       console.error("API Error:", error);
 
       Swal.fire({
-        title: "API Error!",
-        text: "Something went wrong. Please try again later.",
+        title: t("API Error!"),
+        text: t("Something went wrong. Please try again later."),
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: t("OK"),
       });
     }
   };
