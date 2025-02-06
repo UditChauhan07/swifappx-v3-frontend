@@ -549,7 +549,9 @@ const CreateCompany = () => {
   };
 
   const handleSubmit = async () => {
-    if (Object.keys(errors).length > 0) {
+    const currentErrors = validateStep(currentStep);
+    console.log(currentErrors)
+    if (Object.keys(errors).length > 0 || Object.keys(currentErrors).length >0) {
       return;
     }
     try {

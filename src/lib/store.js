@@ -66,13 +66,12 @@ export const createCompanyApi = async (formdata, token) => {
   try {
     const response = await axios.post(
       `${Url}/scc54meki8`,
-      formdata
-      // {
-      //   headers: {
-      //     // Authorization: `Bearer ${token}`,
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // }
+      formdata,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     console.log(response, "login api data");
     return response.data;
@@ -174,7 +173,7 @@ export const fetchRolesList = async (userid, token) => {
       }
     );
     // console.log(response.data, "login api data");
-    return response.data.data;
+    return response.data;
   } catch (error) {
     if (error.response) {
       return error.response.data;
