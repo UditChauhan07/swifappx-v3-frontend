@@ -279,14 +279,15 @@ const FieldUserList = () => {
                               color: "#4B5563",
                             }}
                           >
-                            <Form.Check
+                            {/* <Form.Check
                               type="switch"
                               id="status-switch"
                               label={row.isActive == 1 ? "Active" : "Unactive"}
                               checked={
                                 row.isActive == 1 ? "Active" : "Unactive"
                               }
-                            />
+                            /> */}
+                            {row.isActive == 1 ? "Active" : "Unactive"}
                           </td>
                           <td
                             style={{

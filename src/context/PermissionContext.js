@@ -28,7 +28,7 @@ export const PermissionsProvider = ({ children }) => {
         setRoles(response || []);
         setUserRole(response?.data?.data?.roleName || null);
       } catch (error) {
-        console.error('Error fetching permissions:', error);
+        console.error('Error fetching permissions::', error);
       }
     }
   };

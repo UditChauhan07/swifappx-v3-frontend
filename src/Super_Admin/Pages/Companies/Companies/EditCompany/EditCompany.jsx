@@ -526,7 +526,6 @@ const { t, i18n } = useTranslation();
 
         if (
           !formData.contactNumber ||
-          !formData.contactNumber.trim() ||
           !isPhone.test(formData.contactNumber)
         )
           newErrors.contactNumber =
@@ -607,6 +606,11 @@ const { t, i18n } = useTranslation();
   };
 
   const handleSubmit = async () => {
+    const currentErrors = validateStep(currentStep);
+    console.log(currentErrors)
+    if (Object.keys(errors).length > 0 || Object.keys(currentErrors).length >0) {
+      return;
+    }
     console.log('Submit---',formData)
     const profilePictureBase64 = formData.profilePicture
     ? await fileToBase64(formData.profilePicture)
@@ -666,7 +670,7 @@ const { t, i18n } = useTranslation();
       contact_number: formData.contactNumber,
       country: formData.country,
       email: formData.email,
-      // password: formData.password,
+      password: formData.password,
       zip_code: formData.zip,
       profile_picture: profilePictureBase64,
     };
