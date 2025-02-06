@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import { usePermissions } from "../../context/PermissionContext";
 import { MdDashboard } from "react-icons/md";
 
+
 import {
   FaLanguage,
   FaUserCircle,
@@ -37,7 +38,7 @@ const Header = () => {
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
   const { roles } = usePermissions();
-  // console.log("permissions",roles);
+  // console.log("permissions",permissions);
 
   const toggleDropdown = (dropdown) => {
     setExpandedDropdown(expandedDropdown === dropdown ? "" : dropdown);
@@ -48,28 +49,17 @@ const Header = () => {
       setExpandedDropdown("company");
     } else if (location.pathname.startsWith("/users")) {
       setExpandedDropdown("users");
-      if (location.pathname.startsWith("/users/office")) {
-        setNestedDropdown("officeUsers");
-      }
-      if (location.pathname.startsWith("/users/field")) {
-        setNestedDropdown("fieldUsers");
-      }
     } else if (location.pathname.startsWith("/customers")) {
       setExpandedDropdown("customers");
     } else if (location.pathname.startsWith("/reports")) {
       setExpandedDropdown("reports");
     } else if (location.pathname.startsWith("/settings")) {
       setExpandedDropdown("settings");
-      if (location.pathname.startsWith("/settings/admin/roles")) {
-        setNestedDropdown("roles");
-      }
     } else if (location.pathname.startsWith("/workorder")) {
       setExpandedDropdown("workOrder");
     } else {
       setExpandedDropdown("");
-      setNestedDropdown("");
     }
-
     window.scroll(0, 0);
   }, [location]);
 
@@ -118,7 +108,7 @@ const Header = () => {
   const languageNames = {
     en: "English",
     es: "Spanish",
-    // fr: "French",
+    fr: "French",
   };
 
   const getItemClass = (lng) => {
@@ -175,20 +165,18 @@ const Header = () => {
         </Navbar.Collapse>
       </Navbar>
 
-      {/* Sidebar. */}
+      {/* Sidebar */}
       <div className="sidebar">
         <div className="sidebar-links">
           <Nav className="flex-column">
             {/* Sidebar Logo */}
-            <div className="py-4 px-4">
+            <div className="text-center mt-4 mb-4">
               <img
-                width={"40px"}
-                src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct.png"
+                width={"100px"}
+                src="https://swif.truet.net/public/swifCompany/logo/logo.png"
                 alt="Logo"
                 className="logo"
-                style={{ marginRight: "10px" }}
               />
-              <span>Swif</span>
             </div>
 
             {userRole === "SuperAdmin" ? (
@@ -196,12 +184,11 @@ const Header = () => {
                 {/* Dashboard */}
                 <Link
                   to="/dashboard"
-                  className="dropdown dropdown-title"
+                  className="sidebar-link"
                   activeClassName="active"
-                  style={{ textDecoration: "none" }}
                 >
+                  <MdDashboard/>
                   {t("Dashboard")}
-                  <MdDashboard size={20} />
                 </Link>
 
                 {/* Company Dropdown */}
@@ -236,13 +223,13 @@ const Header = () => {
                     >
                       ▣ {t("Companies")}
                     </Link>
-                    {/* <Link
+                    <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Access")}
-                    </Link> */}
+                    </Link>
                   </div>
                 </div>
               </>
@@ -251,12 +238,10 @@ const Header = () => {
                 {/* Dashboard */}
                 <Link
                   to="/dashboard/admin"
-                  className="dropdown dropdown-title"
+                  className="sidebar-link"
                   activeClassName="active"
-                  style={{ textDecoration: "none" }}
                 >
                   {t("Dashboard")}
-                  <MdDashboard size={20} />
                 </Link>
 
                 {/* Users */}
@@ -313,6 +298,12 @@ const Header = () => {
                           >
                             {t("Create")}
                           </Link>
+                          {/* <Link                                             31/01
+                            to="/users/office/super-admin"
+                            className="sidebar-link"
+                          >
+                            {t("Super Admin")}
+                          </Link> */}
 
                           {roles.length > 0 &&
                             roles?.map((permission) => (
@@ -324,6 +315,32 @@ const Header = () => {
                                 {/* {t("Staff Admin")} */}
                               </Link>
                             ))}
+                          {/*                          
+                          <Link
+                            to="/users/office/accountant"
+                            className="sidebar-link"
+                          >
+                            {t("Accountant")}
+                          </Link>
+                          <Link
+                            to="/users/office/manager"
+                            className="sidebar-link"
+                          >
+                            {t("Manager")}
+                          </Link>
+                          <Link
+                            to="/users/office/human-resource"
+                            className="sidebar-link"
+                          >
+                            {t("Human Resource")}
+                          </Link> */}
+                          {/* 
+                          <Link                                   31/01
+                            to="/users/office/other-users"  
+                            className="sidebar-link"
+                          >
+                            {t("Other Users")}
+                          </Link> */}
                         </div>
                       ) : (
                         ""
@@ -367,6 +384,12 @@ const Header = () => {
                           <Link to="/users/field/list" className="sidebar-link">
                             {t("Field Users List")}
                           </Link>
+                          {/* <Link to="/users/                               31/01
+                            to="/users/field/import"
+                            className="sidebar-link"
+                          >
+                            {t("Import")}
+                          </Link> */}
                         </div>
                       ) : (
                         ""
@@ -398,7 +421,7 @@ const Header = () => {
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      <div>▣ {t("Create")}</div>
+                      ▣ {t("Create")}
                     </Link>
                     <Link
                       to="/customers/list"
@@ -407,6 +430,20 @@ const Header = () => {
                     >
                       ▣ {t("Customer List")}
                     </Link>
+                    {/* <Link                                         31 /01/2025
+                      to="/customers/prospects"
+                      className="sidebar-link"
+                      activeClassName="active"
+                    >
+                      ▣ {t("Prospects & Leads")}
+                    </Link> */}
+                    {/* <Link
+                      to="/customers/import"
+                      className="sidebar-link"
+                      activeClassName="active"
+                    >
+                      ▣ {t("Customer Import")}
+                    </Link> */}
                   </div>
                 </div>
 
@@ -444,7 +481,6 @@ const Header = () => {
                     </Link>
                   </div>
                 </div>
-
                 {/* Settings */}
                 <div
                   className={`dropdown ${

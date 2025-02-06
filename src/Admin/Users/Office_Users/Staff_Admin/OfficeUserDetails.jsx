@@ -25,9 +25,46 @@
                </Row>
               <Row className="p-3">
                     <Col md={3} className="fw-bold">
+                      Last Name:
+                    </Col>
+                    <Col>{row.last_name
+                    }</Col>
+               </Row>
+                  <Row className="p-3">
+                  <Col md={3} className="fw-bold">
+                    User Profile:
+                  </Col>
+                  <Col>
+                    {row.profile_picture ? (
+                      <Image
+                        src={row.profile_picture}
+                        alt="Logo"
+                        fluid
+                        rounded
+                        style={{height:"150px",width:"150px"}}
+                      />
+                    ) : (
+                      <Image
+                        src="https://swif.truet.net/public/swifCompany/noLogo.jpg"
+                        alt="Logo"
+                        fluid
+                        rounded
+                        style={{height:"100px",width:"200px"}}
+                      />
+                    )}
+                  </Col>
+                </Row>
+              <Row className="p-3">
+                    <Col md={3} className="fw-bold">
                       Address:
                     </Col>
-                    <Col>{row.Address ? row.Address : row.city}</Col>
+                    <Col>{row.Address ? row.Address : row.Address}</Col>
+               </Row>
+              <Row className="p-3">
+                    <Col md={3} className="fw-bold">
+                      State:
+                    </Col>
+                    <Col>{row.Address ? row.state : row.state}</Col>
                </Row>
               <Row className="p-3">
                     <Col md={3} className="fw-bold">

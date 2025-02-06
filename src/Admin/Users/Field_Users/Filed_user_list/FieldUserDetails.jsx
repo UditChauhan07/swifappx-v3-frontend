@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { Container, Row, Col, Image, Card } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import Header from "../../../../Components/Header/Header";
+import { useTranslation } from "react-i18next";
+
 
 const FieldUserDetails = () => {
+        const { t } = useTranslation(); 
     const location = useLocation();
     const { row } = location.state || {};
     // console.log(row);
@@ -12,41 +15,41 @@ const FieldUserDetails = () => {
     <Header/>
     <div className="main-header-box mt-4">
         <div className="pages-box">
-          <h4 className="mb-4">Field User Details</h4>
+          <h4 className="mb-4">{t("Field User Details")}</h4>
           <Container className="mt-4">
           <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Name:
+                  {t("Name")}:
                 </Col>
                 <Col>{row.name}</Col>
            </Row>
           <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Address:
+                  {t("Address")}:
                 </Col>
                 <Col>{row.address}</Col>
            </Row>
           <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Country:
+                  {t("Country")}:
                 </Col>
                 <Col>{row.country}</Col>
            </Row>
           <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Email:
+                  {t("Email")}:
                 </Col>
                 <Col>{row.email}</Col>
            </Row>
           <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Contact:
+                  {t("Contact")}:
                 </Col>
                 <Col>{row.contact_number}</Col>
            </Row>
           <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Username:
+                  {t("Username")}:
                 </Col>
                 <Col>{row.username}</Col>
            </Row>

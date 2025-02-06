@@ -35,7 +35,7 @@ const StaffAdmin = () => {
     }else{
       setTableData([]);
     }
-    console.log("dasda",response)
+    // console.log("dasda",response)
     })
     .catch((error) => {console.log('error', error)})
     .finally(() => {setIsLoading(false)});
@@ -54,7 +54,7 @@ const StaffAdmin = () => {
         <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",

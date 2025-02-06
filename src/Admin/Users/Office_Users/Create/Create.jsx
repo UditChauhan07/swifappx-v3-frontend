@@ -190,7 +190,7 @@
 
 
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Formik, Field, Form as FormikForm, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -199,6 +199,8 @@ import { usePermissions } from "../../../../context/PermissionContext";
 import { createOfficeUser, fetchRolesList } from "../../../../lib/store";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 
 const validationSchema = Yup.object({
   firstName: Yup.string().trim().required("First Name is required").min(4,"Must be at least 4 characters"),
@@ -220,19 +222,32 @@ const validationSchema = Yup.object({
 
 
 const Create = () => {
+    const { t } = useTranslation(); 
   const [roles, setRoles] = useState([]);
+  console.log("dads",roles)
 const token = localStorage.getItem("UserToken");
 const userid = localStorage.getItem("userId");
 const company_id=localStorage.getItem("companyId")||null;
+const [profile,setProfile]=useState(null)
+
 const navigate=useNavigate();
 
 useEffect(() => {
   if (userid) {
     fetchRolesList(userid, token).then((response) => {
-      setRoles(response);
+      setRoles(response?.data);
     });
   }
 }, [userid]);
+
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
 
 
 
@@ -245,13 +260,13 @@ useEffect(() => {
             <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Enter User Details</h4>
+              <h4 className="mb-0">{t("Enter User Details")}</h4>
             </div>
 
             {/* Formik Form */}
@@ -273,6 +288,14 @@ useEffect(() => {
               }}
               validationSchema={validationSchema}
               onSubmit={async(values, { setSubmitting,resetForm  }) => {
+                Swal.fire({
+                      title: "Creating...",
+                      text: "Creating Office User, please wait.",
+                      allowOutsideClick: false,
+                      didOpen: () => {
+                        Swal.showLoading();
+                      },
+                    });
                 setSubmitting(true);
                 const formData = new FormData();
                 formData.append("first_name", values.firstName);
@@ -289,8 +312,14 @@ useEffect(() => {
                 formData.append("isActive", values.activateUser?'1':'0');
                 formData.append("company_id",company_id);
                 // Append profile picture if selected
-                if (values.profilePicture) {
-                  formData.append("profilePicture", values.profilePicture);
+                if (values.profilePicture instanceof File) {
+                  try {
+                    const base64 = await fileToBase64(values.profilePicture);
+                    console.log(values.profilePicture,base64);
+                    setProfile(base64)
+                  } catch (error) {
+                    console.error("Error converting file to Base64:", error);
+                  }
                 }
                 console.log("formDataaaa",formData)
 
@@ -308,7 +337,7 @@ useEffect(() => {
                     Address:values.address,
                     country: values.country,
                     roleID: values.role,
-                    profile_picture: values.profilePicture,
+                    profile_picture: profile,
                     isActive: values.activateUser
                 }
                 
@@ -317,6 +346,7 @@ useEffect(() => {
                 
              
                 const submitData=await createOfficeUser(finalData,token)
+                Swal.close();
                 console.log("submitDataa",submitData)
                 // console.log('response',submitData)
                 if(submitData.status){
@@ -346,83 +376,94 @@ useEffect(() => {
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>First Name*</Form.Label>
-                        <Field className="form-control" type="text" name="firstName" />
+                        <Form.Label>{t("First Name")}*</Form.Label>
+                        <Field className="form-control" type="text" name="firstName" maxLength={40}/>
                         <ErrorMessage name="firstName" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Last Name*</Form.Label>
-                        <Field className="form-control" type="text" name="lastName" />
+                        <Form.Label>{t("Last Name")}*</Form.Label>
+                        <Field className="form-control" type="text" name="lastName" maxLength={40}/>
                         <ErrorMessage name="lastName" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Email Address*</Form.Label>
-                        <Field className="form-control" type="email" name="email" />
+                        <Form.Label>{t("Email Address")}*</Form.Label>
+                        <Field className="form-control" type="email" name="email" maxLength={50}/>
                         <ErrorMessage name="email" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Password*</Form.Label>
-                        <Field className="form-control" type="password" name="password" />
+                        <Form.Label>{t("Password")}*</Form.Label>
+                        <Field className="form-control" type="password" name="password" maxLength={30}/>
                         <ErrorMessage name="password" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Contact Number*</Form.Label>
-                        <Field className="form-control" type="tel" name="contactNumber" />
+                        <Form.Label>{t("Contact Number")}*</Form.Label>
+                        <Field className="form-control" type="tel" name="contactNumber" maxLength={20}/>
                         <ErrorMessage name="contactNumber" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
-
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>City*</Form.Label>
-                        <Field className="form-control" type="text" name="city" />
+                        <Form.Label>{t("Profile Picture")}</Form.Label>
+                        <input
+                          className="form-control"
+                          type="file"
+                          onChange={(event) => setFieldValue("profilePicture", event.target.files[0])}
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>{t("User's Address")}  </Form.Label>
+                        <Field className="form-control" as="textarea" rows={2} name="address" maxLength={200} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label>{t("City")}*</Form.Label>
+                        <Field className="form-control" type="text" name="city" maxLength={40}/>
                         <ErrorMessage name="city" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>State*</Form.Label>
-                        <Field className="form-control" type="text" name="state" />
+                        <Form.Label>{t("State")}*</Form.Label>
+                        <Field className="form-control" type="text" name="state" maxLength={40}/>
                         <ErrorMessage name="state" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>ZIP/Postal Code*</Form.Label>
-                        <Field className="form-control" type="text" name="zip" />
+                        <Form.Label>{t("ZIP/Postal Code")}*</Form.Label>
+                        <Field className="form-control" type="text" name="zip" maxLength={10}/>
                         <ErrorMessage name="zip" component="div" className="text-danger" />
                       </Form.Group>
                     </Col>
 
-                    <Col md={12}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>User's Address  </Form.Label>
-                        <Field className="form-control" as="textarea" rows={2} name="address" />
-                      </Form.Group>
-                    </Col>
-
+                
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Country*</Form.Label>
+                        <Form.Label>{t("Country")}*</Form.Label>
                         <Field as="select" className="form-control" name="country">
-                          <option value="">Select Country</option>
+                          <option value="">{t("Select Country")}</option>
                           <option value="USA">USA</option>
                           <option value="Canada">Canada</option>
                           <option value="India">India</option>
+                          <option value="India">Spain</option>
+                          <option value="India">France</option>
                         </Field>
                         <ErrorMessage name="country" component="div" className="text-danger" />
                       </Form.Group>
@@ -430,9 +471,9 @@ useEffect(() => {
 
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Choose Role*</Form.Label>
+                        <Form.Label>{t("Choose Role")}*</Form.Label>
                         <Field as="select" className="form-control" name="role">
-                          <option value="">Select Role</option>
+                          <option value="">{t("Select Role")}</option>
                           {roles.length>0 && roles?.map((role) => (
                             <option key={role.id} value={role.id}>
                               {role.roleName}
@@ -443,29 +484,20 @@ useEffect(() => {
                       </Form.Group>
                     </Col>
 
-                    {/* <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label>Profile Picture</Form.Label>
-                        <input
-                          className="form-control"
-                          type="file"
-                          onChange={(event) => setFieldValue("profilePicture", event.target.files[0])}
-                        />
-                      </Form.Group>
-                    </Col> */}
+               
 
                     <Col md={6} className="d-flex align-items-center">
                       <Field type="checkbox" name="activateUser" className="form-check-input" />
-                      <label className="form-check-label ms-2">Activate this User</label>
+                      <label className="form-check-label ms-2">{t("Activate this User")}</label>
                     </Col>
                   </Row>
 
                   <div className="text-center">
-                    <Button variant="primary" type="submit" disabled={isSubmitting}>
-                      Save
+                    <Button variant="primary" type="submit" disabled={isSubmitting} className="me-2">
+                      {t("Save")}
                     </Button>
-                    <Button variant="secondary" type="reset">
-                      Cancel
+                    <Button variant="secondary" type="reset" onClick={()=> navigate('/dashboard/admin')}>
+                      {t("Cancel")}
                     </Button>
                   </div>
                 </FormikForm>

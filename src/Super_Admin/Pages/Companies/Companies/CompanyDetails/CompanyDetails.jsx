@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import Header from "../../../../../Components/Header/Header";
 import { Container, Row, Col, Image, Card } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const CompanyDetails = () => {
+    const { t } = useTranslation(); 
   const location = useLocation();
   const { company } = location.state || {};
   console.log('company',company);
@@ -36,18 +38,18 @@ const CompanyDetails = () => {
       <Header />
       <div className="main-header-box mt-4">
         <div className="pages-box">
-          <h4 className="mb-4">Company Details</h4>
+          <h4 className="mb-4">{t("Company Details")}</h4>
           <Container className="mt-4">
             <Card className="p-2 shadow-sm">
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Company Name:
+                  {t("Company Name")}:
                 </Col>
                 <Col>{company.company.company_name}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Company Logo:
+                  {t("Company Logo")}:
                 </Col>
                 <Col>
                   {company.company.company_logo ? (
@@ -56,6 +58,7 @@ const CompanyDetails = () => {
                       alt="Logo"
                       fluid
                       rounded
+                      style={{height:"150px",width:"150px"}}
                     />
                   ) : (
                     <Image
@@ -70,43 +73,32 @@ const CompanyDetails = () => {
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Company Address:
+                  {t("Company Address")}:
                 </Col>
                 <Col>{company.company.address_line_1}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Company City:
+                  {t("Company City")}:
                 </Col>
                 <Col>{company.company.city}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Company State:
+                  {t("Company State")}:
                 </Col>
-                <Col>{company.company.currency}</Col>
+                <Col>{company.company.companyState}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Company Zip:
+                  {t("Company Zip")}:
                 </Col>
                 <Col>{company.company.zip_postal_code}</Col>
               </Row>
+          
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Currency:
-                </Col>
-                <Col>{company.company.currency}</Col>
-              </Row>
-              <Row className="p-3">
-                <Col md={3} className="fw-bold">
-                  Time Zone:
-                </Col>
-                <Col>{company.company.time_zone}</Col>
-              </Row>
-              <Row className="p-3">
-                <Col md={3} className="fw-bold">
-                  Working Day:
+                  {t("Working Day")}:
                 </Col>
                 <Col>
                   {company.company.workingDays.map((day, index) => (
@@ -120,111 +112,75 @@ const CompanyDetails = () => {
                         background: "#8d28dd",
                       }}
                     >
-                      {day}
+                      {t(day)}
                     </span>
                   ))}
                 </Col>
               </Row>
-
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  gst:
-                </Col>
-                <Col>--</Col>
-              </Row>
-              <Row className="p-3">
-                <Col md={3} className="fw-bold">
-                  Expected Time Required:
-                </Col>
-                <Col>--</Col>
-              </Row>
-              <Row className="p-3">
-                <Col md={3} className="fw-bold">
-                  Company Office Email Address:
+                  {t("Company Office Email Address")}:
                 </Col>
                 <Col>{company.company.company_office_email}</Col>
               </Row>
+            
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Company Contact Person:
+                  {t("Company Admin Name")}:
                 </Col>
-                <Col>{company.company.company_contact_person_name}</Col>
+                <Col>{company.user.first_name?company.user.first_name:'--'}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Per Quotation Cost:
+                  {t("Company Admin Email")}:
                 </Col>
-                <Col>{company.company.quotationCost}</Col>
+                <Col>{company.user.email?company.user.email:'--'}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Base Work Order Cost:
+                  {t("Company Admin Contact Number")}:
                 </Col>
-                <Col>{company.company.executionWorkOrderCost}</Col>
+                <Col>{company.user.contact_number?company.user.contact_number:'--'}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Work Order Execution Cost:
+                  {t("Company Admin Address")}:
                 </Col>
-                <Col>{company.company.primaryWorkOrderCost}</Col>
+                <Col>{company.user.Address?company.user.Address:'--'}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Company Admin Name:
+                  {t("Company Admin City")}:
                 </Col>
-                <Col>{company.company.adminName}</Col>
+                <Col>{company.user.city?company.user.city:'--'}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Company Admin Email:
+                  {t("Company Admin State")}:
                 </Col>
-                <Col>{company.company.adminEmail}</Col>
+                <Col>{company.user.state?company.user.state:'--'}</Col>
               </Row>
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Company Admin Contact Number:
+                  {t("Company Admin Country")}:
                 </Col>
-                <Col>{company.company.adminContact}</Col>
+                <Col>{company.user.state?company.user.state:'--'}</Col>
               </Row>
-              <Row className="p-3">
-                <Col md={3} className="fw-bold">
-                  Company Admin Address:
-                </Col>
-                <Col>{company.company.customerAddressFormat}</Col>
-              </Row>
-              <Row className="p-3">
-                <Col md={3} className="fw-bold">
-                  Company Admin City:
-                </Col>
-                <Col>--</Col>
-              </Row>
-              <Row className="p-3">
-                <Col md={3} className="fw-bold">
-                  Company Admin State:
-                </Col>
-                <Col>--</Col>
-              </Row>
-              <Row className="p-3">
-                <Col md={3} className="fw-bold">
-                  Company Admin Country:
-                </Col>
-                <Col>--</Col>
-              </Row>
-              <Row className="p-3">
+              {/* <Row className="p-3">
                 <Col md={3} className="fw-bold">
                   Company Package:
                 </Col>
                 <Col>{company.company.package}</Col>
-              </Row>
-              <Row className="p-3">
+              </Row> */}
+              {/* <Row className="p-3">
                 <Col md={3} className="fw-bold">
                   Company Admin last Login:
                 </Col>
                 <Col>--</Col>
-              </Row>
+              </Row> */}
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
-                  Created At:
+                  {t("Created At")}:
                 </Col>
                 <Col>{formatTimestamp(company.company.created_at)}</Col>
               </Row>

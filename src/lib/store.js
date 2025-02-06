@@ -1,6 +1,6 @@
 import axios from "axios";
 // export const Url = "http://localhost:2525";
-export const Url = "https://test-hl3bjt37ia-uc.a.run.app/";
+export const Url = "https://apiv4-hl3bjt37ia-uc.a.run.app/";
 // export const Url = "http://127.0.0.1:5001/swif-v2/us-central1/test"
 
 // Admin Login APi
@@ -56,6 +56,41 @@ export const getCompanyListApi = async (token) => {
   }
 };
 
+// Get Admin dashboard Details 
+export const getSuperAdminDashboardDetails = async (token) => {
+  try {
+    const response = await axios.get(`${Url}/dcc23we5t6`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+// Get Super-Admin dashboard Details 
+export const getAdminDashboardDetails = async (companyId,token) => {
+  try {
+    const response = await axios.get(`${Url}/cdsj54rt67/${companyId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
 // Crete Company
 export const createCompanyApi = async (formdata, token) => {
   console.log("dataa", formdata);
@@ -66,13 +101,12 @@ export const createCompanyApi = async (formdata, token) => {
   try {
     const response = await axios.post(
       `${Url}/scc54meki8`,
-      formdata
-      // {
-      //   headers: {
-      //     // Authorization: `Bearer ${token}`,
-      //     "Content-Type": "multipart/form-data",
-      //   },
-      // }
+      formdata,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     console.log(response, "login api data");
     return response.data;
@@ -174,7 +208,7 @@ export const fetchRolesList = async (userid, token) => {
       }
     );
     // console.log(response.data, "login api data");
-    return response.data.data;
+    return response.data;
   } catch (error) {
     if (error.response) {
       return error.response.data;
@@ -184,9 +218,13 @@ export const fetchRolesList = async (userid, token) => {
 };
 
 // Create User Role
-export const createUserRole = async (finalData) => {
+export const createUserRole = async (finalData,token) => {
   try {
-    const response = await axios.post(`${Url}/cork654m78`, finalData);
+    const response = await axios.post(`${Url}/cork654m78`, finalData,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     // console.log(response.data, "login api data");
     return response.data;
   } catch (error) {
@@ -198,12 +236,18 @@ export const createUserRole = async (finalData) => {
 };
 
 // Get Role List
-export const getRoles = async (finalData) => {
+export const getRoles = async (finalData,token) => {
   // console.log("finalData", finalData);
   const userId = finalData;
   try {
     const response = await axios.get(`${Url}/ofmg4j3er6`, {
-      params: { userId },
+      params: { userId },headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     // console.log(response.data, "login api data");
     return response.data;
@@ -216,11 +260,16 @@ export const getRoles = async (finalData) => {
 };
 
 // Edit Role Edit
-export const roleEditApi = async (roleId, finalData) => {
+export const roleEditApi = async (roleId, finalData,token) => {
   try {
     const response = await axios.patch(
       `${Url}/ed6tmki8gy/${roleId}`,
-      finalData
+      finalData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
     // console.log(response.data, "login api data");
     return response.data;
@@ -315,9 +364,52 @@ export const DeleteCustomerApi = async (userId, token) => {
 };
 
 // Work Order Create
-export const createWorkOrderApi = async (finalData) => {
+export const createWorkOrderApi = async (finalData,token) => {
   try {
-    const response = await axios.post(`${Url}/cwok3245tr`, finalData);
+    const response = await axios.post(`${Url}/cwok431m56`, finalData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Work Order List
+export const fetchWorkOrderList = async (companyId, token) => {
+  try {
+    const response = await axios.get(
+      `${Url}/gwok32m76nh/${companyId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Work Order Delete Api
+export const workOrderDeleteApi = async (userId, token) => {
+  try {
+    const response = await axios.delete(`${Url}/dwo32mt54f/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     // console.log(response.data, "login api data");
     return response.data;
   } catch (error) {
@@ -370,8 +462,9 @@ export const fetch_FieldUserOfCompany = async (companyId, token) => {
 //get office users by role id
 export const fetch_officeUsersByRoleId = async (roleId, token) => {
   try {
+    console.log(roleId);
     const response = await axios.get(
-      `${Url}/goud43mk9i?d=${encodeURIComponent(roleId)}`,
+      `${Url}/gor5m9xv04?roleID=${encodeURIComponent(roleId)}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -442,6 +535,7 @@ export const delete_OfficeUser = async (userId, token) => {
 };
 
 export const edit_OfficeUser = async (formdata, userId, token) => {
+  console.log("user",userId)
   try {
     const response = await axios.put(`${Url}/smjg8g43me/${userId}`, formdata, {
       headers: {

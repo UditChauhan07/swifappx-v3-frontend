@@ -11,13 +11,13 @@ body {
 }
 
 button[type="submit"].btn-primary {
-  background-color: #8d28dd !important;
-  border-color: #8d28dd !important;
+  background-color: #2e2e32 !important;
+  border-color: #2e2e32 !important;
 }
 
 button[type="submit"].btn-primary:hover {
-  background-color: darkviolet !important;
-  border-color: darkviolet !important;
+  background-color: #47474d !important;
+  border-color: #2e2e32 !important;
 }
 
 ::-webkit-scrollbar {

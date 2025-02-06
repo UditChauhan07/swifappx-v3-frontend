@@ -79,12 +79,12 @@ const ChangePassword = () => {
       <Header />
       <div className="main-header-box">
         <div className="mt-4 pages-box">
-          <Container>
+          <>
             <Card style={{ border: "none" }}>
               <div
                 className="form-header mb-2"
                 style={{
-                  backgroundColor: "#8d28dd",
+                  backgroundColor: "#2e2e32",
                   color: "white",
                   padding: "10px 20px",
                   borderRadius: "8px",
@@ -188,7 +188,7 @@ const ChangePassword = () => {
                 </Form>
               </Card.Body>
             </Card>
-          </Container>
+          </>
         </div>
       </div>
     </>

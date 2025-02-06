@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Container, Row, Col, Form, Table, Button } from "react-bootstrap";
 import Header from "../../../../../Components/Header/Header";
 import { Alert } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+
 
 const EditAdminRole = () => {
+    const { t } = useTranslation(); 
+  
   const navigate = useNavigate();
   const location = useLocation();
+  const [token, settoken] = useState(localStorage.getItem("UserToken"));
+  
   const { role } = location.state || {};
   console.log("role", role);
 

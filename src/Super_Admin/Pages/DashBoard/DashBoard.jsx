@@ -3,20 +3,20 @@ import { Container, Row, Col, Card, Spinner } from "react-bootstrap";
 import Header from "../../../Components/Header/Header";
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap styles
 import "./DashBoard.css";
-import { getCompanyListApi } from "../../../lib/store";
+import {
+  getCompanyListApi,
+  getSuperAdminDashboardDetails,
+} from "../../../lib/store";
+import { useTranslation } from "react-i18next";
 
 const DashBoard = () => {
-  const stats = {
-    totalCompanies: 27,
-    activeCompanies: 27,
-    totalQuotations: 85,
-    avgQuotations: 3,
-    totalWorkOrders: 6414,
-    avgWorkOrders: 238,
-  };
+  const { t, i18n } = useTranslation();
+
+  const [totalCompanies, settotalCompanies] = useState();
+  const [totalWorkOrders, settotalWorkOrders] = useState();
 
   const [companyList, setCompanyList] = useState([]);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("UserToken");
 
   useEffect(() => {
@@ -37,6 +37,25 @@ const DashBoard = () => {
     fetchData();
   }, [token]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true); // Show loader while fetching data
+      try {
+        const response = await getSuperAdminDashboardDetails(token);
+        if (response.success === true) {
+          settotalCompanies(response?.totalCompanies || []);
+          settotalWorkOrders(response?.totalWorkOrders || []);
+        }
+      } catch (error) {
+        console.error("API Error:", error);
+      } finally {
+        setLoading(false); // Hide loader after fetching data
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
   return (
     <>
       <Header />
@@ -44,30 +63,34 @@ const DashBoard = () => {
         <div className="mt-4 pages-box">
           <Container fluid className="dashboard-content">
             {/* Stats Row */}
-            <Row className="stats-row">
-              {Object.entries(stats).map(([key, value]) => (
-                <Col md={4} key={key}>
-                  <Card className="stats-card">
-                    <Card.Body>
-                      <h3>{value}</h3>
-                      <p>
-                        {key
-                          .replace(/([A-Z])/g, " $1")
-                          .replace(/^./, (str) => str.toUpperCase())}
-                      </p>
-                    </Card.Body>
-                  </Card>
-                </Col>
-              ))}
+            <Row className="stats-row mb-4">
+              <Col md={6}>
+                <Card className="stats-card">
+                  <Card.Body>
+                    <h3>{totalCompanies}</h3>
+                    <p>{t("Total Companies")}</p>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col md={6}>
+                <Card className="stats-card">
+                  <Card.Body>
+                    <h3>{totalWorkOrders}</h3>
+                    <p>{t("Total Work Orders")}</p>
+                  </Card.Body>
+                </Card>
+              </Col>
             </Row>
 
             {/* Show Loader while waiting for API response */}
             {loading ? (
               <div className="text-center my-5">
                 <Spinner animation="border" role="status">
-                  <span className="visually-hidden">Loading...</span>
+                  <span className="visually-hidden">{t("Loading")}...</span>
                 </Spinner>
-                <p>Loading Companies...</p>
+                <p>
+                  {t("Loading")} {t("Companies")}...
+                </p>
               </div>
             ) : (
               <Row>
@@ -78,16 +101,16 @@ const DashBoard = () => {
                         style={{ padding: "40px 40px 10px 40px" }}
                         variant="top"
                         src={
-                          company.logo ||
+                          company.company.company_logo ||
                           "https://swif.truet.net/public/swifCompany/noLogo.jpg"
                         }
                         alt={`${company.name} logo`}
                       />
                       <Card.Body>
                         <Card.Title
-                          style={{ textAlign: "center", color: "#8d28dd" }}
+                          style={{ textAlign: "center", color: "black" }}
                         >
-                          <strong>{company.company.company_name}</strong>
+                          <strong>{company?.company.company_name}</strong>
                         </Card.Title>
                         <Card.Text
                           style={{ textAlign: "center", minHeight: "50px" }}
@@ -107,21 +130,21 @@ const DashBoard = () => {
                         >
                           <div className="stat-item text-center border-end">
                             <strong>{company.totalUsers || "0"}</strong>
-                            <div>Total User</div>
+                            <div>{t("Total User")}</div>
                           </div>
                           <div className="stat-item text-center border-end">
                             <strong>{company.quotations || "0"}</strong>
-                            <div>Quotations</div>
+                            <div>{t("Quotations")}</div>
                           </div>
                           <div className="stat-item text-center">
                             <strong>{company.workOrders || "0"}</strong>
-                            <div>Work Orders</div>
+                            <div>{t("Work Orders")}</div>
                           </div>
                         </div>
 
                         <Card.Text>
-                          <strong>Admin:</strong> {company.user.first_name}{" "}
-                          {company.user.last_name}
+                          <strong>{t("Admin")}:</strong>{" "}
+                          {company?.user?.first_name} {company?.user?.last_name}
                         </Card.Text>
                       </Card.Body>
                     </Card>

@@ -9,11 +9,15 @@ import { FaAddressBook } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 
 const CustomerList = () => {
+  const { t } = useTranslation(); 
+  
   const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
-  console.log("cussss", customers);
+  // console.log("cussss", customers);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -143,18 +147,18 @@ const CustomerList = () => {
       <div className="main-header-box mt-4">
         <div className="pages-box">
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <h4 className="mb-0">Customer List</h4>
+            <h4 className="mb-0">{t("Customer List")}</h4>
             <div className="d-flex gap-2">
               <Form.Control
                 type="text"
-                placeholder="Search customers..."
+                placeholder={t("Search customers...")}
                 className="me-2"
                 style={{ width: "200px" }}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button variant="primary" onClick={handleClear}>
-                Clear
+              <Button variant="secondary" onClick={handleClear}>
+                {t("Clear")}
               </Button>
             </div>
           </div>
@@ -174,7 +178,7 @@ const CustomerList = () => {
                     background: "#e5e5e5",
                   }}
                 >
-                  Name
+                  {t("Name")}
                 </th>
                 <th
                   style={{
@@ -183,7 +187,7 @@ const CustomerList = () => {
                     background: "#e5e5e5",
                   }}
                 >
-                  Type
+                  {t("Phone Number")}
                 </th>
                 <th
                   style={{
@@ -192,7 +196,7 @@ const CustomerList = () => {
                     background: "#e5e5e5",
                   }}
                 >
-                  Email Address
+                  {t("Email Address")}
                 </th>
                 <th
                   style={{
@@ -201,13 +205,13 @@ const CustomerList = () => {
                     background: "#e5e5e5",
                   }}
                 >
-                  Created By
+                  {t("Created By")}
                 </th>
                 <th
                   className="text-center"
                   style={{ width: "20%", background: "#e5e5e5" }}
                 >
-                  Action
+                  {t("Action")}
                 </th>
               </tr>
             </thead>
@@ -221,13 +225,13 @@ const CustomerList = () => {
                       color={"#3C3C3C"}
                       style={{ display: "flex", justifyContent: "center" }}
                     />
-                    <p className="mt-2">Loading...</p>
+                    <p className="mt-2">{t("Loading...")}</p>
                   </td>
                 </tr>
               ) : currentRows.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="text-center py-4">
-                    No customers found.
+                    {t("No customers found")}.
                   </td>
                 </tr>
               ) : (
@@ -251,7 +255,7 @@ const CustomerList = () => {
                         color: "#4B5563",
                       }}
                     >
-                      {customer.type}
+                      {customer.phone}
                     </td>
                     <td
                       style={{
@@ -341,7 +345,7 @@ const CustomerList = () => {
               onClick={() => handlePageChange("previous")}
               disabled={currentPage === 1}
             >
-              &laquo; Previous
+              &laquo; {t("Previous")}
             </Button>
             <Button variant="outline-secondary" size="sm" className="me-2">
               {currentPage}
@@ -352,7 +356,7 @@ const CustomerList = () => {
               onClick={() => handlePageChange("next")}
               disabled={currentPage * rowsPerPage >= filteredCustomers.length}
             >
-              Next &raquo;
+              {t("Next")} &raquo;
             </Button>
           </div>
         </div>

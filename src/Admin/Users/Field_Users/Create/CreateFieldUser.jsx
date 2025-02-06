@@ -119,8 +119,12 @@ import Header from "../../../../Components/Header/Header";
 import { create_FieldUser } from "../../../../lib/store";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 
 const CreateFieldUser = () => {
+  const { t } = useTranslation(); 
+  
   const navigate=useNavigate();
   const token = localStorage.getItem("UserToken");
  const company_id=localStorage.getItem("companyId")||null;
@@ -193,23 +197,24 @@ const CreateFieldUser = () => {
             <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Enter Field User Details</h4>
+              <h4 className="mb-0">{t("Enter Field User Details")}</h4>
             </div>
             <Form onSubmit={formik.handleSubmit}>
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formName">
-                    <Form.Label>Name<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Name")}<span className="text-danger">*</span></Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Name"
+                      placeholder={t("Enter Name")}
                       name="name"
+                      maxLength={40}
                       value={formik.values.name}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.name && formik.errors.name}
@@ -220,11 +225,12 @@ const CreateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formEmail">
-                    <Form.Label>Email<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Email")}<span className="text-danger">*</span></Form.Label>
                     <Form.Control
                       type="email"
-                      placeholder="Enter Email"
+                      placeholder={t("Enter Email")}
                       name="email"
+                      maxLength={50}
                       value={formik.values.email}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.email && formik.errors.email}
@@ -235,14 +241,15 @@ const CreateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formUsername">
-                    <Form.Label>Username<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Username")}<span className="text-danger">*</span></Form.Label>
                     <Form.Text className="d-block mb-1 text-muted">
-                      Field User can login via this Username
+                      {t("Field User can login via this Username")}
                     </Form.Text>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Username"
+                      placeholder={t("Enter Username")}
                       name="username"
+                      maxLength={20}
                       value={formik.values.username}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.username && formik.errors.username}
@@ -253,14 +260,15 @@ const CreateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formPassword">
-                    <Form.Label>Password<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Password")}<span className="text-danger">*</span></Form.Label>
                     <Form.Text className="d-block mb-1 text-muted">
-                      Field User can login via this Password
+                      {t("Field User can login via this Password")}
                     </Form.Text>
                     <Form.Control
                       type="password"
-                      placeholder="Enter Password"
+                      placeholder={t("Enter Password")}
                       name="password"
+                      maxLength={30}
                       value={formik.values.password}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.password && formik.errors.password}
@@ -271,11 +279,12 @@ const CreateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formContactNumber">
-                    <Form.Label>Contact Number<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Contact Number")}<span className="text-danger">*</span></Form.Label>
                     <Form.Control
                       type="tel"
-                      placeholder="Enter Contact Number"
+                      placeholder={t("Enter Contact Number")}
                       name="contact_number"
+                      maxLength={16}
                       value={formik.values.contact_number}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.contact_number && formik.errors.contact_number}
@@ -297,14 +306,14 @@ const CreateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formCountry">
-                    <Form.Label>Country<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Country")}<span className="text-danger">*</span></Form.Label>
                     <Form.Select
                       name="country"
                       value={formik.values.country}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.country && formik.errors.country}
                     >
-                      <option value="">Select Country</option>
+                      <option value="">{t("Select Country")}</option>
                       <option value="USA">USA</option>
                       <option value="Canada">Canada</option>
                       <option value="India">India</option>
@@ -315,12 +324,13 @@ const CreateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formAddress">
-                    <Form.Label>Address<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t("Address")}<span className="text-danger">*</span></Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={2}
-                      placeholder="Enter Address"
+                      placeholder={t("Enter Address")}
                       name="address"
+                      maxLength={150}
                       value={formik.values.address}
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.address && formik.errors.address}
@@ -332,10 +342,10 @@ const CreateFieldUser = () => {
 
               <div className="text-center">
                 <Button type="submit" className="me-2" style={{ backgroundColor: "#8d28dd", border: "none" }}>
-                  Save
+                  {t("Save")}
                 </Button>
-                <Button variant="secondary" type="button">
-                  Cancel
+                <Button variant="secondary" type="button" onClick={()=> navigate("/dashboard/admin")}>
+                  {t("Cancel")}
                 </Button>
               </div>
             </Form>

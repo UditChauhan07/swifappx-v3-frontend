@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Table,
+} from "react-bootstrap";
 import Header from "../../../../Components/Header/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./CreateWorkOrder.css";
@@ -9,8 +17,12 @@ import {
   getCustomerList,
 } from "../../../../lib/store";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const CreateWorkOrder = () => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const [userId, setuserId] = useState(localStorage.getItem("userId"));
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
   const company_id = localStorage.getItem("companyId") || null;
@@ -20,7 +32,6 @@ const CreateWorkOrder = () => {
   const [price, setPrice] = useState("");
 
   // Customer Detail Section state
-  const [customerType, setCustomerType] = useState("Existing");
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [selectedCustomerAddress, setSelectedCustomerAddress] = useState("");
   const [selectedBillingAddress, setSelectedBillingAddress] = useState("");
@@ -28,16 +39,23 @@ const CreateWorkOrder = () => {
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
 
   // Basic Workorder Details state
-  const [startDate, setStartDate] = useState("2025-02-03");
+  const [startDate, setStartDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [startTime, setStartTime] = useState("09:00");
-  const [expectedTime, setExpectedTime] = useState("04:00");
-  const [salesPerson, setSalesPerson] = useState("Super Admin");
+  const [expectedTime, setExpectedTime] = useState("11:00");
+  const [salesPerson, setSalesPerson] = useState("");
   const [salesPersonContact, setSalesPersonContact] = useState("");
   const [selectedWorkers, setSelectedWorkers] = useState("");
   const [selectedWorkerId, setSelectedWorkerId] = useState("");
 
   const [customersList, setcustomersList] = useState();
   const [workersLsit, setworkersLsit] = useState();
+
+  // Work Order Table (Dynamically adding/removing rows)
+  const [workItems, setWorkItems] = useState([
+    { id: 1, workItem: "", itemDesc: "" },
+  ]);
 
   const [errors, setErrors] = useState({});
 
@@ -66,6 +84,24 @@ const CreateWorkOrder = () => {
 
     fetchCustomers();
   }, []);
+
+  // Handle Work Order Table Changes
+  const addWorkItemRow = () => {
+    setWorkItems([
+      ...workItems,
+      { id: Date.now(), workItem: "", itemDesc: "" },
+    ]);
+  };
+
+  const removeWorkItemRow = (id) => {
+    setWorkItems(workItems.filter((row) => row.id !== id));
+  };
+
+  const handleWorkItemChange = (id, field, value) => {
+    setWorkItems(
+      workItems.map((row) => (row.id === id ? { ...row, [field]: value } : row))
+    );
+  };
 
   const clearError = (field) => {
     setErrors((prev) => {
@@ -97,45 +133,50 @@ const CreateWorkOrder = () => {
 
   const validate = () => {
     const newErrors = {};
-    // Customer Detail Section validations
     if (!selectedCustomer) newErrors.selectedCustomer = "Customer is required";
     if (!selectedCustomerAddress)
       newErrors.selectedCustomerAddress = "Customer address is required";
     if (!selectedBillingAddress)
       newErrors.selectedBillingAddress = "Billing address is required";
-
-    // Basic Workorder Details validations
     if (!startDate) newErrors.startDate = "Start Date is required";
     if (!startTime) newErrors.startTime = "Start Time is required";
     if (!expectedTime) newErrors.expectedTime = "Expected Time is required";
     if (!salesPerson) newErrors.salesPerson = "Sales Person is required";
-    // (Sales Person Contact is optional)
     if (!selectedWorkers)
       newErrors.selectedWorkers = "Select Workers is required";
+    // Validate Sales Person Contact Number (10 to 15 digits)
+    if (!salesPersonContact.trim()) {
+      newErrors.salesPersonContact = "Sales Person Contact is required";
+    } else if (!/^\d{10,15}$/.test(salesPersonContact)) {
+      newErrors.salesPersonContact =
+        "Contact number must be between 10 and 15 digits";
+    }
 
-    // Workorder Details validations
-    if (!selectedCategory)
-      newErrors.selectedCategory = "Service category is required";
-    if (!selectedService) newErrors.selectedService = "Service is required";
-    if (!price) newErrors.price = "Price is required";
+    if (
+      workItems.length === 0 ||
+      workItems.some((row) => !row.workItem.trim() || !row.itemDesc.trim())
+    ) {
+      newErrors.workItems =
+        "At least one Work Item and Description are required.";
+    }
 
-    return newErrors;
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmitWorkOrder = async () => {
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+    if (!validate()) return;
 
-    // Find the customer name based on selected ID
+    // Find customer details
     const selectedCustomerData = customersList?.find(
       (customer) => customer.id === selectedCustomerId
     );
     const customerName = selectedCustomerData ? selectedCustomerData.name : "";
+    const customerEmail = selectedCustomerData
+      ? selectedCustomerData.email
+      : "";
 
-    // Find the worker name based on selected ID
+    // Find worker details
     const selectedWorkerData = workersLsit?.find(
       (worker) => worker.id === selectedWorkerId
     );
@@ -144,31 +185,29 @@ const CreateWorkOrder = () => {
     const finalData = {
       companyId: company_id,
       customerDetailSection: {
-        customerType,
-        CustomerId: selectedCustomerId, // Save selected customer ID
+        CustomerId: selectedCustomerId,
         CustomerName: customerName,
+        CustomerEmail: customerEmail,
         CustomerAddress: selectedCustomerAddress,
         BillingAddress: selectedBillingAddress,
-        sendNotification: sendNotification,
+        sendNotification: sendNotification === "Yes" ? true : false,
       },
       basicWorkorderDetails: {
         startDate,
         startTime,
         expectedTime,
         salesPerson,
-        salesPersonContact,
+        salesPersonContact: Number(salesPersonContact), // Convert to Number
         WorkerId: selectedWorkerId,
         WorkerName: workerName,
       },
-      workorderDetails: {
-        ServiceCategory: selectedCategory,
-        ServiceName: selectedService,
-        ServicePrice: price,
-      },
+      workorderDetails: workItems.map((row) => ({
+        workItem: row.workItem,
+        workDescription: row.itemDesc,
+      })),
     };
 
-    console.log("Form data ", finalData);
-
+    console.log("Final Data Sent:", finalData);
 
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -179,31 +218,27 @@ const CreateWorkOrder = () => {
       cancelButtonText: "No, cancel",
     });
 
-    if (!result.isConfirmed) {
-      console.log("Work Order creation was cancelled");
-      return;
-    }
+    if (!result.isConfirmed) return;
 
     Swal.fire({
       title: "Processing...",
       text: "Creating Work Order, please wait.",
       allowOutsideClick: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
+      didOpen: () => Swal.showLoading(),
     });
-    try {
-      const response = await createWorkOrderApi(finalData);
-      console.log("aaaa", response);
-      Swal.close();
-      console.log("Form submitted successfully:", finalData);
 
-      if (response.success === true) {
+    try {
+      const response = await createWorkOrderApi(finalData, token);
+      Swal.close();
+
+      if (response.status === true) {
         Swal.fire({
           title: "Success!",
           text: "Work Order created successfully.",
           icon: "success",
           confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/workorder/list");
         });
       } else {
         Swal.fire({
@@ -216,8 +251,6 @@ const CreateWorkOrder = () => {
       }
     } catch (error) {
       Swal.close();
-      console.error("API Error:", error);
-
       Swal.fire({
         title: "API Error!",
         text: "Something went wrong. Please try again later.",
@@ -236,48 +269,21 @@ const CreateWorkOrder = () => {
             {/* Customer Detail Section */}
             <Card className="mb-4">
               <Card.Header className="bg-purple text-white">
-                Customer Detail Section
+                {t("Customer Detail Section")}
               </Card.Header>
               <Card.Body>
                 <Form>
-                  {/* Customer Type */}
-                  <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={3} className="required-label">
-                      Customer Type:
-                    </Form.Label>
-                    <Col sm={9}>
-                      <Form.Check
-                        type="radio"
-                        label="New"
-                        name="customerType"
-                        id="customerNew"
-                        inline
-                        onChange={() => setCustomerType("New")}
-                        checked={customerType === "New"}
-                      />
-                      <Form.Check
-                        type="radio"
-                        label="Existing"
-                        name="customerType"
-                        id="customerExisting"
-                        inline
-                        onChange={() => setCustomerType("Existing")}
-                        checked={customerType === "Existing"}
-                      />
-                    </Col>
-                  </Form.Group>
-
                   {/* Select Customer */}
                   <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
-                      Select Customer:
+                      {t("Select Customer")}:
                     </Form.Label>
                     <Col sm={9}>
                       <Form.Select
                         value={selectedCustomer}
                         onChange={handleCustomerChange}
                       >
-                        <option value="">Select Customer</option>
+                        <option value="">{t("Select Customer")}</option>
                         {customersList?.map((customer) => (
                           <option key={customer.id} value={customer.id}>
                             {customer.name}
@@ -296,13 +302,13 @@ const CreateWorkOrder = () => {
                   {/* Customer Address as a textarea */}
                   <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
-                      Customer Address:
+                      {t("Customer Address")}:
                     </Form.Label>
                     <Col sm={9}>
                       <Form.Control
                         as="textarea"
                         rows={2}
-                        placeholder="Enter Customer Address"
+                        placeholder={t("Enter Customer Address")}
                         value={selectedCustomerAddress}
                         onChange={(e) => {
                           setSelectedCustomerAddress(e.target.value);
@@ -321,13 +327,13 @@ const CreateWorkOrder = () => {
                   {/* Billing Address as a textarea */}
                   <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
-                      Billing Address:
+                      {t("Billing Address")}:
                     </Form.Label>
                     <Col sm={9}>
                       <Form.Control
                         as="textarea"
                         rows={2}
-                        placeholder="Enter Billing Address"
+                        placeholder={t("Enter Billing Address")}
                         value={selectedBillingAddress}
                         onChange={(e) => {
                           setSelectedBillingAddress(e.target.value);
@@ -346,7 +352,7 @@ const CreateWorkOrder = () => {
                   {/* Send Notification */}
                   <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
-                      Send Notification to Customer?
+                      {t("Send Notification to Customer")}?
                     </Form.Label>
                     <Col sm={9}>
                       <Form.Check
@@ -376,7 +382,7 @@ const CreateWorkOrder = () => {
             {/* Basic Workorder Details */}
             <Card className="mb-4">
               <Card.Header className="bg-purple text-white">
-                Basic Workorder Details
+                {t("Basic Workorder Details")}
               </Card.Header>
               <Card.Body>
                 <Form>
@@ -384,11 +390,12 @@ const CreateWorkOrder = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Start Date:
+                          {t("Start Date")}:
                         </Form.Label>
                         <Form.Control
                           type="date"
                           value={startDate}
+                          min={new Date().toISOString().split("T")[0]} // Restrict past dates
                           onChange={(e) => {
                             setStartDate(e.target.value);
                             if (e.target.value) clearError("startDate");
@@ -399,10 +406,11 @@ const CreateWorkOrder = () => {
                         )}
                       </Form.Group>
                     </Col>
+
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Start Time:
+                          {t("Start Time")}:
                         </Form.Label>
                         <Form.Control
                           type="time"
@@ -423,7 +431,7 @@ const CreateWorkOrder = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Expected Time Required:
+                          {t("Expected Time Required")}:
                         </Form.Label>
                         <Form.Control
                           type="time"
@@ -447,11 +455,11 @@ const CreateWorkOrder = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Sales Person:
+                          {t("Sales Person")}:
                         </Form.Label>
                         <Form.Control
                           type="text"
-                          value={salesPerson}
+                          // value={salesPerson}
                           onChange={(e) => {
                             setSalesPerson(e.target.value);
                             if (e.target.value) clearError("salesPerson");
@@ -466,14 +474,26 @@ const CreateWorkOrder = () => {
                     </Col>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label>Sales Person Contact:</Form.Label>
+                        <Form.Label className="required-label">
+                          {t("Sales Person Contact")}:
+                        </Form.Label>
                         <Form.Control
-                          type="text"
+                          type="number"
+                          placeholder={t("Enter Sales Person Contact")}
                           value={salesPersonContact}
-                          onChange={(e) =>
-                            setSalesPersonContact(e.target.value)
-                          }
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            // Only allow numbers and limit length
+                            if (/^\d{0,15}$/.test(value)) {
+                              setSalesPersonContact(value);
+                              clearError("salesPersonContact");
+                            }
+                          }}
+                          isInvalid={!!errors.salesPersonContact}
                         />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.salesPersonContact}
+                        </Form.Control.Feedback>
                       </Form.Group>
                     </Col>
                   </Row>
@@ -483,13 +503,13 @@ const CreateWorkOrder = () => {
                     <Col md={12}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          Select Workers:
+                          {t("Select Workers")}:
                         </Form.Label>
                         <Form.Select
                           value={selectedWorkers}
                           onChange={handleWorkerChange}
                         >
-                          <option value="">Select Workers</option>
+                          <option value="">{t("Select Workers")}</option>
                           {workersLsit?.map((worker) => (
                             <option key={worker.id} value={worker.id}>
                               {worker.name}
@@ -510,86 +530,82 @@ const CreateWorkOrder = () => {
             </Card>
 
             {/* Workorder Details */}
+            {/* Work Order Table Section */}
             <Card className="mb-4">
-              <Card.Header className="bg-purple text-white">
-                Workorder Details
+              <Card.Header className="bg-purple text-white d-flex justify-content-between align-items-center">
+                <span>{t("Workorder Details")}</span>
               </Card.Header>
               <Card.Body>
-                <Form>
-                  <Row>
-                    <Col md={4}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="required-label">
-                          Service Category:
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="Enter Service Category"
-                          value={selectedCategory}
-                          onChange={(e) => {
-                            setSelectedCategory(e.target.value);
-                            if (e.target.value) clearError("selectedCategory");
-                          }}
-                        />
-                        {errors.selectedCategory && (
-                          <div className="text-danger">
-                            {errors.selectedCategory}
-                          </div>
-                        )}
-                      </Form.Group>
-                    </Col>
-                    <Col md={4}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="required-label">
-                          Select Service:
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="Enter Service Name"
-                          value={selectedService}
-                          onChange={(e) => {
-                            handleServiceChange(e);
-                          }}
-                        />
-                        {errors.selectedService && (
-                          <div className="text-danger">
-                            {errors.selectedService}
-                          </div>
-                        )}
-                      </Form.Group>
-                    </Col>
-                    <Col md={4}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="required-label">
-                          Price:
-                        </Form.Label>
-                        <Form.Control
-                          type="number"
-                          placeholder="Enter Price"
-                          value={price}
-                          onChange={(e) => {
-                            setPrice(e.target.value);
-                            if (e.target.value) clearError("price");
-                          }}
-                        />
-                        {errors.price && (
-                          <div className="text-danger">{errors.price}</div>
-                        )}
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                </Form>
+                <Table bordered responsive>
+                  <thead>
+                    <tr className="bg-light">
+                      <th>{t("Work Item")}</th>
+                      <th>{t("Item Description")}</th>
+                      <th className="text-center">
+                        <Button
+                          variant="success"
+                          size="sm"
+                          onClick={addWorkItemRow}
+                        >
+                          {t("Add More")}
+                        </Button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {workItems.map((row) => (
+                      <tr key={row.id}>
+                        <td>
+                          <Form.Control
+                            type="text"
+                            placeholder={t("Enter Work Item")}
+                            value={row.workItem}
+                            onChange={(e) =>
+                              handleWorkItemChange(
+                                row.id,
+                                "workItem",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </td>
+                        <td>
+                          <Form.Control
+                            type="text"
+                            placeholder={t("Enter Item Description")}
+                            value={row.itemDesc}
+                            onChange={(e) =>
+                              handleWorkItemChange(
+                                row.id,
+                                "itemDesc",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </td>
+                        <td className="text-center">
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => removeWorkItemRow(row.id)}
+                          >
+                            ✖
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  {errors.workItems && (
+                    <div className="text-danger mt-2">{errors.workItems}</div>
+                  )}
+                </Table>
               </Card.Body>
             </Card>
 
             {/* Submit Workorder */}
             <div className="text-center mb-4">
-              <Button
-                variant="primary"
-                onClick={handleSubmitWorkOrder}
-                disabled={!selectedCategory || !selectedService}
-              >
-                Submit Workorder
+              <Button onClick={handleSubmitWorkOrder}>
+                {t("Submit Workorder")}
               </Button>
             </div>
           </Container>

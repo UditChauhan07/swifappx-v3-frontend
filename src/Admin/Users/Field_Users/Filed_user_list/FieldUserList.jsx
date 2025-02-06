@@ -9,8 +9,12 @@ import { FaInfoCircle, FaEdit, FaClipboardList } from "react-icons/fa";
 import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
+
 
 const FieldUserList = () => {
+      const { t } = useTranslation(); 
+  
   const [isLoading, setLoading] = useState(true);
   const [tableData, setTableData] = useState([]);
   console.log("dadsaasd", tableData);
@@ -174,18 +178,18 @@ const FieldUserList = () => {
             }}
           >
             <div className="d-flex justify-content-between align-items-center mb-3">
-              <h4 className="mb-0">Field User List</h4>
+              <h4 className="mb-0">{t("Field User List")}</h4>
               <div className="d-flex gap-2">
                 <Form.Control
                   type="text"
-                  placeholder="Search..."
+                  placeholder={t("Search...")}
                   className="me-2"
                   style={{ width: "200px" }}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <Button variant="secondary" onClick={handleClear}>
-                  Clear
+                  {t("Clear")}
                 </Button>
               </div>
             </div>
@@ -204,7 +208,7 @@ const FieldUserList = () => {
                         background: "#e5e5e5",
                       }}
                     >
-                      {header}
+                      {t(header)}
                     </th>
                   ))}
                 </tr>
@@ -217,7 +221,7 @@ const FieldUserList = () => {
                       color={"#3C3C3C"}
                       style={{ display: "flex", justifyContent: "center" }}
                     />
-                    <p className="mt-2">Loading...</p>
+                    <p className="mt-2">{t("Loading...")}</p>
                   </td>
                 </tr>
               ) : (
@@ -275,14 +279,15 @@ const FieldUserList = () => {
                               color: "#4B5563",
                             }}
                           >
-                            <Form.Check
+                            {/* <Form.Check
                               type="switch"
                               id="status-switch"
                               label={row.isActive == 1 ? "Active" : "Unactive"}
                               checked={
                                 row.isActive == 1 ? "Active" : "Unactive"
                               }
-                            />
+                            /> */}
+                            {row.isActive == 1 ? "Active" : "Unactive"}
                           </td>
                           <td
                             style={{
@@ -361,7 +366,7 @@ const FieldUserList = () => {
                     ) : (
                       <tr>
                         <td colSpan="7" className="text-center py-5">
-                          No data found
+                          {t("No data found")}
                         </td>
                       </tr>
                     )}
@@ -370,7 +375,7 @@ const FieldUserList = () => {
               )}
             </Table>
             <div className="d-flex justify-content-between align-items-center mt-3">
-              <span>Showing 1 to 1 of 1 items</span>
+              <span>{t("Showing 1 to 1 of 1 items")}</span>
               <div>
                 <Button variant="light" className="me-1" disabled>
                   &laquo;

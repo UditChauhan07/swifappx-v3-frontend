@@ -42,6 +42,8 @@ import CreateWorkOrder from "./Admin/Pages/WorkOrders/CreateWorkOrder/CreateWork
 import WorkOrderList from './Admin/Pages/WorkOrders/WorkOrderList/WorkOrderList';
 import DraftWorkOrder from './Admin/Pages/WorkOrders/DraftWorkOrder/DraftWorkOrder';
 import AdminDashboard from "./Admin/Pages/DashBoard/adminDashBoard";
+import WorkOrderEdit from "./Admin/Pages/WorkOrders/WorkOrderList/WorkOrderEdit/WorkOrderEdit";
+import WorkOrderDetails from "./Admin/Pages/WorkOrders/WorkOrderList/WorkOrderDetails/WorkOrderDetails";
 
 function App() {
   return (
@@ -55,8 +57,8 @@ function App() {
 
           <Route path="/header" element={<Header />} />
 
-          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-          <Route path="/dashboard" element={<PrivateRoute element={Dashboard} />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* <Route path="/dashboard" element={<PrivateRoute element={Dashboard} />} /> */}
 
           {/* Companies */}
           <Route path="/company/create" element={<CreateCompany />} />
@@ -112,6 +114,8 @@ function App() {
           {/* Work Order */}
           <Route path="/workorder/create" element={<CreateWorkOrder />} />
           <Route path="/workorder/list" element={<WorkOrderList />} />
+          <Route path="/workorder/list/details" element={<WorkOrderDetails />} />
+          <Route path="/workorder/list/edit" element={<WorkOrderEdit />} />
           <Route path="/workorder/draft" element={<DraftWorkOrder />} />
         </Routes>
       </Router>

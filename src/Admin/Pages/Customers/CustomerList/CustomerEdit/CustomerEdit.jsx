@@ -4,26 +4,31 @@ import Swal from "sweetalert2";
 import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../../../../Components/Header/Header";
 import { editCustomerApi } from "../../../../../lib/store";
+import { useTranslation } from "react-i18next";
 
 const CustomerEdit = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { customer } = location.state || {};
-  console.log("ddd", customer);
-  const [adminName, setadminName] = useState(localStorage.getItem("name"));
+
+
   const [formData, setFormData] = useState({
-    name: customer.name || "",
-    type: customer.type || "Individual",
-    email: customer.email || "",
-    initial_remarks: customer.initial_remarks || "",
-    company_id: customer.company_id || localStorage.getItem("userId"),
-    created_by: customer.created_by || "",
+    name: customer?.name || "",
+    email: customer?.email || "",
+    phone: customer?.phone || "",
+    address: customer?.address || "",
+    company_id: customer?.company_id || localStorage.getItem("userId"),
+    created_by: customer?.created_by || "",
   });
-  const [token, settoken] = useState(localStorage.getItem("UserToken"));
+
+  const [token] = useState(localStorage.getItem("UserToken"));
 
   const [errors, setErrors] = useState({
     name: "",
     email: "",
+    phone: "",
+    address: "",
   });
 
   // Handle input changes
@@ -45,7 +50,12 @@ const CustomerEdit = () => {
 
   const validateForm = () => {
     let isValid = true;
-    const newErrors = { name: "", email: "" };
+    const newErrors = {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+    };
 
     // Validate name
     if (!formData.name.trim()) {
@@ -53,12 +63,28 @@ const CustomerEdit = () => {
       isValid = false;
     }
 
-    // Validate email
+    // Validate email using a stricter regex
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
       isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Email is invalid";
+      isValid = false;
+    }
+
+    // Validate phone: it must be a number and between 10-15 digits
+if (!formData.phone || String(formData.phone).trim() === "") {
+  newErrors.phone = "Phone is required";
+  isValid = false;
+} else if (!/^\d{10,15}$/.test(String(formData.phone))) {
+  newErrors.phone = "Phone must contain between 10 and 15 digits";
+  isValid = false;
+}
+
+
+    // Validate address
+    if (!formData.address.trim()) {
+      newErrors.address = "Address is required";
       isValid = false;
     }
 
@@ -75,21 +101,21 @@ const CustomerEdit = () => {
 
     const result = await Swal.fire({
       title: "Are you sure?",
-      text: "Do you want to Update customer?",
+      text: "Do you want to update this customer?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, Update it!",
+      confirmButtonText: "Yes, update it!",
       cancelButtonText: "No, cancel",
     });
 
     if (!result.isConfirmed) {
-      console.log("Customer Updation was cancelled");
+      console.log("Customer update was cancelled");
       return;
     }
 
     Swal.fire({
       title: "Processing...",
-      text: "Upadting Customer, please wait.",
+      text: "Updating customer, please wait.",
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
@@ -101,37 +127,24 @@ const CustomerEdit = () => {
       const response = await editCustomerApi(customerId, formData, token);
 
       Swal.close();
-      console.log("Form submitted successfully:", formData);
 
       if (response.status === true) {
         Swal.fire({
           title: "Success!",
-          text: "Customer Updated successfully.",
+          text: "Customer updated successfully.",
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
-          navigate("/customers/list"); // Navigate after confirmation
+          navigate("/customers/list");
         });
-        // setFormData({
-        //   name: "",
-        //   type: "Individual",
-        //   email: "",
-        //   initial_remarks: "",
-        // });
       } else {
         Swal.fire({
           title: "Error!",
-          text: response.message || "There was an error Upadting the Customer.",
+          text: response.message || "There was an error updating the customer.",
           icon: "error",
           confirmButtonText: "Try Again",
         });
       }
-      // setFormData({
-      //   name: "",
-      //   type: "Individual",
-      //   email: "",
-      //   initial_remarks: "",
-      // });
     } catch (error) {
       Swal.close();
       console.error("API Error:", error);
@@ -144,6 +157,7 @@ const CustomerEdit = () => {
       });
     }
   };
+
   return (
     <>
       <Header />
@@ -153,24 +167,25 @@ const CustomerEdit = () => {
             <div
               className="form-header mb-4"
               style={{
-                backgroundColor: "#8d28dd",
+                backgroundColor: "#2e2e32",
                 color: "white",
                 padding: "10px 20px",
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">Update Customer Details</h4>
+              <h4 className="mb-0">{t("Update Customer Details")}</h4>
             </div>
             <Form onSubmit={handleSubmit}>
               <Row>
+                {/* Name Field */}
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formName">
                     <Form.Label>
-                      Name<span className="text-danger">*</span>
+                      {t("Name")} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder="Enter Name"
+                      placeholder={t("Enter Name")}
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
@@ -182,31 +197,16 @@ const CustomerEdit = () => {
                   </Form.Group>
                 </Col>
 
-                <Col md={12}>
-                  <Form.Group className="mb-3" controlId="formType">
-                    <Form.Label>
-                      Type<span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Select
-                      name="type"
-                      value={formData.type}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="Individual">Individual</option>
-                      <option value="Company">Company</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-
+                {/* Email Field */}
                 <Col md={12}>
                   <Form.Group className="mb-3" controlId="formEmail">
                     <Form.Label>
-                      Email Address<span className="text-danger">*</span>
+                      {t("Email Address")}{" "}
+                      <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       type="email"
-                      placeholder="Enter Email Address"
+                      placeholder={t("Enter Email Address")}
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
@@ -218,17 +218,43 @@ const CustomerEdit = () => {
                   </Form.Group>
                 </Col>
 
+                {/* Phone Field */}
                 <Col md={12}>
-                  <Form.Group className="mb-3" controlId="forminitial_remarks">
-                    <Form.Label>Initial Remarks</Form.Label>
+                  <Form.Group className="mb-3" controlId="formPhone">
+                    <Form.Label>
+                      {t("Phone")} <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
-                      as="textarea"
-                      rows={3}
-                      placeholder="Enter Initial Remarks"
-                      name="initial_remarks"
-                      value={formData.initial_remarks}
+                      type="text"
+                      placeholder={t("Enter Phone Number")}
+                      name="phone"
+                      value={formData.phone}
                       onChange={handleInputChange}
+                      isInvalid={!!errors.phone}
                     />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.phone}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+
+                {/* Address Field */}
+                <Col md={12}>
+                  <Form.Group className="mb-3" controlId="formAddress">
+                    <Form.Label>
+                      {t("Address")} <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder={t("Enter Address")}
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      isInvalid={!!errors.address}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.address}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
               </Row>
@@ -242,10 +268,14 @@ const CustomerEdit = () => {
                     border: "none",
                   }}
                 >
-                  Update
+                  {t("Update")}
                 </Button>
-                <Button variant="secondary" type="button">
-                  Back to Customer List
+                <Button
+                  variant="secondary"
+                  type="button"
+                  onClick={() => navigate("/customers/list")}
+                >
+                  {t("Back to Customer List")}
                 </Button>
               </div>
             </Form>

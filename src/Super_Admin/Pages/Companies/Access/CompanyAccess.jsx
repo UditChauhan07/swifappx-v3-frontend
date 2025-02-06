@@ -172,7 +172,7 @@ const CompanyAccess = () => {
                         <Card.Body>
                           <Card.Title
                             className="text-uppercase fw-bold"
-                            style={{ color: "#8d28dd" }}
+                            style={{ color: "#2e2e32" }}
                           >
                             {company.company.company_name}
                           </Card.Title>
