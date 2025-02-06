@@ -282,7 +282,7 @@ const WorkOrderList = () => {
                             }}
                             title={row.workorderDetails
                               .map((item) => item.workItem)
-                              .join(", ")} // Full list on hover
+                              .join(", ")} 
                           >
                             {row.workorderDetails
                               .slice(0, 2)
@@ -333,7 +333,7 @@ const WorkOrderList = () => {
                                 <i className="bi bi-info-circle"></i>
                                 <FaInfoCircle />
                               </Button>
-                              <Button
+                              {/* <Button
                                 variant="warning"
                                 size="sm"
                                 onClick={() => handleEdit(row)}
@@ -348,7 +348,7 @@ const WorkOrderList = () => {
                               >
                                 <i className="bi bi-pencil"></i>
                                 <FaEdit />
-                              </Button>
+                              </Button> */}
                               <Button
                                 variant="danger"
                                 size="sm"

@@ -37,7 +37,7 @@ const Header = () => {
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
   const { roles } = usePermissions();
-  // console.log("permissions",permissions);
+  // console.log("permissions",roles);
 
   const toggleDropdown = (dropdown) => {
     setExpandedDropdown(expandedDropdown === dropdown ? "" : dropdown);

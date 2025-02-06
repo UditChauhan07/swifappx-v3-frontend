@@ -49,6 +49,7 @@ const Login = () => {
         localStorage.setItem("profilePic", response.user.profile_picture);
         localStorage.setItem("name", response.user.first_name);
         localStorage.setItem("companyId", response.company_id);
+        localStorage.setItem("language", "en");
 
         setisLoading(false);
         if (response.user.role === "Admin") {

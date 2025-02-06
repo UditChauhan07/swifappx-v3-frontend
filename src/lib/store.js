@@ -56,6 +56,41 @@ export const getCompanyListApi = async (token) => {
   }
 };
 
+// Get Admin dashboard Details 
+export const getSuperAdminDashboardDetails = async (token) => {
+  try {
+    const response = await axios.get(`${Url}/dcc23we5t6`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+// Get Super-Admin dashboard Details 
+export const getAdminDashboardDetails = async (companyId,token) => {
+  try {
+    const response = await axios.get(`${Url}/cdsj54rt67/${companyId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
 // Crete Company
 export const createCompanyApi = async (formdata, token) => {
   console.log("dataa", formdata);

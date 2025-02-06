@@ -224,6 +224,7 @@ const validationSchema = Yup.object({
 const Create = () => {
     const { t } = useTranslation(); 
   const [roles, setRoles] = useState([]);
+  console.log("dads",roles)
 const token = localStorage.getItem("UserToken");
 const userid = localStorage.getItem("userId");
 const company_id=localStorage.getItem("companyId")||null;
@@ -234,7 +235,7 @@ const navigate=useNavigate();
 useEffect(() => {
   if (userid) {
     fetchRolesList(userid, token).then((response) => {
-      setRoles(response);
+      setRoles(response?.data);
     });
   }
 }, [userid]);

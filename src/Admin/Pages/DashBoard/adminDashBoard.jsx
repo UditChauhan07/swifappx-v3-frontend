@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { Bar } from "react-chartjs-2";
 import Header from "../../../Components/Header/Header";
@@ -12,7 +12,9 @@ import {
   Legend,
 } from "chart.js";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useTranslation } from "react-i18next"; // Import the translation hook
+import { useTranslation } from "react-i18next";
+import { usePermissions } from "../../../context/PermissionContext";
+import { getAdminDashboardDetails } from "../../../lib/store";
 
 // Register Chart.js components
 ChartJS.register(
@@ -25,14 +27,60 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
-  const { t } = useTranslation(); // Destructure the translation function
+  const { getRoles } = usePermissions();
+  const { t } = useTranslation();
+  const token = localStorage.getItem("UserToken");
+  const userid = localStorage.getItem("userId");
+  const companyId = localStorage.getItem("companyId");
 
-  const stats = {
-    workOrdersScheduled: { today: 0, week: 0, month: 0 },
-    workOrdersCompleted: { today: 0, week: 0, month: 0 },
-    workOrdersCancelled: { today: 0, week: 0, month: 0 },
-  };
+  // State to hold the dashboard data fetched from the API
+  const [dashboardData, setDashboardData] = useState({
+    scheduled: { today: 0, thisWeek: 0, thisMonth: 0 },
+    completed: { today: 0, thisWeek: 0, thisMonth: 0 },
+    cancelled: { today: 0, thisWeek: 0, thisMonth: 0 },
+  });
 
+  // Get user roles if a userId is available.
+  useEffect(() => {
+    if (userid) {
+      getRoles(userid);
+    }
+  }, [userid]);
+
+  // Fetch dashboard details from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAdminDashboardDetails(companyId, token);
+        console.log("dasdsaa", response);
+        if (response.success === true && response.data) {
+          setDashboardData({
+            scheduled: {
+              today: response.data.scheduled.today,
+              thisWeek: response.data.scheduled.thisWeek,
+              thisMonth: response.data.scheduled.thisMonth,
+            },
+            completed: {
+              today: response.data.completed.today,
+              thisWeek: response.data.completed.thisWeek,
+              thisMonth: response.data.completed.thisMonth,
+            },
+            cancelled: {
+              today: response.data.cancelled.today,
+              thisWeek: response.data.cancelled.thisWeek,
+              thisMonth: response.data.cancelled.thisMonth,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("API Error:", error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
+  // Chart data and options (static/dummy data for now)
   const chartData = {
     labels: [
       t("Day 1"),
@@ -83,13 +131,13 @@ const AdminDashboard = () => {
                     <h5>{t("Work Orders Scheduled")}</h5>
                     <hr style={{ borderColor: "white" }} />
                     <p>
-                      {t("Today")}: {stats.workOrdersScheduled.today}
+                      {t("Today")}: {dashboardData.scheduled.today}
                     </p>
                     <p>
-                      {t("This Week")}: {stats.workOrdersScheduled.week}
+                      {t("This Week")}: {dashboardData.scheduled.thisWeek}
                     </p>
                     <p>
-                      {t("This Month")}: {stats.workOrdersScheduled.month}
+                      {t("This Month")}: {dashboardData.scheduled.thisMonth}
                     </p>
                   </Card.Body>
                 </Card>
@@ -100,13 +148,13 @@ const AdminDashboard = () => {
                     <h5>{t("Work Orders Completed")}</h5>
                     <hr style={{ borderColor: "white" }} />
                     <p>
-                      {t("Today")}: {stats.workOrdersCompleted.today}
+                      {t("Today")}: {dashboardData.completed.today}
                     </p>
                     <p>
-                      {t("This Week")}: {stats.workOrdersCompleted.week}
+                      {t("This Week")}: {dashboardData.completed.thisWeek}
                     </p>
                     <p>
-                      {t("This Month")}: {stats.workOrdersCompleted.month}
+                      {t("This Month")}: {dashboardData.completed.thisMonth}
                     </p>
                   </Card.Body>
                 </Card>
@@ -117,13 +165,13 @@ const AdminDashboard = () => {
                     <h5>{t("Work Orders Cancelled")}</h5>
                     <hr style={{ borderColor: "white" }} />
                     <p>
-                      {t("Today")}: {stats.workOrdersCancelled.today}
+                      {t("Today")}: {dashboardData.cancelled.today}
                     </p>
                     <p>
-                      {t("This Week")}: {stats.workOrdersCancelled.week}
+                      {t("This Week")}: {dashboardData.cancelled.thisWeek}
                     </p>
                     <p>
-                      {t("This Month")}: {stats.workOrdersCancelled.month}
+                      {t("This Month")}: {dashboardData.cancelled.thisMonth}
                     </p>
                   </Card.Body>
                 </Card>
