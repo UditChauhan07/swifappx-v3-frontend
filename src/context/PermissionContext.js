@@ -70,14 +70,23 @@ export const PermissionsProvider = ({ children }) => {
     };
   }, []);
 
-  const hasPermission = (moduleName, action) =>
-    permissions.some(
-      (perm) => perm.moduleName === moduleName && perm.actions.includes(action)
-    );
-
+  // const hasPermission = (moduleName, action) =>
+  //   permissions.permissions?.some(
+  //     (perm) => perm.moduleName === moduleName && perm.actions.includes(action)
+  //   );
+  const hasPermission = (moduleName, action) => {
+    if (permissions.permissions) {
+      return permissions.permissions.some(
+        (perm) => perm.moduleName === moduleName && perm.actions.includes(action)
+      );
+    } else {
+      return false;
+    }
+  };
+  
   return (
     <PermissionsContext.Provider
-      value={{ userRole, hasPermission, permissions, getRoles, roles }}
+      value={{ userRole, hasPermission, permissions, getRoles, roles ,setPermissions}}
     >
       {children}
     </PermissionsContext.Provider>

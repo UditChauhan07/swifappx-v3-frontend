@@ -36,8 +36,8 @@ const Header = () => {
   const [expandedDropdown, setExpandedDropdown] = useState("");
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
-  const { roles } = usePermissions();
-  // console.log("permissions",roles);
+  const { roles,hasPermission, permissions } = usePermissions();
+  console.log("permissions",permissions);
 
   const toggleDropdown = (dropdown) => {
     setExpandedDropdown(expandedDropdown === dropdown ? "" : dropdown);
@@ -124,7 +124,8 @@ const Header = () => {
   const getItemClass = (lng) => {
     return lng === selectedLanguage ? "selected-item" : "";
   };
-
+console.log('userRole: ', permissions)
+console.log('userRole: ' + userRole,userRole == "Admin")
   return (
     <>
       {/* Navbar */}
@@ -331,6 +332,7 @@ const Header = () => {
                     </div>
 
                     {/* Field Users */}
+
                     <div
                       className={`dropdown ${
                         expandedDropdown === "users" &&
@@ -372,79 +374,89 @@ const Header = () => {
                         ""
                       )}
                     </div>
+
                   </div>
                 </div>
 
                 {/* Customers */}
-                <div
-                  className={`dropdown ${
-                    expandedDropdown === "customers" ? "expanded" : ""
-                  }`}
-                >
-                  <div
-                    className="dropdown-title"
-                    onClick={() => toggleDropdown("customers")}
-                  >
-                    <span>{t("Customers")}</span>
-                    <FaUserFriends size={20} />
-                  </div>
-                  <div
-                    className={`dropdown-items ${
-                      expandedDropdown === "customers" ? "show" : ""
-                    }`}
-                  >
-                    <Link
-                      to="/customers/create"
-                      className="sidebar-link"
-                      activeClassName="active"
+                { (userRole == "Admin" || hasPermission("Company Customers Module", "View")) && (
+                    <div
+                      className={`dropdown ${
+                        expandedDropdown === "customers" ? "expanded" : ""
+                      }`}
                     >
-                      <div>▣ {t("Create")}</div>
-                    </Link>
-                    <Link
-                      to="/customers/list"
-                      className="sidebar-link"
-                      activeClassName="active"
-                    >
-                      ▣ {t("Customer List")}
-                    </Link>
-                  </div>
-                </div>
+                      <div
+                        className="dropdown-title"
+                        onClick={() => toggleDropdown("customers")}
+                      >
+                        <span>{t("Customers")}</span>
+                        <FaUserFriends size={20} />
+                      </div>
+                      <div
+                        className={`dropdown-items ${
+                          expandedDropdown === "customers" ? "show" : ""
+                        }`}
+                      >
+                        {(userRole == "Admin" || hasPermission("Company Customers Module", "Create")) &&(
+                          <Link
+                            to="/customers/create"
+                            className="sidebar-link"
+                            activeClassName="active"
+                          >
+                            <div>▣ {t("Create")}</div>
+                          </Link>
+                        )}
+                        <Link
+                          to="/customers/list"
+                          className="sidebar-link"
+                          activeClassName="active"
+                        >
+                          ▣ {t("Customer List")}
+                        </Link>
+
+                      </div>
+                    </div> )
+               
+                }
 
                 {/* Work Orders */}
-                <div
-                  className={`dropdown ${
-                    expandedDropdown === "workOrder" ? "expanded" : ""
-                  }`}
-                >
+                  {(userRole == "Admin" || hasPermission(`Company Work Order Module`,`View`))&&(
                   <div
-                    className="dropdown-title"
-                    onClick={() => toggleDropdown("workOrder")}
-                  >
-                    <span>{t("Work Orders")}</span>
-                    <MdWork size={20} />
-                  </div>
-                  <div
-                    className={`dropdown-items ${
-                      expandedDropdown === "workOrder" ? "show" : ""
+                    className={`dropdown ${
+                      expandedDropdown === "workOrder" ? "expanded" : ""
                     }`}
                   >
-                    <Link
-                      to="/workorder/create"
-                      className="sidebar-link"
-                      activeClassName="active"
+                    <div
+                      className="dropdown-title"
+                      onClick={() => toggleDropdown("workOrder")}
                     >
-                      ▣ {t("Create")}
-                    </Link>
-                    <Link
-                      to="/workorder/list"
-                      className="sidebar-link"
-                      activeClassName="active"
+                      <span>{t("Work Orders")}</span>
+                      <MdWork size={20} />
+                    </div>
+                    <div
+                      className={`dropdown-items ${
+                        expandedDropdown === "workOrder" ? "show" : ""
+                      }`}
                     >
-                      ▣ {t("Work Orders List")}
-                    </Link>
-                  </div>
-                </div>
-
+                    {(userRole == "Admin" || hasPermission(`Company Work Order Module`,`Create`))&&(
+                      <Link
+                        to="/workorder/create"
+                        className="sidebar-link"
+                        activeClassName="active"
+                      >
+                        ▣ {t("Create")}
+                      </Link>
+                    )}
+                      <Link
+                        to="/workorder/list"
+                        className="sidebar-link"
+                        activeClassName="active"
+                      >
+                        ▣ {t("Work Orders List")}
+                      </Link>
+                    </div>
+                  </div>)
+                  }
                 {/* Settings */}
                 <div
                   className={`dropdown ${
@@ -464,6 +476,8 @@ const Header = () => {
                     }`}
                   >
                     {/* Roles Dropdown */}
+
+                   {userRole === "SuperAdmin" || userRole === "Admin" &&
                     <div
                       className={`dropdown ${
                         nestedDropdown === "roles" ? "expanded" : ""
@@ -496,6 +510,8 @@ const Header = () => {
                         </div>
                       )}
                     </div>
+                   }
+
                   </div>
                 </div>
               </>

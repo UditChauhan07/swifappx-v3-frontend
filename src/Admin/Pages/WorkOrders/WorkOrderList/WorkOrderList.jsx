@@ -12,9 +12,13 @@ import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
+import { usePermissions } from "../../../../context/PermissionContext";
 
 const WorkOrderList = () => {
+  const {hasPermission}=usePermissions()
+  const userRole=localStorage.getItem('Role')
   const { t } = useTranslation();
+ 
 
   const [isLoading, setLoading] = useState(true);
   const [tableData, setTableData] = useState([]);
@@ -349,6 +353,7 @@ const WorkOrderList = () => {
                                 <i className="bi bi-pencil"></i>
                                 <FaEdit />
                               </Button> */}
+                              {(userRole == "Admin" || hasPermission(`Company Work Order Module`,`Delete`))&&(
                               <Button
                                 variant="danger"
                                 size="sm"
@@ -365,6 +370,7 @@ const WorkOrderList = () => {
                                 <i className="bi bi-trash"></i>
                                 <FaClipboardList />
                               </Button>
+                            )}
                             </div>
                           </td>
                         </tr>

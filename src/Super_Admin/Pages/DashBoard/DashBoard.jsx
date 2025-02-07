@@ -130,15 +130,15 @@ const DashBoard = () => {
                           }}
                         >
                           <div className="stat-item text-center border-end">
-                            <strong>{company.totalUsers || "0"}</strong>
-                            <div>{t("Total User")}</div>
+                            <strong>{company?.user_counts.totalCUstomers || "0"}</strong>
+                            <div>{t("Total Customer")}</div>
                           </div>
-                          <div className="stat-item text-center border-end">
+                          {/* <div className="stat-item text-center border-end">
                             <strong>{company.quotations || "0"}</strong>
                             <div>{t("Quotations")}</div>
-                          </div>
+                          </div> */}
                           <div className="stat-item text-center">
-                            <strong>{company.workOrders || "0"}</strong>
+                            <strong>{company?.user_counts.totalWorkOrders || "0"}</strong>
                             <div>{t("Work Orders")}</div>
                           </div>
                         </div>

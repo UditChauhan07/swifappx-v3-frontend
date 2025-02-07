@@ -29,7 +29,7 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
-  const { getRoles } = usePermissions();
+  const { getRoles,permissions } = usePermissions();
   const { t } = useTranslation();
   const token = localStorage.getItem("UserToken");
   const userid = localStorage.getItem("userId");

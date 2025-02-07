@@ -12,8 +12,10 @@ import "./Login.css";
 import axios from "axios";
 import { LoginApi } from "../../lib/store";
 import { useNavigate } from "react-router-dom";
+import { usePermissions } from "../../context/PermissionContext";
 
 const Login = () => {
+  const {setPermissions}=usePermissions();
   const Navigate = useNavigate();
   const [isLoading, setisLoading] = useState(false);
   console.log("isLoadinggg", isLoading);
@@ -50,9 +52,9 @@ const Login = () => {
         localStorage.setItem("name", response.user.first_name);
         localStorage.setItem("companyId", response.company_id);
         localStorage.setItem("language", "en");
-
+        setPermissions(response.rolesPermissions||[])
         setisLoading(false);
-        if (response.user.role === "Admin") {
+        if (response.user.role === "Admin" || response.user.role === "office_Admin") {
           Navigate("/dashboard/admin");
         } else {
           Navigate("/dashboard");

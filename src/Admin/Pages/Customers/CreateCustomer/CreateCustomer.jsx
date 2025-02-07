@@ -15,7 +15,7 @@ const CreateCustomer = () => {
     email: "",
     phone: "", // Will store phone as a number once entered
     address: "",
-    company_id: localStorage.getItem("userId"),
+    company_id: localStorage.getItem("companyId"),
     created_by: adminName,
   });
   const [token] = useState(localStorage.getItem("UserToken"));

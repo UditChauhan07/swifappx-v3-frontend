@@ -10,9 +10,12 @@ import { MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { usePermissions } from "../../../../context/PermissionContext";
 
 
 const CustomerList = () => {
+  const {hasPermission}=usePermissions();
+    const userRole=localStorage.getItem('Role')
   const { t } = useTranslation(); 
   
   const navigate = useNavigate();
@@ -21,7 +24,7 @@ const CustomerList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [userId, setuserId] = useState(localStorage.getItem("userId"));
+  const [companyId, setCompanyId] = useState(localStorage.getItem("companyId"));
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
   const rowsPerPage = 4;
 
@@ -29,7 +32,7 @@ const CustomerList = () => {
     const fetchCustomers = async () => {
       setIsLoading(true);
       try {
-        const response = await getCustomerList(userId, token); // Fetch customers from API
+        const response = await getCustomerList(companyId, token); // Fetch customers from API
         console.log("resss", response);
         setCustomers(response?.customers || []);
       } catch (error) {
@@ -294,6 +297,7 @@ const CustomerList = () => {
                         >
                           <IoIosInformationCircle />
                         </Button>
+                        {(userRole == "Admin" || hasPermission("Company Customers Module", "Edit")) &&(
                         <Button
                           variant="outline-secondary"
                           size="sm"
@@ -306,6 +310,7 @@ const CustomerList = () => {
                         >
                           <FaUserEdit />
                         </Button>
+                        )}
                         {/* <Button
                           variant="outline-secondary"
                           size="sm"
@@ -317,6 +322,7 @@ const CustomerList = () => {
                         >
                           <FaAddressBook />
                         </Button> */}
+                        {(userRole == "Admin" || hasPermission("Company Customers Module", "Delete")) &&(
                         <Button
                           variant="outline-secondary"
                           size="sm"
@@ -329,6 +335,7 @@ const CustomerList = () => {
                         >
                           <MdDelete />
                         </Button>
+                       )}
                       </div>
                     </td>
                   </tr>

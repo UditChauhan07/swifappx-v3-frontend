@@ -24,6 +24,7 @@ const CreateWorkOrder = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [userId, setuserId] = useState(localStorage.getItem("userId"));
+  const [copmanyId, setcopmanyId] = useState(localStorage.getItem("companyId"));
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
   const company_id = localStorage.getItem("companyId") || null;
   // Workorder Details (for the new Workorder Details section)
@@ -62,7 +63,7 @@ const CreateWorkOrder = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await getCustomerList(userId, token); // Fetch customers from API
+        const response = await getCustomerList(copmanyId, token); // Fetch customers from API
         setcustomersList(response?.customers || []);
       } catch (error) {
         console.error("Error fetching customers:", error);
@@ -134,23 +135,23 @@ const CreateWorkOrder = () => {
   const validate = () => {
     const newErrors = {};
     if (!selectedCustomer) newErrors.selectedCustomer = "Customer is required";
-    if (!selectedCustomerAddress)
-      newErrors.selectedCustomerAddress = "Customer address is required";
-    if (!selectedBillingAddress)
-      newErrors.selectedBillingAddress = "Billing address is required";
+    // if (!selectedCustomerAddress)
+    //   newErrors.selectedCustomerAddress = "Customer address is required";
+    // if (!selectedBillingAddress)
+    //   newErrors.selectedBillingAddress = "Billing address is required";
     if (!startDate) newErrors.startDate = "Start Date is required";
     if (!startTime) newErrors.startTime = "Start Time is required";
     if (!expectedTime) newErrors.expectedTime = "Expected Time is required";
-    if (!salesPerson) newErrors.salesPerson = "Sales Person is required";
+    // if (!salesPerson) newErrors.salesPerson = "Sales Person is required";
     if (!selectedWorkers)
       newErrors.selectedWorkers = "Select Workers is required";
     // Validate Sales Person Contact Number (10 to 15 digits)
-    if (!salesPersonContact.trim()) {
-      newErrors.salesPersonContact = "Sales Person Contact is required";
-    } else if (!/^\d{10,15}$/.test(salesPersonContact)) {
-      newErrors.salesPersonContact =
-        "Contact number must be between 10 and 15 digits";
-    }
+    // if (!salesPersonContact.trim()) {
+    //   newErrors.salesPersonContact = "Sales Person Contact is required";
+    // } else if (!/^\d{10,15}$/.test(salesPersonContact)) {
+    //   newErrors.salesPersonContact =
+    //     "Contact number must be between 10 and 15 digits";
+    // }
 
     if (
       workItems.length === 0 ||
@@ -196,8 +197,8 @@ const CreateWorkOrder = () => {
         startDate,
         startTime,
         expectedTime,
-        salesPerson,
-        salesPersonContact: Number(salesPersonContact), // Convert to Number
+        // salesPerson,
+        // salesPersonContact: Number(salesPersonContact), // Convert to Number
         WorkerId: selectedWorkerId,
         WorkerName: workerName,
       },
@@ -300,7 +301,7 @@ const CreateWorkOrder = () => {
                   </Form.Group>
 
                   {/* Customer Address as a textarea */}
-                  <Form.Group as={Row} className="mb-3">
+                  {/* <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
                       {t("Customer Address")}:
                     </Form.Label>
@@ -322,10 +323,10 @@ const CreateWorkOrder = () => {
                         </div>
                       )}
                     </Col>
-                  </Form.Group>
+                  </Form.Group> */}
 
                   {/* Billing Address as a textarea */}
-                  <Form.Group as={Row} className="mb-3">
+                  {/* <Form.Group as={Row} className="mb-3">
                     <Form.Label column sm={3} className="required-label">
                       {t("Billing Address")}:
                     </Form.Label>
@@ -347,7 +348,7 @@ const CreateWorkOrder = () => {
                         </div>
                       )}
                     </Col>
-                  </Form.Group>
+                  </Form.Group> */}
 
                   {/* Send Notification */}
                   <Form.Group as={Row} className="mb-3">
@@ -449,9 +450,9 @@ const CreateWorkOrder = () => {
                       </Form.Group>
                     </Col>
                     {/* Removed Files field */}
-                  </Row>
+                  {/* </Row> */}
 
-                  <Row>
+                  {/* <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
@@ -496,11 +497,11 @@ const CreateWorkOrder = () => {
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Col>
-                  </Row>
+                  </Row> */}
 
-                  <Row>
-                    {/* Removed Lead Worker field */}
-                    <Col md={12}>
+                  {/* <Row> */}
+                   
+                    <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
                           {t("Select Workers")}:
