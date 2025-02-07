@@ -1,15 +1,18 @@
 import React from "react";
 import Header from "../../../../Components/Header/Header";
 import UsersTabelComp from "../../../Components/User_Table/UsersTabelComp";
+import { useTranslation } from "react-i18next";
+
 
 const OtherUsers = () => {
+      const { t } = useTranslation(); 
   const tableHeaders = [
-    "Full Name & Location",
-    "Role",
-    "Email Address",
-    "Created At",
-    "Status",
-    "Action",
+    t("Full Name & Location"),
+    t("Role"),
+    t("Email Address"),
+    t("Created At"),
+    t("Status"),
+    t("Action"),
   ];
 
   const tableData = [

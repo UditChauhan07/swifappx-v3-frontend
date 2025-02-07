@@ -98,14 +98,15 @@ const DashBoard = () => {
                   <Col md={3} key={company.id}>
                     <Card className="company-card">
                       <Card.Img
-                        style={{ padding: "40px 40px 10px 40px" }}
+                        className="company-logo"
                         variant="top"
                         src={
                           company.company.company_logo ||
                           "https://swif.truet.net/public/swifCompany/noLogo.jpg"
                         }
-                        alt={`${company.name} logo`}
+                        alt={`${company.company.company_name} logo`}
                       />
+
                       <Card.Body>
                         <Card.Title
                           style={{ textAlign: "center", color: "black" }}
@@ -129,15 +130,15 @@ const DashBoard = () => {
                           }}
                         >
                           <div className="stat-item text-center border-end">
-                            <strong>{company.totalUsers || "0"}</strong>
-                            <div>{t("Total User")}</div>
+                            <strong>{company?.user_counts.totalCUstomers || "0"}</strong>
+                            <div>{t("Total Customer")}</div>
                           </div>
-                          <div className="stat-item text-center border-end">
+                          {/* <div className="stat-item text-center border-end">
                             <strong>{company.quotations || "0"}</strong>
                             <div>{t("Quotations")}</div>
-                          </div>
+                          </div> */}
                           <div className="stat-item text-center">
-                            <strong>{company.workOrders || "0"}</strong>
+                            <strong>{company?.user_counts.totalWorkOrders || "0"}</strong>
                             <div>{t("Work Orders")}</div>
                           </div>
                         </div>

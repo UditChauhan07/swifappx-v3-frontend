@@ -5,14 +5,13 @@ import Header from "../../../../../Components/Header/Header";
 import { Alert } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-
 const EditAdminRole = () => {
-    const { t } = useTranslation(); 
-  
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const location = useLocation();
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
-  
+
   const { role } = location.state || {};
   console.log("role", role);
 
@@ -25,32 +24,19 @@ const EditAdminRole = () => {
 
   // Company modules data
   const companyModules = [
-    { name: "Company Office User Module", actions: ["view", "create", "edit"] },
     {
-      name: "Company Customers Module",
+      originalName: "Company Office User Module",
+      name: t("Company Office User Module"), // Translated name
+      actions: ["view", "create", "edit"],
+    },
+    {
+      originalName: "Company Customers Module",
+      name: t("Company Customers Module"), // Translated name
       actions: ["view", "create", "edit", "delete"],
     },
     {
-      name: "Company Quotations Module",
-      actions: ["view", "create", "edit", "delete"],
-    },
-    { name: "Company Contract Module", actions: ["view", "create", "edit"] },
-    { name: "Company Work Order Module", actions: ["view", "create", "edit"] },
-    {
-      name: "Company Field User Module",
-      actions: ["view", "create", "edit", "delete"],
-    },
-    {
-      name: "Company Request Work Order Module (Rescheduled/Cancelled)",
-      actions: ["view", "edit"],
-    },
-    { name: "Company Reports Module", actions: ["view", "create", "edit"] },
-    {
-      name: "Company Master Setting Module",
-      actions: ["view", "create", "edit", "delete"],
-    },
-    {
-      name: "Company HR Setting Module",
+      originalName: "Company Work Order Module",
+      name: t("Company Work Order Module"), // Translated name
       actions: ["view", "create", "edit", "delete"],
     },
   ];
@@ -58,19 +44,19 @@ const EditAdminRole = () => {
   // Render each module row with checkboxes disabled and checked based on permissions
   const renderModules = (modules) =>
     modules.map((module, index) => {
-      // Find the permission for this module by matching module name
+      // Find the permission for this module by matching the original English name
       const modulePermission = permissions.find(
-        (p) => p.moduleName === module.name
+        (p) => p.moduleName === module.originalName
       );
 
       return (
         <tr key={index}>
-          <td>{module.name}</td>
+          <td>{module.name}</td> {/* Show translated name */}
           <td>
             {module.actions.includes("view") && (
               <Form.Check
                 inline
-                label="View"
+                label={t("View")}
                 type="checkbox"
                 disabled
                 checked={
@@ -85,7 +71,7 @@ const EditAdminRole = () => {
             {module.actions.includes("create") && (
               <Form.Check
                 inline
-                label="Create"
+                label={t("Create")}
                 type="checkbox"
                 disabled
                 checked={
@@ -100,7 +86,7 @@ const EditAdminRole = () => {
             {module.actions.includes("edit") && (
               <Form.Check
                 inline
-                label="Edit"
+                label={t("Edit")}
                 type="checkbox"
                 disabled
                 checked={
@@ -115,7 +101,7 @@ const EditAdminRole = () => {
             {module.actions.includes("delete") && (
               <Form.Check
                 inline
-                label="Delete"
+                label={t("Delete")}
                 type="checkbox"
                 disabled
                 checked={
@@ -148,26 +134,29 @@ const EditAdminRole = () => {
           <div
             className="form-header mb-4"
             style={{
-              backgroundColor: "#8d28dd",
+              backgroundColor: "#2e2e32",
               color: "white",
               padding: "10px 20px",
               borderRadius: "8px",
             }}
           >
-            <h4 className="mb-0">View Staff Role Details</h4>
+            <h4 className="mb-0">{t("View Staff Role Details")}</h4>
           </div>
           <Alert variant="danger" className="text-center fw-bold">
-            ⚠️ You can't Edit! Default Role. You can create a new Role or
-            contact Admin.
+            ⚠️{" "}
+            {t(
+              "You can't Edit! Default Role. You can create a new Role or contact Admin"
+            )}
+            .
           </Alert>
           <Form>
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Role Name</Form.Label>
+                  <Form.Label>{t("Role Name")}</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter Role Name"
+                    placeholder={t("Enter Role Name")}
                     value={roleName}
                     disabled
                   />
@@ -175,10 +164,10 @@ const EditAdminRole = () => {
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Role Description</Form.Label>
+                  <Form.Label>{t("Role Description")}</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter Role Description"
+                    placeholder={t("Enter Role Description")}
                     value={roleDescription}
                     disabled
                   />
@@ -189,8 +178,8 @@ const EditAdminRole = () => {
             <Table bordered>
               <thead>
                 <tr>
-                  <th>Module Name</th>
-                  <th>Module Actions</th>
+                  <th>{t("Module Name")}</th>
+                  <th>{t("Module Actions")}</th>
                 </tr>
               </thead>
               <tbody>{renderModules(companyModules)}</tbody>
@@ -203,7 +192,7 @@ const EditAdminRole = () => {
                 navigate("/settings/admin/roles"); // Replace "/home" with your desired URL
               }}
             >
-              Back
+              {t("Back")}
             </Button>
           </Form>
         </Container>

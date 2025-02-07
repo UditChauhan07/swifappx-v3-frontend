@@ -12,9 +12,13 @@ import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
+import { usePermissions } from "../../../../context/PermissionContext";
 
 const WorkOrderList = () => {
+  const {hasPermission}=usePermissions()
+  const userRole=localStorage.getItem('Role')
   const { t } = useTranslation();
+ 
 
   const [isLoading, setLoading] = useState(true);
   const [tableData, setTableData] = useState([]);
@@ -128,12 +132,12 @@ const WorkOrderList = () => {
   const handleDelete = (id) => {
     // Show confirmation dialog
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: t("Are you sure?"),
+      text: t("You won't be able to revert this!"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      confirmButtonText: t("Yes, delete it!"),
+      cancelButtonText: t("Cancel"),
       reverseButtons: true, // Reverse the order of the buttons (Cancel left, Confirm right)
     }).then((result) => {
       if (result.isConfirmed) {
@@ -145,7 +149,7 @@ const WorkOrderList = () => {
           }
         });
 
-        Swal.fire("Deleted!", "Your user has been deleted.", "success");
+        Swal.fire(t("Deleted!"), t("Your user has been deleted."), "success");
       }
     });
   };
@@ -349,6 +353,7 @@ const WorkOrderList = () => {
                                 <i className="bi bi-pencil"></i>
                                 <FaEdit />
                               </Button> */}
+                              {(userRole == "Admin" || hasPermission(`Company Work Order Module`,`Delete`))&&(
                               <Button
                                 variant="danger"
                                 size="sm"
@@ -365,6 +370,7 @@ const WorkOrderList = () => {
                                 <i className="bi bi-trash"></i>
                                 <FaClipboardList />
                               </Button>
+                            )}
                             </div>
                           </td>
                         </tr>

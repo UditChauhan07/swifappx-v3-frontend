@@ -66,14 +66,14 @@ const WorkOrderDetails = () => {
                   {workOrder.customerDetailSection.CustomerAddress || "--"}
                 </Col>
               </Row>
-              <Row className="mb-2">
+              {/* <Row className="mb-2">
                 <Col md={4} className="fw-bold">
                   {t("Billing Address")}:
                 </Col>
                 <Col>
                   {workOrder.customerDetailSection.BillingAddress || "--"}
                 </Col>
-              </Row>
+              </Row> */}
               <Row>
                 <Col md={4} className="fw-bold">
                   {t("Send Notification")}:
@@ -116,20 +116,20 @@ const WorkOrderDetails = () => {
                   {workOrder.basicWorkorderDetails.expectedTime || "--"}
                 </Col>
               </Row>
-              <Row className="mb-2">
+              {/* <Row className="mb-2">
                 <Col md={4} className="fw-bold">
                   {t("Sales Person")}:
                 </Col>
                 <Col>{workOrder.basicWorkorderDetails.salesPerson || "--"}</Col>
-              </Row>
-              <Row className="mb-2">
+              </Row> */}
+              {/* <Row className="mb-2">
                 <Col md={4} className="fw-bold">
                   {t("Sales Person Contact")}:
                 </Col>
                 <Col>
                   {workOrder.basicWorkorderDetails.salesPersonContact || "--"}
                 </Col>
-              </Row>
+              </Row> */}
               <Row className="mb-2">
                 <Col md={4} className="fw-bold">
                   {t("Worker Name")}:

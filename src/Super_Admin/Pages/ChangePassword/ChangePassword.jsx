@@ -12,8 +12,10 @@ import {
 import { Eye, EyeSlash } from "react-bootstrap-icons";
 import axios from "axios";
 import { changePasswordApi } from "../../../lib/store";
+import { useTranslation } from "react-i18next";
 
 const ChangePassword = () => {
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState({
     newPassword: "",
     confirmPassword: "",
@@ -63,14 +65,14 @@ const ChangePassword = () => {
       const response = await changePasswordApi(finalData, token);
       console.log("resss", response);
       if (response.status === true) {
-        setSuccess("Password updated successfully!");
+        setSuccess(t("Password updated successfully!"));
       } else {
-        setError("Failed to change password. Please try again.");
+        setError(t("Failed to change password. Please try again."));
       }
       setFormData({ newPassword: "", confirmPassword: "" });
     } catch (err) {
       console.error("API Error:", err);
-      setError("Failed to change password. Please try again.");
+      setError(t("Failed to change password. Please try again."));
     }
   };
 
@@ -90,7 +92,7 @@ const ChangePassword = () => {
                   borderRadius: "8px",
                 }}
               >
-                <h4 className="mb-0">Change Password</h4>
+                <h4 className="mb-0">{t("Change Password")}</h4>
               </div>
               <Card.Body>
                 {/* Display success or error message */}
@@ -104,12 +106,12 @@ const ChangePassword = () => {
                         controlId="formNewPassword"
                         className="position-relative"
                       >
-                        <Form.Label>New Password*</Form.Label>
+                        <Form.Label>{t("New Password")}*</Form.Label>
                         <Form.Control
                           type={
                             passwordVisibility.newPassword ? "text" : "password"
                           }
-                          placeholder="Enter new password"
+                          placeholder={t("Enter new password")}
                           name="newPassword"
                           value={formData.newPassword}
                           onChange={handleChange}
@@ -138,14 +140,14 @@ const ChangePassword = () => {
                         controlId="formConfirmNewPassword"
                         className="position-relative"
                       >
-                        <Form.Label>Confirm New Password*</Form.Label>
+                        <Form.Label>{t("Confirm New Password")}*</Form.Label>
                         <Form.Control
                           type={
                             passwordVisibility.confirmPassword
                               ? "text"
                               : "password"
                           }
-                          placeholder="Confirm new password"
+                          placeholder={t("Confirm New Password")}
                           name="confirmPassword"
                           value={formData.confirmPassword}
                           onChange={handleChange}
@@ -179,10 +181,10 @@ const ChangePassword = () => {
                       type="submit"
                       className="me-3"
                     >
-                      Save
+                      {t("Save")}
                     </Button>
                     <Button variant="secondary" type="button">
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                   </div>
                 </Form>

@@ -340,7 +340,16 @@ const fileToBase64 = (file) => {
                     profile_picture: profile,
                     isActive: values.activateUser
                 }
-                
+                if (values.profilePicture instanceof File) {
+                  try {
+                    const base64 = await fileToBase64(values.profilePicture);
+                    console.log(values.profilePicture,base64);
+                    setProfile(base64)
+                    finalData.profile_picture=base64||null
+                  } catch (error) {
+                    console.error("Error converting file to Base64:", error);
+                  }
+                }
 
                 console.log("finalDataa",values)
                 
@@ -474,7 +483,7 @@ const fileToBase64 = (file) => {
                         <Form.Label>{t("Choose Role")}*</Form.Label>
                         <Field as="select" className="form-control" name="role">
                           <option value="">{t("Select Role")}</option>
-                          {roles.length>0 && roles?.map((role) => (
+                          {roles?.length>0 && roles?.map((role) => (
                             <option key={role.id} value={role.id}>
                               {role.roleName}
                             </option>
