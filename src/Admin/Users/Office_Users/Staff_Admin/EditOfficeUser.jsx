@@ -39,10 +39,13 @@ const EditOfficeUser = () => {
     const officeuserId=userData.id||null;
 
  useEffect(() => {
+  console.log('outsinde fetching officeuser')
    if (userid) {
+    console.log('Inside fetching officeuser')
      fetchRolesList(userid, token).then((response) => {
-       setRoles(response);
-     });
+       setRoles(response.data);
+       console.log('fetchRolesList',response)
+     }).catch((error) => {console.log('error',error)});
    }
  }, [userid]);
 

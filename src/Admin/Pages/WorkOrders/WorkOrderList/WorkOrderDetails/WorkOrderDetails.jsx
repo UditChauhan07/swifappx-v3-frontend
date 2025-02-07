@@ -8,6 +8,7 @@ const WorkOrderDetails = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const { workOrder } = location.state || {};
+  console.log(workOrder)
 
   // Format ISO Timestamp
   function formatTimestamp(isoString) {
@@ -173,6 +174,37 @@ const WorkOrderDetails = () => {
               )}
             </Card.Body>
           </Card>
+
+          {/* Extra Order Items */}
+          {workOrder.extraWorkDetails.length>0 &&
+          <Card className="p-3 shadow-lg mb-4 border-0">
+            <Card.Header
+              className=" text-white fw-bold"
+              style={{ background: "#2e2e32" }}
+            >
+              {t("Additional Work Details")}
+            </Card.Header>
+            <Card.Body>
+              {workOrder.extraWorkDetails &&
+              workOrder.extraWorkDetails.length > 0 ? (
+                workOrder.extraWorkDetails.map((item, index) => (
+                  <Row key={index} className="mb-2 border-bottom pb-2">
+                    <Col md={4} className="fw-bold">
+                      {t("Work Item")}:
+                    </Col>
+                    <Col>{item.workItem || "--"}</Col>
+                    <Col md={4} className="fw-bold">
+                      {t("Work Description")}:
+                    </Col>
+                    <Col>{item.workDescription || "--"}</Col>
+                  </Row>
+                ))
+              ) : (
+                <p className="text-muted">{t("No work items available")}</p>
+              )}
+            </Card.Body>
+          </Card>
+          }
 
           {/* Created At & Status */}
           <Card className="p-3 shadow-lg border-0">

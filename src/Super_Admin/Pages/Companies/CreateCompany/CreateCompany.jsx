@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 
+
 const CreateCompany = () => {
   const { t, i18n } = useTranslation();
 

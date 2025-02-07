@@ -20,6 +20,7 @@ import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
+
 const CreateWorkOrder = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const CreateWorkOrder = () => {
     new Date().toISOString().split("T")[0]
   );
   const [startTime, setStartTime] = useState("09:00");
-  const [expectedTime, setExpectedTime] = useState("11:00");
+  const [expectedTime, setExpectedTime] = useState("01:00");
   const [salesPerson, setSalesPerson] = useState("");
   const [salesPersonContact, setSalesPersonContact] = useState("");
   const [selectedWorkers, setSelectedWorkers] = useState("");
@@ -261,6 +262,37 @@ const CreateWorkOrder = () => {
     }
   };
 
+  const formatTime = (value) => {
+    // Remove any non-numeric characters
+    const numericValue = value.replace(/\D/g, "");
+  
+
+    // Limit to 4 characters for the "hh:mm" format
+    if (numericValue.length > 4) return numericValue.substring(0, 4);
+
+  
+
+    // Format the time as hh:mm
+    if (numericValue.length >= 3) {
+      return `${numericValue.substring(0, 2)}:${numericValue.substring(2, 4)}`;
+    }
+
+    // If only two characters are entered, add a colon after the first two digits
+    if (numericValue.length >= 2) {
+      return `${numericValue.substring(0, 2)}:${numericValue.substring(2, 2)}`;
+    }
+    // If there is a single digit for hours or minutes, pad with leading zero
+    if (numericValue.length === 1) {
+    return `0${numericValue}:00`;
+    }
+
+    return numericValue;
+  };
+
+  const isValidTime = (time) => {
+    const regex = /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/; // Regex for valid time in hh:mm format
+    return regex.test(time);
+  };
   return (
     <>
       <Header />
@@ -432,14 +464,19 @@ const CreateWorkOrder = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          {t("Expected Time Required")}:
+                          {t("Expected Time Required ( Hours )") } :
                         </Form.Label>
                         <Form.Control
-                          type="time"
+                          type="text"
                           value={expectedTime}
+                          placeholder="hh:mm"
+                          maxLength={5}
                           onChange={(e) => {
-                            setExpectedTime(e.target.value);
-                            if (e.target.value) clearError("expectedTime");
+                            const formattedTime = formatTime(e.target.value);
+                            console.log('formattedTime', formattedTime)
+                            
+                            setExpectedTime(formattedTime);
+                            if (formattedTime) clearError("expectedTime");
                           }}
                         />
                         {errors.expectedTime && (

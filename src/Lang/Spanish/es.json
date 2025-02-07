@@ -1595,5 +1595,6 @@
   "There was an error creating the role.": "Hubo un error al crear el rol.",
   "View Staff Role Details":"Ver detalles de la función del personal",
   "You can't Edit! Default Role. You can create a new Role or contact Admin":"¡No puedes editar! Rol predeterminado. Puede crear un nuevo rol o contactar al administrador"
-  ,"Total Customer":"Clientes totales"
+  ,"Total Customer":"Clientes totales",
+   "Expected Time Required ( Hours )": "Tiempo esperado requerido ( Horas )"
 }
