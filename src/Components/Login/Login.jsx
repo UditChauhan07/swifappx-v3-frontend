@@ -76,7 +76,8 @@ const Login = () => {
         <Card className="shadow-lg p-4 rounded-4 w-50">
           <div className="text-center mb-3">
             <img
-              src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct-dark.png"
+              src="https://swif.truet.net/public/swifCompany/logo/logo.png"
+              // src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct-dark.png"
               alt="Logo"
               width="80"
             />

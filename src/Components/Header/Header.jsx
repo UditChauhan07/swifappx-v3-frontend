@@ -124,8 +124,8 @@ const Header = () => {
   const getItemClass = (lng) => {
     return lng === selectedLanguage ? "selected-item" : "";
   };
-console.log('userRole: ', permissions)
-console.log('userRole: ' + userRole,userRole == "Admin")
+console.log('userRole: ', roles)
+// console.log('userRole: ' + userRole,userRole == "Admin")
   return (
     <>
       {/* Navbar */}
@@ -181,15 +181,16 @@ console.log('userRole: ' + userRole,userRole == "Admin")
         <div className="sidebar-links">
           <Nav className="flex-column">
             {/* Sidebar Logo */}
-            <div className="py-4 px-4">
+            <div className="py-4 px-4" style={{alignSelf:'center'}}>
               <img
                 width={"40px"}
-                src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct.png"
+                src="https://swif.truet.net/public/swifCompany/logo/logo.png"
+                // src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct.png"
                 alt="Logo"
                 className="logo"
-                style={{ marginRight: "10px" }}
+                style={{ marginRight: "30px", height:'80px', width:'80px'  }}
               />
-              <span>Swif</span>
+              {/* <span>Swif</span> */}
             </div>
 
             {userRole === "SuperAdmin" ? (

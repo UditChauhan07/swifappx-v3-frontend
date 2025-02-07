@@ -42,6 +42,9 @@ const CreateAdminRole = () => {
         [module]: {
           ...prev[module],
           [action]: !prev[module]?.[action],
+          ...(["create", "edit", "delete"].includes(action) && {
+            view: true, // Automatically check view
+          }),
         },
       };
 
@@ -69,6 +72,11 @@ const CreateAdminRole = () => {
               type="checkbox"
               onChange={() => handlePermissionChange(module.name, "view")}
               checked={permissions[module.name]?.view || false}
+              disabled={!!(
+                permissions[module.name]?.create ||
+                permissions[module.name]?.edit ||
+                permissions[module.name]?.delete
+              )} 
             />
           )}
           {module.actions.includes("create") && (
@@ -78,6 +86,7 @@ const CreateAdminRole = () => {
               type="checkbox"
               onChange={() => handlePermissionChange(module.name, "create")}
               checked={permissions[module.name]?.create || false}
+             
             />
           )}
           {module.actions.includes("edit") && (
