@@ -478,7 +478,6 @@ console.log('userRole: ', roles)
                   >
                     {/* Roles Dropdown */}
 
-                   {userRole === "SuperAdmin" || userRole === "Admin" &&
                     <div
                       className={`dropdown ${
                         nestedDropdown === "roles" ? "expanded" : ""
@@ -496,12 +495,16 @@ console.log('userRole: ', roles)
                       </div>
                       {nestedDropdown === "roles" && (
                         <div className="dropdown-items show">
-                          <Link
-                            to="/settings/admin/roles/create"
-                            className="sidebar-link"
-                          >
-                            {t("Create New")}
-                          </Link>
+                         {userRole === "SuperAdmin" || userRole === "Admin" &&
+
+                            <Link
+                              to="/settings/admin/roles/create"
+                              className="sidebar-link"
+                            >
+                              {t("Create New")}
+                            </Link>
+                          }
+
                           <Link
                             to="/settings/admin/roles"
                             className="sidebar-link"
@@ -511,7 +514,7 @@ console.log('userRole: ', roles)
                         </div>
                       )}
                     </div>
-                   }
+                   
 
                   </div>
                 </div>

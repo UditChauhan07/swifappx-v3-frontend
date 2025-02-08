@@ -156,7 +156,7 @@ const WorkOrderDetails = () => {
             </Card.Header>
             <Card.Body>
               {workOrder.workorderDetails &&
-              workOrder.workorderDetails.length > 0 ? (
+              workOrder.workorderDetails?.length > 0 ? (
                 workOrder.workorderDetails.map((item, index) => (
                   <Row key={index} className="mb-2 border-bottom pb-2">
                     <Col md={4} className="fw-bold">
@@ -176,7 +176,7 @@ const WorkOrderDetails = () => {
           </Card>
 
           {/* Extra Order Items */}
-          {workOrder.extraWorkDetails.length>0 &&
+          {workOrder?.extraWorkDetails?.length>0 &&
           <Card className="p-3 shadow-lg mb-4 border-0">
             <Card.Header
               className=" text-white fw-bold"
@@ -185,8 +185,8 @@ const WorkOrderDetails = () => {
               {t("Additional Work Details")}
             </Card.Header>
             <Card.Body>
-              {workOrder.extraWorkDetails &&
-              workOrder.extraWorkDetails.length > 0 ? (
+              {workOrder?.extraWorkDetails &&
+              workOrder?.extraWorkDetails?.length > 0 ? (
                 workOrder.extraWorkDetails.map((item, index) => (
                   <Row key={index} className="mb-2 border-bottom pb-2">
                     <Col md={4} className="fw-bold">
