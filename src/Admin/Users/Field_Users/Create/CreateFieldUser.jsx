@@ -121,15 +121,14 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-
 const CreateFieldUser = () => {
-  const { t } = useTranslation(); 
-  
-  const navigate=useNavigate();
+  const { t } = useTranslation();
+
+  const navigate = useNavigate();
   const token = localStorage.getItem("UserToken");
- const company_id=localStorage.getItem("companyId")||null;
- const created_by=localStorage.getItem("name")||null;
- const created_by_id=localStorage.getItem("userId")||null;
+  const company_id = localStorage.getItem("companyId") || null;
+  const created_by = localStorage.getItem("name") || null;
+  const created_by_id = localStorage.getItem("userId") || null;
   // Formik initial values and validation schema
   const formik = useFormik({
     initialValues: {
@@ -143,20 +142,24 @@ const CreateFieldUser = () => {
       address: "",
       company_id: company_id,
       created_by: created_by,
-      created_by_id:created_by_id,
+      created_by_id: created_by_id,
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Name is required"),
-      username: Yup.string().required("Username is required"),
-      contact_number: Yup.string().required("Contact number is required").matches(/^[0-9]+$/, "Contact number must be digits only"),
-      email: Yup.string().email("Invalid email format").required("Email is required"),
-      password: Yup.string().required("Password is required").min(6, "Password must be at least 6 characters"), 
-      country: Yup.string().required("Country is required"),
-      address: Yup.string().required("Address is required"),
-      
+      name: Yup.string().required(t("Name is required")),
+      username: Yup.string().required(t("Username is required")),
+      contact_number: Yup.string()
+        .required(t("Contact number is required"))
+        .matches(/^[0-9]+$/, t("Contact number must be digits only")),
+      email: Yup.string()
+        .email(t("Invalid email format"))
+        .required(t("Email is required")),
+      password: Yup.string()
+        .required(t("Password is required"))
+        .min(6, t("Password must be at least 6 characters")),
+      country: Yup.string().required(t("Country is required")),
+      address: Yup.string().required(t("Address is required")),
     }),
-    onSubmit:  async(values) => {
-
+    onSubmit: async (values) => {
       const formData = new FormData();
       for (const key in values) {
         if (key === "profilePicture") {
@@ -165,29 +168,29 @@ const CreateFieldUser = () => {
           formData.append(key, values[key]);
         }
       }
-      console.log('Form', values);
-      
-      const response =await create_FieldUser(values,token);
-        if(response.success){
-           Swal.fire({
-            title: t("Success"),
-            text: t("Field User Created Successfully"),
-            icon: 'success',
-            timer: 1400, // Time in milliseconds (1400 ms = 1.4 seconds)
-            showConfirmButton: false, // Optional: Hide the confirm button
-          });
-          formik.resetForm()
-          formik.values.profilePicture = null;
-          setTimeout(()=>{
-           navigate(`/users/field/list`)
-          },1600)
-        }else{
-          Swal.fire('Error',response.message,"error");
-        }
-      console.log('Response', response);
+      console.log("Form", values);
+
+      const response = await create_FieldUser(values, token);
+      if (response.success) {
+        Swal.fire({
+          title: t("Success"),
+          text: t("Field User Created Successfully"),
+          icon: "success",
+          timer: 1400, // Time in milliseconds (1400 ms = 1.4 seconds)
+          showConfirmButton: false, // Optional: Hide the confirm button
+        });
+        formik.resetForm();
+        formik.values.profilePicture = null;
+        setTimeout(() => {
+          navigate(`/users/field/list`);
+        }, 1600);
+      } else {
+        Swal.fire("Error", response.message, "error");
+      }
+      console.log("Response", response);
     },
   });
-// console.log('formik.errors',formik.errors)
+  // console.log('formik.errors',formik.errors)
   return (
     <>
       <Header />
@@ -209,7 +212,10 @@ const CreateFieldUser = () => {
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formName">
-                    <Form.Label>{t("Name")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Name")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       type="text"
                       placeholder={t("Enter Name")}
@@ -219,13 +225,21 @@ const CreateFieldUser = () => {
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.name && formik.errors.name}
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.name}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.name}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formEmail">
-                    <Form.Label>{t("Email")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Email")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Form.Text className="d-block mb-1 text-muted">
+                      {t("Field User can login via this Email")}
+                    </Form.Text>
                     <Form.Control
                       type="email"
                       placeholder={t("Enter Email")}
@@ -235,15 +249,20 @@ const CreateFieldUser = () => {
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.email && formik.errors.email}
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.email}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.email}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formUsername">
-                    <Form.Label>{t("Username")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Username")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Text className="d-block mb-1 text-muted">
-                      {t("Field User can login via this Username")}
+                      {/* {t("Field User can login via this Username")} */}
                     </Form.Text>
                     <Form.Control
                       type="text"
@@ -252,15 +271,22 @@ const CreateFieldUser = () => {
                       maxLength={20}
                       value={formik.values.username}
                       onChange={formik.handleChange}
-                      isInvalid={formik.touched.username && formik.errors.username}
+                      isInvalid={
+                        formik.touched.username && formik.errors.username
+                      }
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.username}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.username}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formPassword">
-                    <Form.Label>{t("Password")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Password")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Text className="d-block mb-1 text-muted">
                       {t("Field User can login via this Password")}
                     </Form.Text>
@@ -271,15 +297,22 @@ const CreateFieldUser = () => {
                       maxLength={30}
                       value={formik.values.password}
                       onChange={formik.handleChange}
-                      isInvalid={formik.touched.password && formik.errors.password}
+                      isInvalid={
+                        formik.touched.password && formik.errors.password
+                      }
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.password}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formContactNumber">
-                    <Form.Label>{t("Contact Number")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Contact Number")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       type="tel"
                       placeholder={t("Enter Contact Number")}
@@ -287,9 +320,14 @@ const CreateFieldUser = () => {
                       maxLength={16}
                       value={formik.values.contact_number}
                       onChange={formik.handleChange}
-                      isInvalid={formik.touched.contact_number && formik.errors.contact_number}
+                      isInvalid={
+                        formik.touched.contact_number &&
+                        formik.errors.contact_number
+                      }
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.contact_number}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.contact_number}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
@@ -306,25 +344,35 @@ const CreateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formCountry">
-                    <Form.Label>{t("Country")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Country")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Select
                       name="country"
                       value={formik.values.country}
                       onChange={formik.handleChange}
-                      isInvalid={formik.touched.country && formik.errors.country}
+                      isInvalid={
+                        formik.touched.country && formik.errors.country
+                      }
                     >
                       <option value="">{t("Select Country")}</option>
                       <option value="USA">USA</option>
                       <option value="Canada">Canada</option>
                       <option value="India">India</option>
                     </Form.Select>
-                    <Form.Control.Feedback type="invalid">{formik.errors.country}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.country}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formAddress">
-                    <Form.Label>{t("Address")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Address")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={2}
@@ -333,18 +381,30 @@ const CreateFieldUser = () => {
                       maxLength={150}
                       value={formik.values.address}
                       onChange={formik.handleChange}
-                      isInvalid={formik.touched.address && formik.errors.address}
+                      isInvalid={
+                        formik.touched.address && formik.errors.address
+                      }
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.address}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.address}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
               </Row>
 
               <div className="text-center">
-                <Button type="submit" className="me-2" style={{ backgroundColor: "#8d28dd", border: "none" }}>
+                <Button
+                  type="submit"
+                  className="me-2"
+                  style={{ backgroundColor: "#8d28dd", border: "none" }}
+                >
                   {t("Save")}
                 </Button>
-                <Button variant="secondary" type="button" onClick={()=> navigate("/dashboard/admin")}>
+                <Button
+                  variant="secondary"
+                  type="button"
+                  onClick={() => navigate("/dashboard/admin")}
+                >
                   {t("Cancel")}
                 </Button>
               </div>

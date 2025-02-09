@@ -67,7 +67,7 @@ const DashBoard = () => {
               <Col md={6}>
                 <Card className="stats-card">
                   <Card.Body>
-                    <h3>{totalCompanies}</h3>
+                    <h3>{totalCompanies||0}</h3>
                     <p>{t("Total Companies")}</p>
                   </Card.Body>
                 </Card>
@@ -75,7 +75,7 @@ const DashBoard = () => {
               <Col md={6}>
                 <Card className="stats-card">
                   <Card.Body>
-                    <h3>{totalWorkOrders}</h3>
+                    <h3>{totalWorkOrders||0}</h3>
                     <p>{t("Total Work Orders")}</p>
                   </Card.Body>
                 </Card>

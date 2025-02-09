@@ -1045,11 +1045,11 @@ const { t, i18n } = useTranslation();
                   <Form.Group className="mb-3">
                     <Form.Label>
                       <span className="text-danger">*</span>{" "}
-                      {t("Company Contact Person")}:
+                      {t("Company Contact Person Name")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder={t("Enter Company Contact Person")}
+                      placeholder={t("Enter Company Contact Person Name")}
                       value={formData.contactPerson}
                       maxLength={30}
                       onChange={(e) =>

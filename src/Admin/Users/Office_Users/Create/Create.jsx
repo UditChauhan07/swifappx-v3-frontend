@@ -202,25 +202,6 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 
-const validationSchema = Yup.object({
-  firstName: Yup.string().trim().required("First Name is required").min(4,"Must be at least 4 characters"),
-  lastName: Yup.string().trim().required("Last Name is required").min(4,"Must be at least 4 characters"),
-  email: Yup.string().trim().email("Invalid email address").required("Email is required"),
-  password: Yup.string()
-    .trim().min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-  contactNumber: Yup.string()
-    .trim().matches(/^\+?\d{10,16}$/, "Must be a valid number with 10 to 16 digits (telecode optional)")
-    .required("Contact Number is required"),
-  city: Yup.string().trim().required("City is required"),
-  state: Yup.string().trim().required("State is required"),
-  zip: Yup.string().trim().required("ZIP/Postal Code is required"),
-  // address: Yup.string().required("First Name is required"),
-  country: Yup.string().trim().required("Country is required"),
-  role: Yup.string().trim().required("Role is required"),
-});
-
-
 const Create = () => {
     const { t } = useTranslation(); 
   const [roles, setRoles] = useState([]);
@@ -231,6 +212,27 @@ const company_id=localStorage.getItem("companyId")||null;
 const [profile,setProfile]=useState(null)
 
 const navigate=useNavigate();
+
+
+const validationSchema = Yup.object({
+  firstName: Yup.string().trim().required(t("First Name is required")).min(4, t("Must be at least 4 characters")),
+  lastName: Yup.string().trim().required(t("Last Name is required")).min(4, t("Must be at least 4 characters")),
+  email: Yup.string().trim().email(t("Invalid email address")).required(t("Email is required")),
+  password: Yup.string()
+    .trim().min(6, t("Password must be at least 6 characters"))
+    .required(t("Password is required")),
+  contactNumber: Yup.string()
+    .trim().matches(/^\+?\d{10,16}$/, t("Must be a valid number with 10 to 16 digits (telecode optional)"))
+    .required(t("Contact Number is required")),
+  city: Yup.string().trim().required(t("City is required")),
+  state: Yup.string().trim().required(t("State is required")),
+  zip: Yup.string().trim().required(t("ZIP/Postal Code is required")),
+  // address: Yup.string().required(t("First Name is required")),
+  country: Yup.string().trim().required(t("Country is required")),
+  role: Yup.string().trim().required(t("Role is required")),
+});
+
+
 
 useEffect(() => {
   if (userid) {
