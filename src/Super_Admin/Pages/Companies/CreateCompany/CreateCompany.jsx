@@ -15,6 +15,7 @@ import { createCompanyApi } from "../../../../lib/store";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
+import imageCompression from "browser-image-compression";
 
 const CreateCompany = () => {
   const { t, i18n } = useTranslation();
@@ -564,6 +565,36 @@ const CreateCompany = () => {
     return newErrors;
   };
 
+  // New: Compress image files before updating state
+  const handleImageChange = async (field, file) => {
+    if (file && file.type.startsWith("image/")) {
+      const options = {
+        maxSizeMB: 0.6,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+      try {
+        const compressedFile = await imageCompression(file, options);
+        setFormData((prev) => ({
+          ...prev,
+          [field]: compressedFile,
+        }));
+      } catch (error) {
+        console.error("Error compressing image", error);
+        // Fallback to original file if compression fails
+        setFormData((prev) => ({
+          ...prev,
+          [field]: file,
+        }));
+      }
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: file,
+      }));
+    }
+  };
+
   const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -766,8 +797,9 @@ const CreateCompany = () => {
                     <Form.Label>{t("Profile Picture")}:</Form.Label>
                     <Form.Control
                       type="file"
+                      accept="image/*"
                       onChange={(e) =>
-                        handleChange("profilePicture", e.target.files[0])
+                        handleImageChange("profilePicture", e.target.files[0])
                       }
                     />
                   </Form.Group>
@@ -970,8 +1002,9 @@ const CreateCompany = () => {
                     <Form.Label>{t("Company Logo")}:</Form.Label>
                     <Form.Control
                       type="file"
+                      accept="image/*"
                       onChange={(e) =>
-                        handleChange("companyLogo", e.target.files[0])
+                        handleImageChange("companyLogo", e.target.files[0])
                       }
                     />
                   </Form.Group>
