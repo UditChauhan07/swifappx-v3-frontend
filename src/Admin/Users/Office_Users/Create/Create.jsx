@@ -311,7 +311,11 @@ const Create = () => {
                           className="form-control"
                           type="file"
                           onChange={(event) =>
-                            handleImageChange("profilePicture", event.target.files[0], setFieldValue)
+                            handleImageChange(
+                              "profilePicture",
+                              event.target.files[0],
+                              setFieldValue
+                            )
                           }
                         />
                       </Form.Group>
