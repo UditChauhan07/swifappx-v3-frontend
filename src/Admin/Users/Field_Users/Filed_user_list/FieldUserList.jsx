@@ -11,10 +11,9 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 
-
 const FieldUserList = () => {
-      const { t } = useTranslation(); 
-  
+  const { t } = useTranslation();
+
   const [isLoading, setLoading] = useState(true);
   const [tableData, setTableData] = useState([]);
   console.log("dadsaasd", tableData);
