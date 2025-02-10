@@ -15,10 +15,9 @@ import { useTranslation } from "react-i18next";
 import { usePermissions } from "../../../../context/PermissionContext";
 
 const WorkOrderList = () => {
-  const {hasPermission}=usePermissions()
-  const userRole=localStorage.getItem('Role')
+  const { hasPermission } = usePermissions();
+  const userRole = localStorage.getItem("Role");
   const { t } = useTranslation();
- 
 
   const [isLoading, setLoading] = useState(true);
   const [tableData, setTableData] = useState([]);
@@ -56,75 +55,6 @@ const WorkOrderList = () => {
     "Action",
   ];
 
-  // const tableData = [
-  //   {
-  //     fullName: (
-  //       <div>
-  //         <strong>field user 1</strong>
-  //         <br />
-  //         Sukha enclave
-  //       </div>
-  //     ),
-  //     email: "fielduser1@gmail.com",
-  //     username: "fielduser1",
-  //     status: (
-  //       <Form.Check
-  //         type="switch"
-  //         id="status-switch"
-  //         label="Active"
-  //         defaultChecked
-  //       />
-  //     ),
-  //     country: "India",
-  //     createdBy: "new user",
-  //     action: (
-  //       <div className="d-flex gap-2 justify-content-center">
-  //         <Button
-  //           variant="outline-secondary"
-  //           size="sm"
-  //           style={{
-  //             borderRadius: "50%",
-  //             width: "35px",
-  //             height: "35px",
-  //             display: "flex",
-  //             alignItems: "center",
-  //             justifyContent: "center",
-  //           }}
-  //         >
-  //           <i className="bi bi-info-circle"></i>
-  //         </Button>
-  //         <Button
-  //           variant="warning"
-  //           size="sm"
-  //           style={{
-  //             borderRadius: "50%",
-  //             width: "35px",
-  //             height: "35px",
-  //             display: "flex",
-  //             alignItems: "center",
-  //             justifyContent: "center",
-  //           }}
-  //         >
-  //           <i className="bi bi-pencil"></i>
-  //         </Button>
-  //         <Button
-  //           variant="danger"
-  //           size="sm"
-  //           style={{
-  //             borderRadius: "50%",
-  //             width: "35px",
-  //             height: "35px",
-  //             display: "flex",
-  //             alignItems: "center",
-  //             justifyContent: "center",
-  //           }}
-  //         >
-  //           <i className="bi bi-trash"></i>
-  //         </Button>
-  //       </div>
-  //     ),
-  //   },
-  // ];
   const handleToPreview = async (workOrder) => {
     navigate("/workorder/list/details", { state: { workOrder } });
   };
@@ -158,16 +88,36 @@ const WorkOrderList = () => {
     navigate("/workorder/list/edit", { state: { row } });
   };
 
-  // const filteredtable = tableData.filter(
-  //   (tableData) =>
-  //     tableData.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //     tableData.email.toLowerCase().includes(searchQuery.toLowerCase())
-  // );
+  const filteredtable = tableData.filter((row) => {
+    const idMatch = row.id
+      .toString()
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const customerMatch =
+      row.customerDetailSection?.CustomerName?.toLowerCase().includes(
+        searchQuery.toLowerCase()
+      );
+    const statusMatch = row.status
+      ?.toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const workerMatch =
+      row.basicWorkorderDetails?.WorkerName?.toLowerCase().includes(
+        searchQuery.toLowerCase()
+      );
+    const workItemMatch = row.workorderDetails
+      .map((item) => item.workItem)
+      .join(", ")
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    return (
+      idMatch || customerMatch || statusMatch || workerMatch || workItemMatch
+    );
+  });
 
   const handleClear = () => {
     setSearchQuery("");
   };
-  // console.log("filterDataa", filteredtable);
+  console.log("filterDataa", filteredtable);
 
   return (
     <>
@@ -232,8 +182,8 @@ const WorkOrderList = () => {
               ) : (
                 <>
                   <tbody>
-                    {tableData.length > 0 ? (
-                      tableData.map((row, index) => (
+                    {filteredtable.length > 0 ? (
+                      filteredtable.map((row, index) => (
                         <tr
                           key={index}
                           style={{
@@ -285,7 +235,7 @@ const WorkOrderList = () => {
                             }}
                             title={row.workorderDetails
                               .map((item) => item.workItem)
-                              .join(", ")} 
+                              .join(", ")}
                           >
                             {row.workorderDetails
                               .slice(0, 2)
@@ -352,24 +302,28 @@ const WorkOrderList = () => {
                                 <i className="bi bi-pencil"></i>
                                 <FaEdit />
                               </Button> */}
-                              {(userRole == "Admin" || hasPermission(`Company Work Order Module`,`Delete`))&&(
-                              <Button
-                                variant="danger"
-                                size="sm"
-                                onClick={() => handleDelete(row.id)}
-                                style={{
-                                  borderRadius: "50%",
-                                  width: "35px",
-                                  height: "35px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <i className="bi bi-trash"></i>
-                                <FaClipboardList />
-                              </Button>
-                            )}
+                              {(userRole == "Admin" ||
+                                hasPermission(
+                                  `Company Work Order Module`,
+                                  `Delete`
+                                )) && (
+                                <Button
+                                  variant="danger"
+                                  size="sm"
+                                  onClick={() => handleDelete(row.id)}
+                                  style={{
+                                    borderRadius: "50%",
+                                    width: "35px",
+                                    height: "35px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <i className="bi bi-trash"></i>
+                                  <FaClipboardList />
+                                </Button>
+                              )}
                             </div>
                           </td>
                         </tr>
