@@ -37,7 +37,7 @@ const Header = () => {
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
   const { roles,hasPermission, permissions } = usePermissions();
-  console.log("permissions",permissions);
+  // console.log("permissions",permissions);
 
   const toggleDropdown = (dropdown) => {
     setExpandedDropdown(expandedDropdown === dropdown ? "" : dropdown);
@@ -124,7 +124,7 @@ const Header = () => {
   const getItemClass = (lng) => {
     return lng === selectedLanguage ? "selected-item" : "";
   };
-console.log('userRole: ', roles)
+// console.log('userRole: ', roles)
 // console.log('userRole: ' + userRole,userRole == "Admin")
   return (
     <>
