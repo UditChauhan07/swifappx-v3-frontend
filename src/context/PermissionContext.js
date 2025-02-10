@@ -4,7 +4,7 @@ import axios from "axios";
 import { fetchRolesList, Url } from "../lib/store";
 
 const PermissionsContext = createContext();
-const userDataKey = "userId";
+const userDataKey = "companyId";
 
 export const PermissionsProvider = ({ children }) => {
   const [userRole, setUserRole] = useState([]);

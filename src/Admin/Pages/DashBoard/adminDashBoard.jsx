@@ -47,9 +47,9 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (userid) {
-      getRoles(userid);
+      getRoles(companyId);
     }
-  }, [userid]);
+  }, [companyId]);
 
   useEffect(() => {
     const fetchData = async () => {
