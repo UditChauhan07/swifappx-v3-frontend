@@ -39,7 +39,7 @@ const DashBoard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Show loader while fetching data
+      setLoading(true); 
       try {
         const response = await getSuperAdminDashboardDetails(token);
         if (response.success === true) {
@@ -49,7 +49,7 @@ const DashBoard = () => {
       } catch (error) {
         console.error("API Error:", error);
       } finally {
-        setLoading(false); // Hide loader after fetching data
+        // setLoading(false); 
       }
     };
 
