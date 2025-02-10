@@ -130,7 +130,7 @@ const DashBoard = () => {
                           }}
                         >
                           <div className="stat-item text-center border-end">
-                            <strong>{company?.user_counts.totalCUstomers || "0"}</strong>
+                            <strong>{company?.user_counts.totalCustomers || "0"}</strong>
                             <div>{t("Total Customer")}</div>
                           </div>
                           {/* <div className="stat-item text-center border-end">

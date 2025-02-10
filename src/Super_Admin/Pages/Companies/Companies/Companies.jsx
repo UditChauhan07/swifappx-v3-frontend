@@ -270,8 +270,8 @@ const Companies = () => {
                       </td>
                       <td className="text-center">{item.user_counts.field_user || 0}</td>
                       <td className="text-center">{item.user_counts.office_user || 0}</td>
-                      <td className="text-center">0</td>
-                      <td className="text-center">0</td>
+                      <td className="text-center">{item.user_counts.totalCustomers || 0}</td>
+                      <td className="text-center">{item.user_counts.totalWorkOrders || 0}</td>
                       <td className="text-center">
                         <div className="d-flex gap-2 justify-content-center">
                           <Button
