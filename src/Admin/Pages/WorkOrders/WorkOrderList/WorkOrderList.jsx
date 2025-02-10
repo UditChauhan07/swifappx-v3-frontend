@@ -49,7 +49,7 @@ const WorkOrderList = () => {
   const tableHeaders = [
     "Work Order Num",
     "Date & Time",
-    "Custome Name & Address",
+    "Custome Name",
     "Work Item Name",
     "Status",
     "Worker Name",
@@ -274,8 +274,7 @@ const WorkOrderList = () => {
                               color: "#4B5563",
                             }}
                           >
-                            {row.customerDetailSection.CustomerName} , `[
-                            {row.customerDetailSection.CustomerAddress}]`
+                            {row.customerDetailSection.CustomerName}
                           </td>
                           <td
                             style={{

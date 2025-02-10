@@ -58,42 +58,41 @@ const CreateCustomer = () => {
       phone: "",
       address: "",
     };
-
+  
     // Validate name
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
+      newErrors.name = t("Name is required");
       isValid = false;
     }
-
+  
     // Validate email using a stricter regex
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = t("Email is required");
       isValid = false;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
+      newErrors.email = t("Email is invalid");
       isValid = false;
     }
-
-    // Validate phone: it must be a number and exactly 10 digits.
-    // Note: Using a number field means leading zeros may be lost.
+  
+    // Validate phone: it must be a number and exactly 10 to 15 digits.
     if (formData.phone === "" || formData.phone === null) {
-      newErrors.phone = "Phone is required";
+      newErrors.phone = t("Phone is required");
       isValid = false;
     } else if (!/^\d{10,15}$/.test(formData.phone)) {
-      newErrors.phone = "Phone must contain between 10 and 15 digits";
+      newErrors.phone = t("Phone must contain between 10 and 15 digits");
       isValid = false;
     }
-
+  
     // Validate address
     if (!formData.address.trim()) {
-      newErrors.address = "Address is required";
+      newErrors.address = t("Address is required");
       isValid = false;
     }
-
+  
     setErrors(newErrors);
     return isValid;
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 

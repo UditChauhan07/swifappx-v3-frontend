@@ -17,13 +17,14 @@ const AdminRoles = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setuserId] = useState(localStorage.getItem("userId"));
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
+  const [companyId, setcompanyId] = useState(localStorage.getItem("companyId"))
   const rowsPerPage = 4;
 
   useEffect(() => {
     const fetchRoles = async () => {
       setIsLoading(true);
       try {
-        const response = await getRoles(userId,token);
+        const response = await getRoles(companyId,token);
         console.log("dasda", response);
         setRolesList(response?.data);
       } catch (error) {

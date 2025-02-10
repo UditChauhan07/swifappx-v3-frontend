@@ -15,7 +15,7 @@ import { createCompanyApi } from "../../../../lib/store";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
-
+import imageCompression from "browser-image-compression";
 
 const CreateCompany = () => {
   const { t, i18n } = useTranslation();
@@ -53,15 +53,10 @@ const CreateCompany = () => {
     additionalCertifications: [],
 
     // Step 3: Contact Information
- 
+
     addressLine2: "",
-    
-    
-   
-    
-    
+
     officePhone: "",
- 
 
     // Step 4: Other Settings
     package: "Full Pack",
@@ -78,7 +73,6 @@ const CreateCompany = () => {
     executionWorkOrderCost: "0.40",
     freeWorkOrders: "101",
     customerAddressFormat: "US",
- 
   });
   const navigate = useNavigate();
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
@@ -122,8 +116,9 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.firstName =
-              t("First Name must be 1-60 characters, letters only.");
+            newErrors.firstName = t(
+              "First Name must be 1-60 characters, letters only."
+            );
           } else {
             delete newErrors.firstName;
           }
@@ -136,8 +131,9 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.lastName =
-              t("Last Name must be 1-60 characters, letters only.");
+            newErrors.lastName = t(
+              "Last Name must be 1-60 characters, letters only."
+            );
           } else {
             delete newErrors.lastName;
           }
@@ -167,8 +163,9 @@ const CreateCompany = () => {
 
         case "contactNumber":
           if (!value.trim() || !isPhone.test(value)) {
-            newErrors.contactNumber =
-              t("Valid Contact Number (10-15 digits) is required.");
+            newErrors.contactNumber = t(
+              "Valid Contact Number (10-15 digits) is required."
+            );
           } else {
             delete newErrors.contactNumber;
           }
@@ -176,7 +173,9 @@ const CreateCompany = () => {
 
         case "address":
           if (value.trim() && value.length < 5) {
-            newErrors.address = t("Address must be at least 5 characters long.");
+            newErrors.address = t(
+              "Address must be at least 5 characters long."
+            );
           } else {
             delete newErrors.address;
           }
@@ -214,8 +213,9 @@ const CreateCompany = () => {
             value.length < 3 ||
             !isAlphanumericWithSpaces.test(value)
           ) {
-            newErrors.zip =
-              t("ZIP/Postal Code must be at least 3 characters, alphanumeric only.");
+            newErrors.zip = t(
+              "ZIP/Postal Code must be at least 3 characters, alphanumeric only."
+            );
           } else {
             delete newErrors.zip;
           }
@@ -228,8 +228,9 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.companyName =
-              t("Company Name must be 1-60 characters, no numbers.");
+            newErrors.companyName = t(
+              "Company Name must be 1-60 characters, no numbers."
+            );
           } else {
             delete newErrors.companyName;
           }
@@ -258,8 +259,9 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.taxName =
-              t("Tax Name must be 1-60 characters, letters only.");
+            newErrors.taxName = t(
+              "Tax Name must be 1-60 characters, letters only."
+            );
           } else {
             delete newErrors.taxName;
           }
@@ -267,8 +269,9 @@ const CreateCompany = () => {
 
         case "taxPercentage":
           if (isNaN(value) || value < 0 || value > 40) {
-            newErrors.taxPercentage =
-              t("Tax Percentage must be a number between 0 and 40.");
+            newErrors.taxPercentage = t(
+              "Tax Percentage must be a number between 0 and 40."
+            );
           } else {
             delete newErrors.taxPercentage;
           }
@@ -276,8 +279,9 @@ const CreateCompany = () => {
 
         case "certificationName":
           if (value.trim() && value.length < 3) {
-            newErrors.certificationName =
-              t("Certification Name must be at least 3 characters.");
+            newErrors.certificationName = t(
+              "Certification Name must be at least 3 characters."
+            );
           } else {
             delete newErrors.certificationName;
           }
@@ -285,8 +289,9 @@ const CreateCompany = () => {
 
         case "certificationNumber":
           if (value.trim() && value.length < 3) {
-            newErrors.certificationNumber =
-              t("Certification Number must be at least 3 characters.");
+            newErrors.certificationNumber = t(
+              "Certification Number must be at least 3 characters."
+            );
           } else {
             delete newErrors.certificationNumber;
           }
@@ -294,8 +299,9 @@ const CreateCompany = () => {
 
         case "addressLine1":
           if (!value.trim() || value.length < 5) {
-            newErrors.addressLine1 =
-              t("Address Line 1 must be at least 5 characters.");
+            newErrors.addressLine1 = t(
+              "Address Line 1 must be at least 5 characters."
+            );
           } else {
             delete newErrors.addressLine1;
           }
@@ -303,8 +309,9 @@ const CreateCompany = () => {
 
         case "addressLine2":
           if (value.trim() && value.length < 5) {
-            newErrors.addressLine2 =
-              t("Address Line 2 must be at least 5 characters.");
+            newErrors.addressLine2 = t(
+              "Address Line 2 must be at least 5 characters."
+            );
           } else {
             delete newErrors.addressLine2;
           }
@@ -317,8 +324,9 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.contactCity =
-              t("City must be 2-60 characters, letters only.");
+            newErrors.contactCity = t(
+              "City must be 2-60 characters, letters only."
+            );
           } else {
             delete newErrors.contactCity;
           }
@@ -331,8 +339,9 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.companyState =
-              t("State must be 2-60 characters, letters only.");
+            newErrors.companyState = t(
+              "State must be 2-60 characters, letters only."
+            );
           } else {
             delete newErrors.companyState;
           }
@@ -344,8 +353,9 @@ const CreateCompany = () => {
             value.length < 3 ||
             !isAlphanumericWithSpaces.test(value)
           ) {
-            newErrors.contactZip =
-              t("ZIP/Postal Code must be at least 3 characters, alphanumeric only.");
+            newErrors.contactZip = t(
+              "ZIP/Postal Code must be at least 3 characters, alphanumeric only."
+            );
           } else {
             delete newErrors.contactZip;
           }
@@ -361,16 +371,18 @@ const CreateCompany = () => {
 
         case "contactPhone":
           if (!value.trim() || !isPhone.test(value)) {
-            newErrors.contactPhone =
-              t("Valid Person Phone (10-15 digits) is required.");
+            newErrors.contactPhone = t(
+              "Valid Person Phone (10-15 digits) is required."
+            );
           } else {
             delete newErrors.contactPhone;
           }
           break;
         case "officePhone":
           if (!value.trim() || !isPhone.test(value)) {
-            newErrors.officePhone =
-              t("Valid Office Phone (10-15 digits) is required.");
+            newErrors.officePhone = t(
+              "Valid Office Phone (10-15 digits) is required."
+            );
           } else {
             delete newErrors.officePhone;
           }
@@ -378,7 +390,9 @@ const CreateCompany = () => {
 
         case "officeEmail":
           if (!value.trim() || !isEmail.test(value)) {
-            newErrors.officeEmail = t("Valid Office Email Address is required.");
+            newErrors.officeEmail = t(
+              "Valid Office Email Address is required."
+            );
           } else {
             delete newErrors.officeEmail;
           }
@@ -394,8 +408,9 @@ const CreateCompany = () => {
 
         case "quotationCost":
           if (isNaN(value) || value < 0 || value > 1000) {
-            newErrors.quotationCost =
-              t("Quotation Cost must be a number between 0 and 1000.");
+            newErrors.quotationCost = t(
+              "Quotation Cost must be a number between 0 and 1000."
+            );
           } else {
             delete newErrors.quotationCost;
           }
@@ -403,8 +418,9 @@ const CreateCompany = () => {
 
         case "primaryWorkOrderCost":
           if (isNaN(value) || value < 0 || value > 1000) {
-            newErrors.primaryWorkOrderCost =
-              t("Primary Work Order Cost must be a number between 0 and 1000.");
+            newErrors.primaryWorkOrderCost = t(
+              "Primary Work Order Cost must be a number between 0 and 1000."
+            );
           } else {
             delete newErrors.primaryWorkOrderCost;
           }
@@ -412,8 +428,9 @@ const CreateCompany = () => {
 
         case "executionWorkOrderCost":
           if (isNaN(value) || value < 0 || value > 1000) {
-            newErrors.executionWorkOrderCost =
-              t("Execution Work Order Cost must be a number between 0 and 1000.");
+            newErrors.executionWorkOrderCost = t(
+              "Execution Work Order Cost must be a number between 0 and 1000."
+            );
           } else {
             delete newErrors.executionWorkOrderCost;
           }
@@ -443,8 +460,9 @@ const CreateCompany = () => {
           formData.firstName.length > 60 ||
           !isAlpha.test(formData.firstName)
         )
-          newErrors.firstName =
-            "First Name must be 1-60 characters, letters only.";
+          newErrors.firstName = t(
+            "First Name must be 1-60 characters, letters only."
+          );
         if (
           !formData.lastName ||
           !formData.lastName.trim() ||
@@ -452,14 +470,15 @@ const CreateCompany = () => {
           formData.lastName.length > 60 ||
           !isAlpha.test(formData.lastName)
         )
-          newErrors.lastName =
-            "Last Name must be 1-60 characters, letters only.";
+          newErrors.lastName = t(
+            "Last Name must be 1-60 characters, letters only."
+          );
         if (
           !formData.email ||
           !formData.email.trim() ||
           !isEmail.test(formData.email)
         )
-          newErrors.email = "Valid Email Address is required.";
+          newErrors.email = t("Valid Email Address is required.");
         // if (
         //   !formData.password ||
         //   !formData.password.trim() ||
@@ -475,8 +494,9 @@ const CreateCompany = () => {
           !formData.contactNumber.trim() ||
           !isPhone.test(formData.contactNumber)
         )
-          newErrors.contactNumber =
-            "Valid Contact Number (10-15 digits) is required.";
+          newErrors.contactNumber = t(
+            "Valid Contact Number (10-15 digits) is required."
+          );
         break;
 
       case 2:
@@ -487,50 +507,55 @@ const CreateCompany = () => {
           formData.companyName.length > 60 ||
           !isAlpha.test(formData.companyName)
         )
-          newErrors.companyName =
-            "Company Name must be 1-60 characters, no numbers.";
- 
-    
-            if (
-              !formData.addressLine1 ||
-              !formData.addressLine1.trim() ||
-              formData.addressLine1.length < 5
-            )
-              newErrors.addressLine1 =
-                "Address Line 1 must be at least 5 characters.";
-            // if (formData.addressLine2 && formData.addressLine2.length < 5)
-            //   newErrors.addressLine2 =
-            //     "Address Line 2 must be at least 5 characters.";
-            if (
-              !formData.contactCity ||
-              !formData.contactCity.trim() ||
-              formData.contactCity.length < 2 ||
-              formData.contactCity.length > 60 ||
-              !isAlpha.test(formData.contactCity)
-            )
-              newErrors.contactCity = "City must be 2-60 characters, letters only.";
-            if (
-              !formData.companyState ||
-              !formData.companyState.trim() ||
-              formData.companyState.length < 2 ||
-              formData.companyState.length > 60 ||
-              !isAlpha.test(formData.companyState)
-            )
-              newErrors.companyState =
-                "State must be 2-60 characters, letters only.";
-            if (
-              !formData.contactZip ||
-              !formData.contactZip.trim() ||
-              formData.contactZip.length < 3 ||
-              !isAlphanumericWithSpaces.test(formData.contactZip)
-            )
-              newErrors.contactZip =
-                "ZIP/Postal Code must be at least 3 characters, alphanumeric only.";
-                if (!formData.contactPerson || !formData.contactPerson.trim())
-                  newErrors.contactPerson = "Contact Person is required.";
-                if (!formData.contactPhone.trim())
-                  if (!formData.officeEmail.trim())
-                    newErrors.officeEmail = "Office Email Address is required.";
+          newErrors.companyName = t(
+            "Company Name must be 1-60 characters, no numbers."
+          );
+
+        if (
+          !formData.addressLine1 ||
+          !formData.addressLine1.trim() ||
+          formData.addressLine1.length < 5
+        )
+          newErrors.addressLine1 = t(
+            "Address Line 1 must be at least 5 characters."
+          );
+        // if (formData.addressLine2 && formData.addressLine2.length < 5)
+        //   newErrors.addressLine2 =
+        //     "Address Line 2 must be at least 5 characters.";
+        if (
+          !formData.contactCity ||
+          !formData.contactCity.trim() ||
+          formData.contactCity.length < 2 ||
+          formData.contactCity.length > 60 ||
+          !isAlpha.test(formData.contactCity)
+        )
+          newErrors.contactCity = t(
+            "City must be 2-60 characters, letters only."
+          );
+        if (
+          !formData.companyState ||
+          !formData.companyState.trim() ||
+          formData.companyState.length < 2 ||
+          formData.companyState.length > 60 ||
+          !isAlpha.test(formData.companyState)
+        )
+          newErrors.companyState = t(
+            "State must be 2-60 characters, letters only."
+          );
+        if (
+          !formData.contactZip ||
+          !formData.contactZip.trim() ||
+          formData.contactZip.length < 3 ||
+          !isAlphanumericWithSpaces.test(formData.contactZip)
+        )
+          newErrors.contactZip = t(
+            "ZIP/Postal Code must be at least 3 characters, alphanumeric only."
+          );
+        if (!formData.contactPerson || !formData.contactPerson.trim())
+          newErrors.contactPerson = t("Contact Person is required.");
+        if (!formData.contactPhone.trim())
+          if (!formData.officeEmail.trim())
+            newErrors.officeEmail = t("Office Email Address is required.");
 
         break;
       default:
@@ -538,6 +563,36 @@ const CreateCompany = () => {
     }
 
     return newErrors;
+  };
+
+  // New: Compress image files before updating state
+  const handleImageChange = async (field, file) => {
+    if (file && file.type.startsWith("image/")) {
+      const options = {
+        maxSizeMB: 0.6,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+      try {
+        const compressedFile = await imageCompression(file, options);
+        setFormData((prev) => ({
+          ...prev,
+          [field]: compressedFile,
+        }));
+      } catch (error) {
+        console.error("Error compressing image", error);
+        // Fallback to original file if compression fails
+        setFormData((prev) => ({
+          ...prev,
+          [field]: file,
+        }));
+      }
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: file,
+      }));
+    }
   };
 
   const fileToBase64 = (file) => {
@@ -551,8 +606,11 @@ const CreateCompany = () => {
 
   const handleSubmit = async () => {
     const currentErrors = validateStep(currentStep);
-    console.log(currentErrors)
-    if (Object.keys(errors).length > 0 || Object.keys(currentErrors).length >0) {
+    console.log(currentErrors);
+    if (
+      Object.keys(errors).length > 0 ||
+      Object.keys(currentErrors).length > 0
+    ) {
       return;
     }
     try {
@@ -588,7 +646,6 @@ const CreateCompany = () => {
         companyStatus: formData.companyStatus,
         companyState: formData.companyState,
       };
-
 
       const userdata = {
         first_name: formData.firstName,
@@ -645,7 +702,8 @@ const CreateCompany = () => {
       } else {
         Swal.fire({
           title: "Error!",
-          text: response.message || "There was an error creating the company.",
+          text:
+            response.message || t("There was an error creating the company."),
           icon: "error",
           confirmButtonText: "Try Again",
         });
@@ -656,14 +714,13 @@ const CreateCompany = () => {
       Swal.close();
       Swal.fire({
         title: "API Error!",
-        text: t("Something went wrong. Please try again later."),
+        text: error || t("Something went wrong. Please try again later."),
         icon: "error",
         confirmButtonText: t("OK"),
       });
     }
   };
 
- 
   return (
     <>
       <Header />
@@ -740,8 +797,9 @@ const CreateCompany = () => {
                     <Form.Label>{t("Profile Picture")}:</Form.Label>
                     <Form.Control
                       type="file"
+                      accept="image/*"
                       onChange={(e) =>
-                        handleChange("profilePicture", e.target.files[0])
+                        handleImageChange("profilePicture", e.target.files[0])
                       }
                     />
                   </Form.Group>
@@ -944,19 +1002,20 @@ const CreateCompany = () => {
                     <Form.Label>{t("Company Logo")}:</Form.Label>
                     <Form.Control
                       type="file"
+                      accept="image/*"
                       onChange={(e) =>
-                        handleChange("companyLogo", e.target.files[0])
+                        handleImageChange("companyLogo", e.target.files[0])
                       }
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>
                       <span className="text-danger">*</span>{" "}
-                      {t("Company Contact Person")}:
+                      {t("Company Contact Person Name")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder={t("Enter Company Contact Person")}
+                      placeholder={t("Enter Company Contact Person Name")}
                       value={formData.contactPerson}
                       maxLength={30}
                       onChange={(e) =>
@@ -987,7 +1046,7 @@ const CreateCompany = () => {
                       {errors.contactPhone}
                     </Form.Control.Feedback>
                   </Form.Group>
-                 
+
                   <Form.Group className="mb-3">
                     <Form.Label>
                       <span className="text-danger">*</span>{" "}
@@ -1007,7 +1066,6 @@ const CreateCompany = () => {
                       {errors.officeEmail}
                     </Form.Control.Feedback>
                   </Form.Group>
-
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
@@ -1111,7 +1169,7 @@ const CreateCompany = () => {
                 </Col>
               </Row>
               <Row>
-              <Col md={12}>
+                <Col md={12}>
                   <Form.Group className="mb-3">
                     <Form.Label>{t("Working Day")}:</Form.Label>
                     <div>
@@ -1153,7 +1211,7 @@ const CreateCompany = () => {
                         ))}
                       </ToggleButtonGroup>
                       <Form.Text muted>
-                        Default (mon, tue, wed, thus, fri)
+                        Default (mon, tue, wed, thr, fri)
                       </Form.Text>
                     </div>
                   </Form.Group>
@@ -1196,8 +1254,8 @@ const CreateCompany = () => {
                 type="button"
                 className="mt-3"
                 style={{
-                  background:"#6c757d",
-                  border:"none",
+                  background: "#6c757d",
+                  border: "none",
                   color: "white",
                 }}
                 onClick={() => {
@@ -1284,15 +1342,15 @@ const CreateCompany = () => {
               ))}
             </Form>
             <Form.Group className="mb-3">
-                <Form.Check
-                  type="checkbox"
-                  label="Company Status"
-                  checked={formData.companyStatus}
-                  onChange={(e) =>
-                    handleChange("companyStatus", e.target.checked)
-                  }
-                />
-              </Form.Group>
+              <Form.Check
+                type="checkbox"
+                label="Company Status"
+                checked={formData.companyStatus}
+                onChange={(e) =>
+                  handleChange("companyStatus", e.target.checked)
+                }
+              />
+            </Form.Group>
             <Button
               variant="secondary"
               onClick={handlePrevious}

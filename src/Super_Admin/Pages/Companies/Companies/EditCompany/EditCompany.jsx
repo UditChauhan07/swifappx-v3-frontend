@@ -15,15 +15,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Header from "../../../../../Components/Header/Header";
 import { useTranslation } from "react-i18next";
-
+import imageCompression from "browser-image-compression";
 
 const EditCompany = () => {
-const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
   const { state } = useLocation();
   const { company = {}, user = {} } = state.company || {};
   // console.log("Company------", state.company);
-  const [companyId, setcompanyId] = useState(state.company.company.id)
+  const [companyId, setcompanyId] = useState(state.company.company.id);
 
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -88,7 +88,7 @@ const { t, i18n } = useTranslation();
         // Step 1: Super Admin Details
         firstName: user.first_name || "",
         lastName: user.last_name || "",
-        profilePicture:  null,
+        profilePicture: null,
         contactNumber: user.contact_number || "",
         email: user.email || "",
         address: user.Address || "",
@@ -524,10 +524,7 @@ const { t, i18n } = useTranslation();
         //   newErrors.password =
         //     "Password must be 1-60 alphanumeric characters, no spaces.";
 
-        if (
-          !formData.contactNumber ||
-          !isPhone.test(formData.contactNumber)
-        )
+        if (!formData.contactNumber || !isPhone.test(formData.contactNumber))
           newErrors.contactNumber =
             "Valid Contact Number (10-15 digits) is required.";
         break;
@@ -542,48 +539,47 @@ const { t, i18n } = useTranslation();
         )
           newErrors.companyName =
             "Company Name must be 1-60 characters, no numbers.";
- 
-    
-            if (
-              !formData.addressLine1 ||
-              !formData.addressLine1.trim() ||
-              formData.addressLine1.length < 5
-            )
-              newErrors.addressLine1 =
-                "Address Line 1 must be at least 5 characters.";
-            // if (formData.addressLine2 && formData.addressLine2.length < 5)
-            //   newErrors.addressLine2 =
-            //     "Address Line 2 must be at least 5 characters.";
-            if (
-              !formData.contactCity ||
-              !formData.contactCity.trim() ||
-              formData.contactCity.length < 2 ||
-              formData.contactCity.length > 60 ||
-              !isAlpha.test(formData.contactCity)
-            )
-              newErrors.contactCity = "City must be 2-60 characters, letters only.";
-            if (
-              !formData.companyState ||
-              !formData.companyState.trim() ||
-              formData.companyState.length < 2 ||
-              formData.companyState.length > 60 ||
-              !isAlpha.test(formData.companyState)
-            )
-              newErrors.companyState =
-                "State must be 2-60 characters, letters only.";
-            if (
-              !formData.contactZip ||
-              !formData.contactZip.trim() ||
-              formData.contactZip.length < 3 ||
-              !isAlphanumericWithSpaces.test(formData.contactZip)
-            )
-              newErrors.contactZip =
-                "ZIP/Postal Code must be at least 3 characters, alphanumeric only.";
-                if (!formData.contactPerson || !formData.contactPerson.trim())
-                  newErrors.contactPerson = "Contact Person is required.";
-                if (!formData.contactPhone.trim())
-                  if (!formData.officeEmail.trim())
-                    newErrors.officeEmail = "Office Email Address is required.";
+
+        if (
+          !formData.addressLine1 ||
+          !formData.addressLine1.trim() ||
+          formData.addressLine1.length < 5
+        )
+          newErrors.addressLine1 =
+            "Address Line 1 must be at least 5 characters.";
+        // if (formData.addressLine2 && formData.addressLine2.length < 5)
+        //   newErrors.addressLine2 =
+        //     "Address Line 2 must be at least 5 characters.";
+        if (
+          !formData.contactCity ||
+          !formData.contactCity.trim() ||
+          formData.contactCity.length < 2 ||
+          formData.contactCity.length > 60 ||
+          !isAlpha.test(formData.contactCity)
+        )
+          newErrors.contactCity = "City must be 2-60 characters, letters only.";
+        if (
+          !formData.companyState ||
+          !formData.companyState.trim() ||
+          formData.companyState.length < 2 ||
+          formData.companyState.length > 60 ||
+          !isAlpha.test(formData.companyState)
+        )
+          newErrors.companyState =
+            "State must be 2-60 characters, letters only.";
+        if (
+          !formData.contactZip ||
+          !formData.contactZip.trim() ||
+          formData.contactZip.length < 3 ||
+          !isAlphanumericWithSpaces.test(formData.contactZip)
+        )
+          newErrors.contactZip =
+            "ZIP/Postal Code must be at least 3 characters, alphanumeric only.";
+        if (!formData.contactPerson || !formData.contactPerson.trim())
+          newErrors.contactPerson = "Contact Person is required.";
+        if (!formData.contactPhone.trim())
+          if (!formData.officeEmail.trim())
+            newErrors.officeEmail = "Office Email Address is required.";
 
         break;
       default:
@@ -592,12 +588,42 @@ const { t, i18n } = useTranslation();
 
     return newErrors;
   };
+
+  // New: Compress image files before updating state
+  const handleImageChange = async (field, file) => {
+    if (file && file.type.startsWith("image/")) {
+      const options = {
+        maxSizeMB: 0.6,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+      try {
+        const compressedFile = await imageCompression(file, options);
+        setFormData((prev) => ({
+          ...prev,
+          [field]: compressedFile,
+        }));
+      } catch (error) {
+        console.error("Error compressing image", error);
+        // Fallback to original file if compression fails
+        setFormData((prev) => ({
+          ...prev,
+          [field]: file,
+        }));
+      }
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: file,
+      }));
+    }
+  };
   const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       if (!(file instanceof Blob)) {
-              return null;
+        return null;
       }
-  
+
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
@@ -607,18 +633,21 @@ const { t, i18n } = useTranslation();
 
   const handleSubmit = async () => {
     const currentErrors = validateStep(currentStep);
-    console.log(currentErrors)
-    if (Object.keys(errors).length > 0 || Object.keys(currentErrors).length >0) {
+    console.log(currentErrors);
+    if (
+      Object.keys(errors).length > 0 ||
+      Object.keys(currentErrors).length > 0
+    ) {
       return;
     }
-    console.log('Submit---',formData)
+    console.log("Submit---", formData);
     const profilePictureBase64 = formData.profilePicture
-    ? await fileToBase64(formData.profilePicture)
-    : null;
+      ? await fileToBase64(formData.profilePicture)
+      : null;
 
-  const companyLogoBase64 = formData.companyLogo
-    ? await fileToBase64(formData.companyLogo)
-    : null;
+    const companyLogoBase64 = formData.companyLogo
+      ? await fileToBase64(formData.companyLogo)
+      : null;
 
     const allCertificates = [
       {
@@ -692,7 +721,7 @@ const { t, i18n } = useTranslation();
     //   formDataToSend.append("company_logo", formData.companyLogo);
     // }
 
-    console.log("Final FormData: ", {companyData,userdata});
+    console.log("Final FormData: ", { companyData, userdata });
     try {
       // Show confirmation alert before API call
       const result = await Swal.fire({
@@ -720,8 +749,12 @@ const { t, i18n } = useTranslation();
       });
 
       // Call API
-      console.log('companyId: ', companyId);
-      const response = await editCompanyApi(companyId,{companyData,userdata}, token);
+      console.log("companyId: ", companyId);
+      const response = await editCompanyApi(
+        companyId,
+        { companyData, userdata },
+        token
+      );
       console.log("response", response);
 
       // Close loading alert
@@ -833,8 +866,9 @@ const { t, i18n } = useTranslation();
                     <Form.Label>{t("Profile Picture")}:</Form.Label>
                     <Form.Control
                       type="file"
+                      accept="image/*"
                       onChange={(e) =>
-                        handleChange("profilePicture", e.target.files[0])
+                        handleImageChange("profilePicture", e.target.files[0])
                       }
                     />
                   </Form.Group>
@@ -1037,19 +1071,20 @@ const { t, i18n } = useTranslation();
                     <Form.Label>{t("Company Logo")}:</Form.Label>
                     <Form.Control
                       type="file"
+                      accept="image/*"
                       onChange={(e) =>
-                        handleChange("companyLogo", e.target.files[0])
+                        handleImageChange("companyLogo", e.target.files[0])
                       }
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>
                       <span className="text-danger">*</span>{" "}
-                      {t("Company Contact Person")}:
+                      {t("Company Contact Person Name")}:
                     </Form.Label>
                     <Form.Control
                       type="text"
-                      placeholder={t("Enter Company Contact Person")}
+                      placeholder={t("Enter Company Contact Person Name")}
                       value={formData.contactPerson}
                       maxLength={30}
                       onChange={(e) =>
@@ -1080,7 +1115,7 @@ const { t, i18n } = useTranslation();
                       {errors.contactPhone}
                     </Form.Control.Feedback>
                   </Form.Group>
-                 
+
                   <Form.Group className="mb-3">
                     <Form.Label>
                       <span className="text-danger">*</span>{" "}
@@ -1100,7 +1135,6 @@ const { t, i18n } = useTranslation();
                       {errors.officeEmail}
                     </Form.Control.Feedback>
                   </Form.Group>
-
                 </Col>
                 <Col md={6}>
                   <Form.Group className="mb-3">
@@ -1204,7 +1238,7 @@ const { t, i18n } = useTranslation();
                 </Col>
               </Row>
               <Row>
-              <Col md={12}>
+                <Col md={12}>
                   <Form.Group className="mb-3">
                     <Form.Label>{t("Working Day")}:</Form.Label>
                     <div>
@@ -1289,8 +1323,8 @@ const { t, i18n } = useTranslation();
                 type="button"
                 className="mt-3"
                 style={{
-                  background:"#6c757d",
-                  border:"none",
+                  background: "#6c757d",
+                  border: "none",
                   color: "white",
                 }}
                 onClick={() => {
@@ -1377,15 +1411,15 @@ const { t, i18n } = useTranslation();
               ))}
             </Form>
             <Form.Group className="mb-3">
-                <Form.Check
-                  type="checkbox"
-                  label="Company Status"
-                  checked={formData.companyStatus}
-                  onChange={(e) =>
-                    handleChange("companyStatus", e.target.checked)
-                  }
-                />
-              </Form.Group>
+              <Form.Check
+                type="checkbox"
+                label="Company Status"
+                checked={formData.companyStatus}
+                onChange={(e) =>
+                  handleChange("companyStatus", e.target.checked)
+                }
+              />
+            </Form.Group>
             <Button
               variant="secondary"
               onClick={handlePrevious}
@@ -1410,7 +1444,3 @@ const { t, i18n } = useTranslation();
 };
 
 export default EditCompany;
-
-
-
-
