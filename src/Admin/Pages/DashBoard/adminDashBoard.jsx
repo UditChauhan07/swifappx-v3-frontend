@@ -98,7 +98,7 @@ const AdminDashboard = () => {
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: "top" },
+      legend: { display:false },
     },
     scales: {
       y: { beginAtZero: true },
