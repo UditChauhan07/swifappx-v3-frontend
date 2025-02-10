@@ -9,6 +9,8 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
+import Select from "react-select";
+import { getNames } from "country-list";
 
 const Create = () => {
   const { t } = useTranslation();
@@ -18,8 +20,12 @@ const Create = () => {
   const userid = localStorage.getItem("companyId");
   const company_id = localStorage.getItem("companyId") || null;
   const [profile, setProfile] = useState(null);
-
   const navigate = useNavigate();
+
+  const countryOptions = getNames().map((country) => ({
+    value: country,
+    label: country,
+  }));
 
   const validationSchema = Yup.object({
     firstName: Yup.string()
@@ -217,7 +223,7 @@ const Create = () => {
                 }
               }}
             >
-              {({ setFieldValue, isSubmitting }) => (
+              {({ setFieldValue, isSubmitting, values }) => (
                 <FormikForm>
                   <Row>
                     <Col md={6}>
@@ -386,18 +392,22 @@ const Create = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>{t("Country")}*</Form.Label>
-                        <Field
-                          as="select"
-                          className="form-control"
-                          name="country"
-                        >
-                          <option value="">{t("Select Country")}</option>
-                          <option value="USA">USA</option>
-                          <option value="Canada">Canada</option>
-                          <option value="India">India</option>
-                          <option value="India">Spain</option>
-                          <option value="India">France</option>
-                        </Field>
+                        <Select
+                          options={countryOptions}
+                          onChange={(selectedOption) =>
+                            setFieldValue("country", selectedOption.value)
+                          }
+                          value={countryOptions.find(
+                            (option) => option.value === values.country
+                          )}
+                          styles={{
+                            menuList: (provided) => ({
+                              ...provided,
+                              maxHeight: "150px", // Limits dropdown height
+                              overflowY: "auto",
+                            }),
+                          }}
+                        />
                         <ErrorMessage
                           name="country"
                           component="div"

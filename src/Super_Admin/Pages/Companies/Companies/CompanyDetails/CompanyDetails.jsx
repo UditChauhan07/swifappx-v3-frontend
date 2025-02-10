@@ -164,7 +164,7 @@ const CompanyDetails = () => {
                 <Col md={3} className="fw-bold">
                   {t("Company Admin Country")}:
                 </Col>
-                <Col>{company.user.state?company.user.state:'--'}</Col>
+                <Col>{company.user.state?company.user.country:'--'}</Col>
               </Row>
               {/* <Row className="p-3">
                 <Col md={3} className="fw-bold">

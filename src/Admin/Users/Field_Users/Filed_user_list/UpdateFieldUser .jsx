@@ -5,17 +5,22 @@ import * as Yup from "yup";
 import Header from "../../../../Components/Header/Header";
 import { update_FieldUser } from "../../../../lib/store"; // Assuming this is your update API function
 import Swal from "sweetalert2";
-import { useNavigate ,useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
+import Select from "react-select";
+import { getNames } from "country-list";
 
 const UpdateFieldUser = () => {
-    const { t } = useTranslation(); 
-  
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const token = localStorage.getItem("UserToken");
   const location = useLocation();
-    const { row:userData } = location.state || {};
+  const { row: userData } = location.state || {};
+  const countryOptions = getNames().map((country) => ({
+    value: country,
+    label: country,
+  }));
 
   // Formik initial values based on passed data (userData)
   const formik = useFormik({
@@ -35,8 +40,12 @@ const UpdateFieldUser = () => {
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
       username: Yup.string().required("Username is required"),
-      contact_number: Yup.string().required("Contact number is required").matches(/^[0-9]+$/, "Contact number must be digits only"),
-      email: Yup.string().email("Invalid email format").required("Email is required"),
+      contact_number: Yup.string()
+        .required("Contact number is required")
+        .matches(/^[0-9]+$/, "Contact number must be digits only"),
+      email: Yup.string()
+        .email("Invalid email format")
+        .required("Email is required"),
       password: Yup.string().min(6, "Password must be at least 6 characters"),
       country: Yup.string().required("Country is required"),
       address: Yup.string().required("Address is required"),
@@ -54,7 +63,7 @@ const UpdateFieldUser = () => {
       // console.log("Form", values);
       // console.log("hghh",userData.id)
       const response = await update_FieldUser(values, token, userData.id); // Assuming userData.id is the unique ID
-      console.log("hghh",response)
+      console.log("hghh", response);
       if (response.success) {
         Swal.fire({
           title: t("Success"),
@@ -70,7 +79,7 @@ const UpdateFieldUser = () => {
       } else {
         Swal.fire("Error", response.message, "error");
       }
-    //   console.log("Response", response);
+      //   console.log("Response", response);
     },
   });
 
@@ -89,13 +98,16 @@ const UpdateFieldUser = () => {
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">{t("Update Field User Details")}</h4>
+              <h4 className="mb-0">{t("Update Field Agent Details")}</h4>
             </div>
             <Form onSubmit={formik.handleSubmit}>
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formName">
-                    <Form.Label>{t("Name")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Name")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       type="text"
                       placeholder={t("Enter Name")}
@@ -105,13 +117,18 @@ const UpdateFieldUser = () => {
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.name && formik.errors.name}
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.name}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.name}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formEmail">
-                    <Form.Label>{t("Email")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Email")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       type="email"
                       placeholder={t("Enter Email")}
@@ -121,13 +138,18 @@ const UpdateFieldUser = () => {
                       onChange={formik.handleChange}
                       isInvalid={formik.touched.email && formik.errors.email}
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.email}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.email}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formUsername">
-                    <Form.Label>{t("Username")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Username")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Text className="d-block mb-1 text-muted">
                       {t("Field User can login via this Username")}
                     </Form.Text>
@@ -138,15 +160,22 @@ const UpdateFieldUser = () => {
                       maxLength={20}
                       value={formik.values.username}
                       onChange={formik.handleChange}
-                      isInvalid={formik.touched.username && formik.errors.username}
+                      isInvalid={
+                        formik.touched.username && formik.errors.username
+                      }
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.username}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.username}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formPassword">
-                    <Form.Label>{t("Password")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Password")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Text className="d-block mb-1 text-muted">
                       {t("Leave blank to keep the current password")}
                     </Form.Text>
@@ -157,15 +186,22 @@ const UpdateFieldUser = () => {
                       maxLength={30}
                       value={formik.values.password}
                       onChange={formik.handleChange}
-                      isInvalid={formik.touched.password && formik.errors.password}
+                      isInvalid={
+                        formik.touched.password && formik.errors.password
+                      }
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.password}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formContactNumber">
-                    <Form.Label>{t("Contact Number")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Contact Number")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       type="tel"
                       placeholder={t("Enter Contact Number")}
@@ -173,12 +209,17 @@ const UpdateFieldUser = () => {
                       maxLength={16}
                       value={formik.values.contact_number}
                       onChange={formik.handleChange}
-                      isInvalid={formik.touched.contact_number && formik.errors.contact_number}
+                      isInvalid={
+                        formik.touched.contact_number &&
+                        formik.errors.contact_number
+                      }
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.contact_number}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.contact_number}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
-{/* 
+                {/* 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formProfilePicture">
                     <Form.Label>Profile Picture</Form.Label>
@@ -192,25 +233,38 @@ const UpdateFieldUser = () => {
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formCountry">
-                    <Form.Label>{t("Country")}<span className="text-danger">*</span></Form.Label>
-                    <Form.Select
-                      name="country"
-                      value={formik.values.country}
-                      onChange={formik.handleChange}
-                      isInvalid={formik.touched.country && formik.errors.country}
-                    >
-                      <option value="">{t("Select Country")}</option>
-                      <option value="USA">USA</option>
-                      <option value="Canada">Canada</option>
-                      <option value="India">India</option>
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">{formik.errors.country}</Form.Control.Feedback>
+                    <Form.Label>
+                      {t("Country")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
+                    <Select
+                      options={countryOptions}
+                      onChange={(selectedOption) =>
+                        formik.setFieldValue("country", selectedOption.value)
+                      }
+                      value={countryOptions.find(
+                        (option) => option.value === formik.values.country
+                      )}
+                      styles={{
+                        menuList: (provided) => ({
+                          ...provided,
+                          maxHeight: "150px", // Limits dropdown height
+                          overflowY: "auto",
+                        }),
+                      }}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.country}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
 
                 <Col md={6}>
                   <Form.Group className="mb-3" controlId="formAddress">
-                    <Form.Label>{t("Address")}<span className="text-danger">*</span></Form.Label>
+                    <Form.Label>
+                      {t("Address")}
+                      <span className="text-danger">*</span>
+                    </Form.Label>
                     <Form.Control
                       as="textarea"
                       rows={2}
@@ -219,18 +273,30 @@ const UpdateFieldUser = () => {
                       maxLength={150}
                       value={formik.values.address}
                       onChange={formik.handleChange}
-                      isInvalid={formik.touched.address && formik.errors.address}
+                      isInvalid={
+                        formik.touched.address && formik.errors.address
+                      }
                     />
-                    <Form.Control.Feedback type="invalid">{formik.errors.address}</Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.address}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
               </Row>
 
               <div className="text-center">
-                <Button type="submit" className="me-2" style={{ backgroundColor: "#8d28dd", border: "none" }}>
+                <Button
+                  type="submit"
+                  className="me-2"
+                  style={{ backgroundColor: "#8d28dd", border: "none" }}
+                >
                   {t("Update")}
                 </Button>
-                <Button variant="secondary" type="button" onClick={() => navigate("/users/field/list")}>
+                <Button
+                  variant="secondary"
+                  type="button"
+                  onClick={() => navigate("/users/field/list")}
+                >
                   {t("Cancel")}
                 </Button>
               </div>

@@ -501,9 +501,8 @@
     "Edit Company Sponsor Details": "Editar Detalles del Patrocinador de la Empresa",
     "Work Order Details of": "Detalles de la Orden de Trabajo de",
     "WorkOrder Num.": "Num. de Orden de Trabajo",
-    "Field Users": "Usuarios del Campo",
+    "Field Agent": "Agente de campo",
     "WO Date": "Fecha de Orden de Trabajo",
-    "Customer Name": "Nombre del Cliente",
     "Contract Location": "Ubicación del Contrato",
     "Actual Start Time": "Hora de Inicio Real",
     "Actual End Time": "Hora de Fin Real",
@@ -755,7 +754,7 @@
     "Worker Mobile Access saved successfully.": "Acceso móvil del trabajador guardado exitosamente.",
     "Are you sure? you want to delete Worker?": "¿Está seguro? ¿quiere eliminar al trabajador?",
     "Import Workers": "Importar trabajadores",
-    "Import Field Users": "Importar usuarios de campo",
+    "Import Field Agent": "Agente de campo de importación",
     "Sample Field Users - Excel": "Usuarios de campo de muestra - Excel",
     "File not Found.": "Archivo no encontrado.",
     "Some Error occurs it may be due to file formating. please recheck file again.": "Ocurrió un error, puede ser debido a la formateación del archivo. Por favor verifique el archivo nuevamente.",
@@ -1432,7 +1431,7 @@
     "Manager": "Gerente",
     "Human Resource": "Recursos Humanos",
     "Other Users": "Otras usuarias",
-    "Field Users List": "Lista de usuarios de campo",
+    "Field Agent List": "Lista de agentes de campo",
     "Import": "Importar",
     "Customer List": "Lista de clientes",
     "Prospects & Leads": "Prospectos y clientes potenciales",
@@ -1630,6 +1629,12 @@
   "Contact number must be digits only": "El número de contacto debe contener solo dígitos",
   "Email is invalid": "El correo electrónico no es válido",
   "Phone is required": "Se requiere un número de teléfono",
-  "Phone must contain between 10 and 15 digits": "El número de teléfono debe contener entre 10 y 15 dígitos"
+  "Phone must contain between 10 and 15 digits": "El número de teléfono debe contener entre 10 y 15 dígitos",
+  "Work Orders List":"Lista de órdenes de trabajo",
+  "Work Order Time":"Tiempo de orden de trabajo",
+  "Interval Time":"Tiempo de intervalo",
+  "Default Work Time":"Tiempo de trabajo predeterminado",
+  "Buffer Time":"Tiempo de reserva",
+  "Import Work Orders":"Importar órdenes de trabajo"
 
 }

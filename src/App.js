@@ -44,6 +44,8 @@ import DraftWorkOrder from './Admin/Pages/WorkOrders/DraftWorkOrder/DraftWorkOrd
 import AdminDashboard from "./Admin/Pages/DashBoard/adminDashBoard";
 import WorkOrderEdit from "./Admin/Pages/WorkOrders/WorkOrderList/WorkOrderEdit/WorkOrderEdit";
 import WorkOrderDetails from "./Admin/Pages/WorkOrders/WorkOrderList/WorkOrderDetails/WorkOrderDetails";
+import WorkOrderTime from "./Admin/Pages/Settings/WorkOrderTime/WorkOrderTime";
+import WorkOrderImport from "./Admin/Pages/WorkOrders/WorkOrderImport/WorkOrderImport";
 
 function App() {
   return (
@@ -109,6 +111,8 @@ function App() {
           <Route path="/settings/admin/roles" element={<AdminRoles />} />
           <Route path="/settings/admin/roles/create" element={<CreateAdminRole />} />
           <Route path="/settings/admin/roles/edit" element={<EditAdminRole />} />
+          {/* Work Order Time */}
+          <Route path="/settings/admin/workOrderTime" element={<WorkOrderTime />} />
 
 
           {/* Work Order */}
@@ -117,6 +121,7 @@ function App() {
           <Route path="/workorder/list/details" element={<WorkOrderDetails />} />
           <Route path="/workorder/list/edit" element={<WorkOrderEdit />} />
           <Route path="/workorder/draft" element={<DraftWorkOrder />} />
+          <Route path="/workorder/import" element={<WorkOrderImport />} />
         </Routes>
       </Router>
     </>

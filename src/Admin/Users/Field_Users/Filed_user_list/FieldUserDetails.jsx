@@ -15,7 +15,7 @@ const FieldUserDetails = () => {
     <Header/>
     <div className="main-header-box mt-4">
         <div className="pages-box">
-          <h4 className="mb-4">{t("Field User Details")}</h4>
+          <h4 className="mb-4">{t("Field Agent Details")}</h4>
           <Container className="mt-4">
           <Row className="p-3">
                 <Col md={3} className="fw-bold">

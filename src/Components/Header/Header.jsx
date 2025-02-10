@@ -36,7 +36,7 @@ const Header = () => {
   const [expandedDropdown, setExpandedDropdown] = useState("");
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
-  const { roles,hasPermission, permissions } = usePermissions();
+  const { roles, hasPermission, permissions } = usePermissions();
   // console.log("permissions",permissions);
 
   const toggleDropdown = (dropdown) => {
@@ -65,6 +65,8 @@ const Header = () => {
       }
     } else if (location.pathname.startsWith("/workorder")) {
       setExpandedDropdown("workOrder");
+    } else if (location.pathname.startsWith("/worktime")) {
+      setExpandedDropdown("worktime");
     } else {
       setExpandedDropdown("");
       setNestedDropdown("");
@@ -124,8 +126,8 @@ const Header = () => {
   const getItemClass = (lng) => {
     return lng === selectedLanguage ? "selected-item" : "";
   };
-// console.log('userRole: ', roles)
-// console.log('userRole: ' + userRole,userRole == "Admin")
+  console.log("userRole: ", roles);
+  // console.log('userRole: ' + userRole,userRole == "Admin")
   return (
     <>
       {/* Navbar */}
@@ -181,14 +183,14 @@ const Header = () => {
         <div className="sidebar-links">
           <Nav className="flex-column">
             {/* Sidebar Logo */}
-            <div className="py-4 px-4" style={{alignSelf:'center'}}>
+            <div className="py-4 px-4" style={{ alignSelf: "center" }}>
               <img
                 width={"40px"}
                 src="https://swif.truet.net/public/swifCompany/logo/logo.png"
                 // src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct.png"
                 alt="Logo"
                 className="logo"
-                style={{ height:'60px', width:'120px'  }}
+                style={{ height: "60px", width: "120px" }}
               />
               {/* <span>Swif</span> */}
             </div>
@@ -332,7 +334,7 @@ const Header = () => {
                       )}
                     </div>
 
-                    {/* Field Users */}
+                    {/* Field Agent */}
 
                     <div
                       className={`dropdown ${
@@ -350,7 +352,7 @@ const Header = () => {
                           )
                         }
                       >
-                        ▣ {t("Field Users")}
+                        ▣ {t("Field Agent")}
                       </div>
                       {nestedDropdown === "fieldUsers" ? (
                         <div
@@ -368,60 +370,66 @@ const Header = () => {
                             {t("Create")}
                           </Link>
                           <Link to="/users/field/list" className="sidebar-link">
-                            {t("Field Users List")}
+                            {t("Field Agent List")}
+                          </Link>
+                          <Link to="/users/field/import" className="sidebar-link">
+                            {t("Import Field Agent")}
                           </Link>
                         </div>
                       ) : (
                         ""
                       )}
                     </div>
-
                   </div>
                 </div>
 
                 {/* Customers */}
-                { (userRole == "Admin" || hasPermission("Company Customers Module", "View")) && (
+                {(userRole == "Admin" ||
+                  hasPermission("Company Customers Module", "View")) && (
+                  <div
+                    className={`dropdown ${
+                      expandedDropdown === "customers" ? "expanded" : ""
+                    }`}
+                  >
                     <div
-                      className={`dropdown ${
-                        expandedDropdown === "customers" ? "expanded" : ""
+                      className="dropdown-title"
+                      onClick={() => toggleDropdown("customers")}
+                    >
+                      <span>{t("Customers")}</span>
+                      <FaUserFriends size={20} />
+                    </div>
+                    <div
+                      className={`dropdown-items ${
+                        expandedDropdown === "customers" ? "show" : ""
                       }`}
                     >
-                      <div
-                        className="dropdown-title"
-                        onClick={() => toggleDropdown("customers")}
-                      >
-                        <span>{t("Customers")}</span>
-                        <FaUserFriends size={20} />
-                      </div>
-                      <div
-                        className={`dropdown-items ${
-                          expandedDropdown === "customers" ? "show" : ""
-                        }`}
-                      >
-                        {(userRole == "Admin" || hasPermission("Company Customers Module", "Create")) &&(
-                          <Link
-                            to="/customers/create"
-                            className="sidebar-link"
-                            activeClassName="active"
-                          >
-                            <div>▣ {t("Create")}</div>
-                          </Link>
-                        )}
+                      {(userRole == "Admin" ||
+                        hasPermission(
+                          "Company Customers Module",
+                          "Create"
+                        )) && (
                         <Link
-                          to="/customers/list"
+                          to="/customers/create"
                           className="sidebar-link"
                           activeClassName="active"
                         >
-                          ▣ {t("Customer List")}
+                          <div>▣ {t("Create")}</div>
                         </Link>
-
-                      </div>
-                    </div> )
-               
-                }
+                      )}
+                      <Link
+                        to="/customers/list"
+                        className="sidebar-link"
+                        activeClassName="active"
+                      >
+                        ▣ {t("Customer List")}
+                      </Link>
+                    </div>
+                  </div>
+                )}
 
                 {/* Work Orders */}
-                  {(userRole == "Admin" || hasPermission(`Company Work Order Module`,`View`))&&(
+                {(userRole == "Admin" ||
+                  hasPermission(`Company Work Order Module`, `View`)) && (
                   <div
                     className={`dropdown ${
                       expandedDropdown === "workOrder" ? "expanded" : ""
@@ -439,15 +447,19 @@ const Header = () => {
                         expandedDropdown === "workOrder" ? "show" : ""
                       }`}
                     >
-                    {(userRole == "Admin" || hasPermission(`Company Work Order Module`,`Create`))&&(
-                      <Link
-                        to="/workorder/create"
-                        className="sidebar-link"
-                        activeClassName="active"
-                      >
-                        ▣ {t("Create")}
-                      </Link>
-                    )}
+                      {(userRole == "Admin" ||
+                        hasPermission(
+                          `Company Work Order Module`,
+                          `Create`
+                        )) && (
+                        <Link
+                          to="/workorder/create"
+                          className="sidebar-link"
+                          activeClassName="active"
+                        >
+                          ▣ {t("Create")}
+                        </Link>
+                      )}
                       <Link
                         to="/workorder/list"
                         className="sidebar-link"
@@ -455,9 +467,16 @@ const Header = () => {
                       >
                         ▣ {t("Work Orders List")}
                       </Link>
+                      <Link
+                        to="/workorder/import"
+                        className="sidebar-link"
+                        activeClassName="active"
+                      >
+                        ▣ {t("Import Work Orders")}
+                      </Link>
                     </div>
-                  </div>)
-                  }
+                  </div>
+                )}
                 {/* Settings */}
                 <div
                   className={`dropdown ${
@@ -495,15 +514,15 @@ const Header = () => {
                       </div>
                       {nestedDropdown === "roles" && (
                         <div className="dropdown-items show">
-                         {userRole === "SuperAdmin" || userRole === "Admin" &&
-
-                            <Link
-                              to="/settings/admin/roles/create"
-                              className="sidebar-link"
-                            >
-                              {t("Create New")}
-                            </Link>
-                          }
+                          {userRole === "SuperAdmin" ||
+                            (userRole === "Admin" && (
+                              <Link
+                                to="/settings/admin/roles/create"
+                                className="sidebar-link"
+                              >
+                                {t("Create New")}
+                              </Link>
+                            ))}
 
                           <Link
                             to="/settings/admin/roles"
@@ -514,8 +533,30 @@ const Header = () => {
                         </div>
                       )}
                     </div>
-                   
 
+                    {/* Work Order Time */}
+                    <div
+                      className={`dropdown ${
+                        nestedDropdown === "roles" ? "expanded" : ""
+                      }`}
+                    >
+                      <div
+                        className="dropdown-title"
+                        onClick={() =>
+                          setNestedDropdown(
+                            nestedDropdown === "worktime" ? "" : "worktime"
+                          )
+                        }
+                      >
+                        <Link
+                          className="sidebar-link"
+                          to="/settings/admin/workOrderTime"
+                          style={{ padding: "0px" }}
+                        >
+                          ▣ {t("Work Order Time")}
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </>
