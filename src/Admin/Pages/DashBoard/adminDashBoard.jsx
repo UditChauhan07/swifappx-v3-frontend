@@ -46,7 +46,7 @@ const AdminDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState("scheduled");
 
   useEffect(() => {
-    if (userid) {
+    if (companyId) {
       getRoles(companyId);
     }
   }, [companyId]);
