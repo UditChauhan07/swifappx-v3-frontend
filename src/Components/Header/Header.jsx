@@ -188,7 +188,7 @@ console.log('userRole: ', roles)
                 // src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct.png"
                 alt="Logo"
                 className="logo"
-                style={{ marginRight: "30px", height:'80px', width:'80px'  }}
+                style={{ height:'60px', width:'120px'  }}
               />
               {/* <span>Swif</span> */}
             </div>

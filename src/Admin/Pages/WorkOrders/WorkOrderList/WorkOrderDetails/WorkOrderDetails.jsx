@@ -59,14 +59,14 @@ const WorkOrderDetails = () => {
                   {workOrder.customerDetailSection.CustomerEmail || "--"}
                 </Col>
               </Row>
-              <Row className="mb-2">
+              {/* <Row className="mb-2">
                 <Col md={4} className="fw-bold">
                   {t("Customer Address")}:
                 </Col>
                 <Col>
                   {workOrder.customerDetailSection.CustomerAddress || "--"}
                 </Col>
-              </Row>
+              </Row> */}
               {/* <Row className="mb-2">
                 <Col md={4} className="fw-bold">
                   {t("Billing Address")}:
