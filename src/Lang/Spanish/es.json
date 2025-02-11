@@ -1635,6 +1635,9 @@
   "Interval Time":"Tiempo de intervalo",
   "Default Work Time":"Tiempo de trabajo predeterminado",
   "Buffer Time":"Tiempo de reserva",
-  "Import Work Orders":"Importar órdenes de trabajo"
+  "Import Work Orders":"Importar órdenes de trabajo",
+  "Agent Id":"Identificación del agente",
+  "Customer Id":"Identificación del cliente",
+  "Default Work Time (Hours)":"Tiempo de trabajo predeterminado (horas)"
 
 }

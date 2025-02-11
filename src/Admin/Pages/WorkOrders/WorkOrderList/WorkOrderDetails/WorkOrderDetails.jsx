@@ -8,7 +8,7 @@ const WorkOrderDetails = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const { workOrder } = location.state || {};
-  console.log(workOrder)
+  console.log(workOrder);
 
   // Format ISO Timestamp
   function formatTimestamp(isoString) {
@@ -48,7 +48,7 @@ const WorkOrderDetails = () => {
                   {t("Customer Name")}:
                 </Col>
                 <Col>
-                  {workOrder.customerDetailSection.CustomerName || "--"}
+                  {workOrder?.customerDetailSection?.CustomerName || "--"}
                 </Col>
               </Row>
               <Row className="mb-2">
@@ -56,7 +56,7 @@ const WorkOrderDetails = () => {
                   {t("Email Address")}:
                 </Col>
                 <Col>
-                  {workOrder.customerDetailSection.CustomerEmail || "--"}
+                  {workOrder?.customerDetailSection?.CustomerEmail || "--"}
                 </Col>
               </Row>
               {/* <Row className="mb-2">
@@ -80,7 +80,7 @@ const WorkOrderDetails = () => {
                   {t("Send Notification")}:
                 </Col>
                 <Col>
-                  {workOrder.customerDetailSection.sendNotification
+                  {workOrder?.customerDetailSection?.sendNotification
                     ? "Yes"
                     : "No"}
                 </Col>
@@ -101,20 +101,20 @@ const WorkOrderDetails = () => {
                 <Col md={4} className="fw-bold">
                   {t("Start Date")}:
                 </Col>
-                <Col>{workOrder.basicWorkorderDetails.startDate || "--"}</Col>
+                <Col>{workOrder?.basicWorkorderDetails?.startDate || "--"}</Col>
               </Row>
               <Row className="mb-2">
                 <Col md={4} className="fw-bold">
                   {t("Start Time")}:
                 </Col>
-                <Col>{workOrder.basicWorkorderDetails.startTime || "--"}</Col>
+                <Col>{workOrder?.basicWorkorderDetails?.startTime || "--"}</Col>
               </Row>
               <Row className="mb-2">
                 <Col md={4} className="fw-bold">
                   {t("Expected Time")}:
                 </Col>
                 <Col>
-                  {workOrder.basicWorkorderDetails.expectedTime || "--"}
+                  {workOrder?.basicWorkorderDetails?.expectedTime || "--"}
                 </Col>
               </Row>
               {/* <Row className="mb-2">
@@ -135,13 +135,15 @@ const WorkOrderDetails = () => {
                 <Col md={4} className="fw-bold">
                   {t("Worker Name")}:
                 </Col>
-                <Col>{workOrder.basicWorkorderDetails.WorkerName || "--"}</Col>
+                <Col>
+                  {workOrder?.basicWorkorderDetails?.WorkerName || "--"}
+                </Col>
               </Row>
               <Row>
                 <Col md={4} className="fw-bold">
                   {t("Worker ID")}:
                 </Col>
-                <Col>{workOrder.basicWorkorderDetails.WorkerId || "--"}</Col>
+                <Col>{workOrder?.basicWorkorderDetails?.WorkerId || "--"}</Col>
               </Row>
             </Card.Body>
           </Card>
@@ -176,35 +178,35 @@ const WorkOrderDetails = () => {
           </Card>
 
           {/* Extra Order Items */}
-          {workOrder?.extraWorkDetails?.length>0 &&
-          <Card className="p-3 shadow-lg mb-4 border-0">
-            <Card.Header
-              className=" text-white fw-bold"
-              style={{ background: "#2e2e32" }}
-            >
-              {t("Additional Work Details")}
-            </Card.Header>
-            <Card.Body>
-              {workOrder?.extraWorkDetails &&
-              workOrder?.extraWorkDetails?.length > 0 ? (
-                workOrder.extraWorkDetails.map((item, index) => (
-                  <Row key={index} className="mb-2 border-bottom pb-2">
-                    <Col md={4} className="fw-bold">
-                      {t("Work Item")}:
-                    </Col>
-                    <Col>{item.workItem || "--"}</Col>
-                    <Col md={4} className="fw-bold">
-                      {t("Work Description")}:
-                    </Col>
-                    <Col>{item.workDescription || "--"}</Col>
-                  </Row>
-                ))
-              ) : (
-                <p className="text-muted">{t("No work items available")}</p>
-              )}
-            </Card.Body>
-          </Card>
-          }
+          {workOrder?.extraWorkDetails?.length > 0 && (
+            <Card className="p-3 shadow-lg mb-4 border-0">
+              <Card.Header
+                className=" text-white fw-bold"
+                style={{ background: "#2e2e32" }}
+              >
+                {t("Additional Work Details")}
+              </Card.Header>
+              <Card.Body>
+                {workOrder?.extraWorkDetails &&
+                workOrder?.extraWorkDetails?.length > 0 ? (
+                  workOrder.extraWorkDetails.map((item, index) => (
+                    <Row key={index} className="mb-2 border-bottom pb-2">
+                      <Col md={4} className="fw-bold">
+                        {t("Work Item")}:
+                      </Col>
+                      <Col>{item.workItem || "--"}</Col>
+                      <Col md={4} className="fw-bold">
+                        {t("Work Description")}:
+                      </Col>
+                      <Col>{item.workDescription || "--"}</Col>
+                    </Row>
+                  ))
+                ) : (
+                  <p className="text-muted">{t("No work items available")}</p>
+                )}
+              </Card.Body>
+            </Card>
+          )}
 
           {/* Created At & Status */}
           <Card className="p-3 shadow-lg border-0">
@@ -244,6 +246,19 @@ const WorkOrderDetails = () => {
                     {workOrder.status.toUpperCase()}
                   </span>
                 </Col>
+                {/* Conditionally render Remarks for canceled assignments */}
+                {workOrder.status === "Assignment Canceled" && (
+                  <Row className="mt-3">
+                    <Col md={4} className="fw-bold">
+                      {t("Remarks")}:
+                    </Col>
+                    <Col>
+                      <div className="p-2 bg-light border rounded">
+                        {workOrder.work_order_cancel_Reason || "--"}
+                      </div>
+                    </Col>
+                  </Row>
+                )}
               </Row>
             </Card.Body>
           </Card>

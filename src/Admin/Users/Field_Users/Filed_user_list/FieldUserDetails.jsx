@@ -19,6 +19,12 @@ const FieldUserDetails = () => {
           <Container className="mt-4">
           <Row className="p-3">
                 <Col md={3} className="fw-bold">
+                  {t("Agent Id")}:
+                </Col>
+                <Col>{row.id}</Col>
+           </Row>
+          <Row className="p-3">
+                <Col md={3} className="fw-bold">
                   {t("Name")}:
                 </Col>
                 <Col>{row.name}</Col>

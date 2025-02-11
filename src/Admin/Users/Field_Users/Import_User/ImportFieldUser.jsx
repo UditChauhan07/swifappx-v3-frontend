@@ -1,99 +1,190 @@
 import React, { useState } from "react";
-import { Button, Form, Table } from "react-bootstrap";
+import { Table, Button, Form } from "react-bootstrap";
 import Header from "../../../../Components/Header/Header";
 import { useTranslation } from "react-i18next";
 import * as XLSX from "xlsx";
+import Swal from "sweetalert2";
+import { importFieldAgent } from "../../../../lib/store";
+import { useNavigate } from "react-router-dom";
 
 const ImportFieldUser = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
-  const [excelData, setExcelData] = useState([]);
+  // We now use 'xlsxData' to hold the parsed data from the XLSX file.
+  const [xlsxData, setXlsxData] = useState([]);
+  const [token] = useState(localStorage.getItem("UserToken"));
 
-  // Sample Data
+  // Sample data that will be shown in its own table.
   const sampleData = [
     {
-      name: "Shorya asdasda",
-      username: "sadaddad",
-      contact_number: "222222222222",
-      email: "aasddddsadmin@ddd.com",
-      password: "222222222222",
-      profilePicture: "null",
-      country: "Andorra",
-      address: "asd",
-      company_id: "oiJ40pPOVHYVDbw6yKwY",
-      created_by: "Rams",
-      created_by_id: "sGSRbVKfnoqHytG4w8rY",
+      name: "Shorya Verma",
+      username: "shorya8699",
+      contact_number: "8699777777",
+      email: "shoryaverma.dx@gmail.com",
+      password: "123456789",
+      country: "India",
+      address: "Gillco Valley",
     },
   ];
 
-  // Function to generate and download a sample Excel file
+  // Download sample XLSX file using the xlsx library.
+  // We create a worksheet from the sampleData, assign custom column widths,
+  // add it to a new workbook, and then trigger a download.
   const handleDownloadSample = () => {
-    const worksheet = XLSX.utils.json_to_sheet(sampleData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sample Data");
+    // Create a worksheet from JSON data.
+    const worksheet = XLSX.utils.json_to_sheet(sampleData, {
+      header: Object.keys(sampleData[0]),
+    });
 
-    XLSX.writeFile(workbook, "Sample_Field_Users.xlsx");
+    // Set custom column widths (wch: width in characters)
+    worksheet["!cols"] = [
+      { wch: 20 }, // name
+      { wch: 15 }, // username
+      { wch: 15 }, // contact_number
+      { wch: 30 }, // email
+      { wch: 15 }, // password
+      { wch: 15 }, // country
+      { wch: 40 }, // address
+    ];
+
+    // Create a new workbook and append the worksheet.
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    // Write the workbook as a binary array.
+    const wbout = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([wbout], {
+      type: "application/octet-stream",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Sample_Field_Users.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
-  // Function to handle file upload
+  // Handle XLSX file upload and parsing.
+  // We use a FileReader to read the file as a binary string and then parse it
+  // using XLSX.read. The data is converted into an array-of-arrays (with header row).
   const handleFile = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (evt) => {
-        // Create a Uint8Array from the ArrayBuffer
-        const data = new Uint8Array(evt.target.result);
-        // Read the workbook using the 'array' type
-        const wb = XLSX.read(data, { type: "array" });
-        const wsName = wb.SheetNames[0];
-        const ws = wb.Sheets[wsName];
-        // Convert worksheet to JSON with header row
-        const jsonData = XLSX.utils.sheet_to_json(ws, { header: 1 });
-        setExcelData(jsonData);
+        const data = evt.target.result;
+        // Read the XLSX file data
+        const workbook = XLSX.read(data, { type: "binary" });
+        // Use the first sheet in the workbook
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        // Convert the worksheet into a JSON array (array of arrays)
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1,
+          defval: "",
+        });
+        setXlsxData(jsonData);
       };
-      reader.readAsArrayBuffer(file); // Use ArrayBuffer instead of binary string
+      reader.readAsBinaryString(file);
     }
   };
 
-  // Function to send data to an API
+  // Format the XLSX data and upload it to the API.
+  // This code assumes the first row contains the headers.
   const handleUpload = async () => {
-    if (excelData.length === 0) {
-      alert("Please upload a file first.");
+    if (xlsxData.length === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: t("No File Uploaded"),
+        text: t("Please upload a file first."),
+      });
       return;
     }
 
-    const formattedData = excelData.slice(1).map((row) => {
-      return {
-        name: row[0],
-        username: row[1],
-        contact_number: row[2],
-        email: row[3],
-        password: row[4],
-        profilePicture: row[5],
-        country: row[6],
-        address: row[7],
-        company_id: row[8],
-        created_by: row[9],
-        created_by_id: row[10],
-      };
+    const confirmResult = await Swal.fire({
+      title: t("Confirm Upload"),
+      text: t("Are you sure you want to upload the file?"),
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: t("Yes, Upload"),
+      cancelButtonText: t("Cancel"),
+    });
+
+    if (!confirmResult.isConfirmed) {
+      return;
+    }
+
+    // Use the first row as headers and then format the remaining rows.
+    const headers = xlsxData[0];
+    const formattedData = xlsxData.slice(1).map((row) => {
+      const obj = {};
+      headers.forEach((header, index) => {
+        // Convert each field value to a string
+        obj[header] =
+          row[index] !== undefined && row[index] !== null
+            ? String(row[index])
+            : "";
+      });
+      // Add additional properties.
+      obj.profilePicture = null;
+      obj.company_id = localStorage.getItem("companyId");
+      obj.created_by = localStorage.getItem("name");
+      obj.created_by_id = localStorage.getItem("userId");
+      return obj;
+    });
+
+    console.log("Formatted Data:", formattedData);
+
+    Swal.fire({
+      title: t("Uploading..."),
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
     });
 
     try {
-      const response = await fetch("https://your-api-url.com/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formattedData),
-      });
-
-      if (response.ok) {
-        alert("File uploaded successfully!");
+      const response = await importFieldAgent(formattedData, token);
+      console.log("Response:", response);
+      if (response.success === true) {
+        let message = response.message || t("File uploaded successfully!");
+        if (response.failedUsers && response.failedUsers.length > 0) {
+          message +=
+            "\n\nFailed Users:\n" +
+            response.failedUsers
+              .map((f) => `${f.email}: ${f.error}`)
+              .join("\n");
+          Swal.fire({
+            icon: "warning",
+            title: t("Partial Success"),
+            text: message,
+          }).then(() => {
+            navigate("/users/field/list");
+          });
+        } else {
+          Swal.fire({
+            icon: "success",
+            title: t("Success"),
+            text: message,
+          }).then(() => {
+            navigate("/users/field/list");
+          });
+        }
       } else {
-        alert("Error uploading file.");
+        Swal.fire({
+          icon: "error",
+          title: t("Error"),
+          text: response.message || t("Error uploading file."),
+        });
       }
     } catch (error) {
       console.error("Upload error:", error);
-      alert("An error occurred while uploading the file.");
+      Swal.fire({
+        icon: "error",
+        title: t("Upload Error"),
+        text: t("An error occurred while uploading the file."),
+      });
     }
   };
 
@@ -102,126 +193,177 @@ const ImportFieldUser = () => {
       <Header />
       <div className="main-header-box mt-4">
         <div className="pages-box">
-          {/* Form Header */}
+          {/* Import Section */}
           <div
-            className="form-header mb-4"
+            className="border p-4 rounded mb-4"
             style={{
-              backgroundColor: "#2e2e32",
-              color: "white",
-              padding: "10px 20px",
-              borderRadius: "8px",
+              backgroundColor: "#f9f9f9",
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+              borderRadius: "10px",
             }}
           >
-            <h4 className="mb-0">{t("Import Field Agent")}</h4>
-          </div>
-
-          {/* File Upload Section */}
-          <div
-            className="border p-4 rounded"
-            style={{ backgroundColor: "#f8fff8" }}
-          >
-            <h4 className="text-center mb-4">{t("Import Field Agent")}</h4>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h4 className="mb-0">{t("Import Field Agent")}</h4>
+              <div className="d-flex gap-2">
+                <Button variant="primary" onClick={handleUpload}>
+                  {t("Upload")}
+                </Button>
+              </div>
+            </div>
             <div
-              className="border rounded p-4 mb-4"
+              className="border rounded p-4 mb-3"
               style={{ borderStyle: "dashed", textAlign: "center" }}
             >
               <p>{t("Drag & drop any file here")}</p>
               <p>
-                or <span className="text-primary">{t("browse file")}</span>{" "}
+                {t("or")}{" "}
+                <span className="text-primary">{t("browse file")}</span>{" "}
                 {t("from device")}
               </p>
+              {/* Accept only XLSX files */}
               <Form.Group controlId="formFile" className="mb-3">
-                <Form.Control type="file" onChange={handleFile} />
+                <Form.Control
+                  type="file"
+                  accept=".xlsx,.csv"
+                  onChange={handleFile}
+                />
               </Form.Group>
             </div>
-            <div className="text-center">
-              <Button
-                variant="success"
-                className="px-5 me-3"
-                onClick={handleDownloadSample}
-              >
-                {t("Download Sample")}
-              </Button>
-              <Button variant="primary" className="px-5" onClick={handleUpload}>
-                {t("Upload")}
-              </Button>
-            </div>
           </div>
 
-          {/* Display Sample Data */}
-          <div className="border-top mt-4 pt-3">
-            <h5 className="text-center">{t("Sample Data Preview")}</h5>
+          {/* Uploaded XLSX Data Preview Table Section */}
+          {xlsxData.length > 0 && (
             <div
+              className="border p-4 rounded"
               style={{
-                overflowX: "auto",
-                border: "1px solid #ccc",
-                padding: "10px",
-                borderRadius: "8px",
-                backgroundColor: "#f8fff8",
+                backgroundColor: "#f9f9f9",
+                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                borderRadius: "10px",
               }}
             >
-              <Table bordered responsive>
-                <thead style={{ backgroundColor: "#2196F3", color: "white" }}>
-                  <tr>
-                    {Object.keys(sampleData[0]).map((key, index) => (
-                      <th key={index}>{key}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {sampleData.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                      {Object.values(row).map((cell, cellIndex) => (
-                        <td key={cellIndex}>{cell}</td>
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h4 className="mb-0">{t("Uploaded XLSX Data")}</h4>
+              </div>
+              {xlsxData.length > 0 ? (
+                <Table hover responsive className="align-middle">
+                  <thead>
+                    <tr
+                      style={{ backgroundColor: "#E7EAF3", color: "#3C3C3C" }}
+                    >
+                      {xlsxData[0].map((header, index) => (
+                        <th
+                          key={index}
+                          style={{
+                            textAlign: "left",
+                            padding: "15px",
+                            fontWeight: "600",
+                            fontSize: "0.9rem",
+                            color: "black",
+                            background: "#e5e5e5",
+                          }}
+                        >
+                          {header}
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-          </div>
-
-          {/* Display Uploaded Excel Data */}
-          <div className="border-top mt-4 pt-3">
-            <h5 className="text-center">{t("Uploaded Excel Data")}</h5>
-            <div className="mt-3">
-              {excelData.length > 0 ? (
-                <div
-                  style={{
-                    overflowX: "auto",
-                    border: "1px solid #ccc",
-                    padding: "10px",
-                    borderRadius: "8px",
-                    backgroundColor: "#f8fff8",
-                  }}
-                >
-                  <Table bordered responsive>
-                    <thead
-                      style={{ backgroundColor: "#4caf50", color: "white" }}
-                    >
-                      <tr>
-                        {excelData[0].map((col, index) => (
-                          <th key={index}>{col}</th>
+                  </thead>
+                  <tbody>
+                    {xlsxData.slice(1).map((row, rowIndex) => (
+                      <tr
+                        key={rowIndex}
+                        style={{
+                          backgroundColor: "#fff",
+                          borderRadius: "10px",
+                          boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        {row.map((cell, cellIndex) => (
+                          <td
+                            key={cellIndex}
+                            style={{
+                              textAlign: "left",
+                              padding: "15px",
+                              fontSize: "0.9rem",
+                              color: "#4B5563",
+                            }}
+                          >
+                            {cell}
+                          </td>
                         ))}
                       </tr>
-                    </thead>
-                    <tbody>
-                      {excelData.slice(1).map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          {row.map((cell, cellIndex) => (
-                            <td key={cellIndex}>{cell}</td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </div>
+                    ))}
+                  </tbody>
+                </Table>
               ) : (
-                <div className="text-center">
-                  <p>{t("No Excel data to display")}</p>
+                <div className="text-center py-5">
+                  {t("No XLSX data to display")}
                 </div>
               )}
             </div>
+          )}
+
+          {/* Sample Data Table Section */}
+          <div
+            className="border p-4 rounded mb-4"
+            style={{
+              backgroundColor: "#f9f9f9",
+              boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+              borderRadius: "10px",
+            }}
+          >
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h4 className="mb-0">{t("Sample Data")}</h4>
+              <Button variant="success" onClick={handleDownloadSample}>
+                {t("Download Sample")}
+              </Button>
+            </div>
+            <Table hover responsive className="align-middle">
+              <thead>
+                <tr style={{ backgroundColor: "#E7EAF3", color: "#3C3C3C" }}>
+                  {Object.keys(sampleData[0]).map((header, index) => (
+                    <th
+                      key={index}
+                      style={{
+                        textAlign: "left",
+                        padding: "15px",
+                        fontWeight: "600",
+                        fontSize: "0.9rem",
+                        color: "black",
+                        background: "#e5e5e5",
+                      }}
+                    >
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {sampleData.map((row, rowIndex) => (
+                  <tr
+                    key={rowIndex}
+                    style={{
+                      backgroundColor: "#fff",
+                      borderRadius: "10px",
+                      boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.1)",
+                    }}
+                  >
+                    {Object.values(row).map((cell, cellIndex) => (
+                      <td
+                        key={cellIndex}
+                        style={{
+                          textAlign: "left",
+                          padding: "15px",
+                          fontSize: "0.9rem",
+                          color: "#4B5563",
+                        }}
+                      >
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
           </div>
         </div>
       </div>

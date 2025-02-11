@@ -15,28 +15,52 @@ import {
   createWorkOrderApi,
   fetch_FieldUserOfCompany,
   getCustomerList,
+  workOrderTimeGetApi,
 } from "../../../../lib/store";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-
 const CreateWorkOrder = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [userId, setuserId] = useState(localStorage.getItem("userId"));
-  const [copmanyId, setcopmanyId] = useState(localStorage.getItem("companyId"));
-  const [token, settoken] = useState(localStorage.getItem("UserToken"));
+  const [copmanyId] = useState(localStorage.getItem("companyId"));
+  const [token] = useState(localStorage.getItem("UserToken"));
   const company_id = localStorage.getItem("companyId") || null;
-  // Workorder Details (for the new Workorder Details section)
-  const [selectedService, setSelectedService] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [price, setPrice] = useState("");
+
+  const getCurrentTimeHHMM = () => {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
+  const convertTimeStringToMinutes = (timeStr) => {
+    const [hours, minutes] = timeStr.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const convertMinutesToTimeString = (totalMinutes) => {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  const computeExpectedTimeOptions = (defaultTime, intervalTime) => {
+    const baseMinutes = convertTimeStringToMinutes(defaultTime);
+    const intervalMinutes = convertTimeStringToMinutes(intervalTime);
+    const options = [];
+    for (let i = 1; i <= 20; i++) {
+      const totalMinutes = baseMinutes + i * intervalMinutes;
+      options.push(convertMinutesToTimeString(totalMinutes));
+    }
+    return options;
+  };
 
   // Customer Detail Section state
   const [selectedCustomer, setSelectedCustomer] = useState("");
-  const [selectedCustomerAddress, setSelectedCustomerAddress] = useState("");
-  const [selectedBillingAddress, setSelectedBillingAddress] = useState("");
   const [sendNotification, setSendNotification] = useState("Yes");
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
 
@@ -44,17 +68,19 @@ const CreateWorkOrder = () => {
   const [startDate, setStartDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [startTime, setStartTime] = useState("09:00");
+  const [startTime, setStartTime] = useState(getCurrentTimeHHMM());
   const [expectedTime, setExpectedTime] = useState("01:00");
-  const [salesPerson, setSalesPerson] = useState("");
-  const [salesPersonContact, setSalesPersonContact] = useState("");
   const [selectedWorkers, setSelectedWorkers] = useState("");
   const [selectedWorkerId, setSelectedWorkerId] = useState("");
 
-  const [customersList, setcustomersList] = useState();
-  const [workersLsit, setworkersLsit] = useState();
+  const [customersList, setcustomersList] = useState([]);
+  const [workersLsit, setworkersLsit] = useState([]);
 
-  // Work Order Table (Dynamically adding/removing rows)
+  const [intervalTime, setIntervalTime] = useState("");
+  const [defaultWorkTime, setDefaultWorkTime] = useState("");
+  console.log("dasda", defaultWorkTime);
+  // const [bufferTime, setBufferTime] = useState("");
+
   const [workItems, setWorkItems] = useState([
     { id: 1, workItem: "", itemDesc: "" },
   ]);
@@ -72,22 +98,52 @@ const CreateWorkOrder = () => {
     };
 
     fetchCustomers();
-  }, []);
+  }, [copmanyId, token]);
 
   useEffect(() => {
-    const fetchCustomers = async () => {
+    const fetchWorkers = async () => {
       try {
-        const response = await fetch_FieldUserOfCompany(company_id, token); // Fetch customers from API
+        const response = await fetch_FieldUserOfCompany(company_id, token);
         setworkersLsit(response?.data || []);
       } catch (error) {
-        console.error("Error fetching customers:", error);
+        console.error("Error fetching workers:", error);
       }
     };
 
-    fetchCustomers();
-  }, []);
+    fetchWorkers();
+  }, [company_id, token]);
 
-  // Handle Work Order Table Changes
+  useEffect(() => {
+    const getWorkOrderTime = async () => {
+      if (!company_id || !token) return; // Ensure companyId and token are available
+
+      try {
+        const response = await workOrderTimeGetApi(company_id, token);
+        console.log("API Response:", response);
+
+        if (response?.workOrderSettings) {
+          setIntervalTime(response.workOrderSettings.intervalTime || "");
+          setDefaultWorkTime(
+            response.workOrderSettings.defaultWorkOrderTime || ""
+          );
+          // setBufferTime(response.workOrderSettings.bufferTime || "");
+        } else {
+          console.log("Work order settings not found in response");
+        }
+      } catch (error) {
+        console.error("Error fetching work order time:", error);
+      }
+    };
+
+    getWorkOrderTime();
+  }, [company_id, token]);
+
+  useEffect(() => {
+    if (defaultWorkTime) {
+      setExpectedTime(defaultWorkTime);
+    }
+  }, [defaultWorkTime]);
+
   const addWorkItemRow = () => {
     setWorkItems([
       ...workItems,
@@ -113,7 +169,6 @@ const CreateWorkOrder = () => {
     });
   };
 
-  // Update customer selection
   const handleCustomerChange = (e) => {
     const selectedId = e.target.value;
     setSelectedCustomer(selectedId);
@@ -124,35 +179,18 @@ const CreateWorkOrder = () => {
   const handleWorkerChange = (e) => {
     const selectedId = e.target.value;
     setSelectedWorkers(selectedId);
-    setSelectedWorkerId(selectedId); // Store the selected worker ID
+    setSelectedWorkerId(selectedId);
     if (selectedId) clearError("selectedWorkers");
-  };
-
-  const handleServiceChange = (e) => {
-    setSelectedService(e.target.value);
-    clearError("selectedService");
   };
 
   const validate = () => {
     const newErrors = {};
     if (!selectedCustomer) newErrors.selectedCustomer = "Customer is required";
-    // if (!selectedCustomerAddress)
-    //   newErrors.selectedCustomerAddress = "Customer address is required";
-    // if (!selectedBillingAddress)
-    //   newErrors.selectedBillingAddress = "Billing address is required";
     if (!startDate) newErrors.startDate = "Start Date is required";
     if (!startTime) newErrors.startTime = "Start Time is required";
     if (!expectedTime) newErrors.expectedTime = "Expected Time is required";
-    // if (!salesPerson) newErrors.salesPerson = "Sales Person is required";
     if (!selectedWorkers)
       newErrors.selectedWorkers = "Select Workers is required";
-    // Validate Sales Person Contact Number (10 to 15 digits)
-    // if (!salesPersonContact.trim()) {
-    //   newErrors.salesPersonContact = "Sales Person Contact is required";
-    // } else if (!/^\d{10,15}$/.test(salesPersonContact)) {
-    //   newErrors.salesPersonContact =
-    //     "Contact number must be between 10 and 15 digits";
-    // }
 
     if (
       workItems.length === 0 ||
@@ -190,16 +228,12 @@ const CreateWorkOrder = () => {
         CustomerId: selectedCustomerId,
         CustomerName: customerName,
         CustomerEmail: customerEmail,
-        CustomerAddress: selectedCustomerAddress,
-        BillingAddress: selectedBillingAddress,
         sendNotification: sendNotification === "Yes" ? true : false,
       },
       basicWorkorderDetails: {
         startDate,
         startTime,
         expectedTime,
-        // salesPerson,
-        // salesPersonContact: Number(salesPersonContact), // Convert to Number
         WorkerId: selectedWorkerId,
         WorkerName: workerName,
       },
@@ -246,7 +280,8 @@ const CreateWorkOrder = () => {
         Swal.fire({
           title: "Error!",
           text:
-            response.message || t("There was an error creating the Work Order."),
+            response.message ||
+            t("There was an error creating the Work Order."),
           icon: "error",
           confirmButtonText: "Try Again",
         });
@@ -262,37 +297,6 @@ const CreateWorkOrder = () => {
     }
   };
 
-  const formatTime = (value) => {
-    // Remove any non-numeric characters
-    const numericValue = value.replace(/\D/g, "");
-  
-
-    // Limit to 4 characters for the "hh:mm" format
-    if (numericValue.length > 4) return numericValue.substring(0, 4);
-
-  
-
-    // Format the time as hh:mm
-    if (numericValue.length >= 3) {
-      return `${numericValue.substring(0, 2)}:${numericValue.substring(2, 4)}`;
-    }
-
-    // If only two characters are entered, add a colon after the first two digits
-    if (numericValue.length >= 2) {
-      return `${numericValue.substring(0, 2)}:${numericValue.substring(2, 2)}`;
-    }
-    // If there is a single digit for hours or minutes, pad with leading zero
-    if (numericValue.length === 1) {
-    return `0${numericValue}:00`;
-    }
-
-    return numericValue;
-  };
-
-  const isValidTime = (time) => {
-    const regex = /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/; // Regex for valid time in hh:mm format
-    return regex.test(time);
-  };
   return (
     <>
       <Header />
@@ -323,7 +327,6 @@ const CreateWorkOrder = () => {
                           </option>
                         ))}
                       </Form.Select>
-
                       {errors.selectedCustomer && (
                         <div className="text-danger">
                           {errors.selectedCustomer}
@@ -331,56 +334,6 @@ const CreateWorkOrder = () => {
                       )}
                     </Col>
                   </Form.Group>
-
-                  {/* Customer Address as a textarea */}
-                  {/* <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={3} className="required-label">
-                      {t("Customer Address")}:
-                    </Form.Label>
-                    <Col sm={9}>
-                      <Form.Control
-                        as="textarea"
-                        rows={2}
-                        placeholder={t("Enter Customer Address")}
-                        value={selectedCustomerAddress}
-                        onChange={(e) => {
-                          setSelectedCustomerAddress(e.target.value);
-                          if (e.target.value)
-                            clearError("selectedCustomerAddress");
-                        }}
-                      />
-                      {errors.selectedCustomerAddress && (
-                        <div className="text-danger">
-                          {errors.selectedCustomerAddress}
-                        </div>
-                      )}
-                    </Col>
-                  </Form.Group> */}
-
-                  {/* Billing Address as a textarea */}
-                  {/* <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={3} className="required-label">
-                      {t("Billing Address")}:
-                    </Form.Label>
-                    <Col sm={9}>
-                      <Form.Control
-                        as="textarea"
-                        rows={2}
-                        placeholder={t("Enter Billing Address")}
-                        value={selectedBillingAddress}
-                        onChange={(e) => {
-                          setSelectedBillingAddress(e.target.value);
-                          if (e.target.value)
-                            clearError("selectedBillingAddress");
-                        }}
-                      />
-                      {errors.selectedBillingAddress && (
-                        <div className="text-danger">
-                          {errors.selectedBillingAddress}
-                        </div>
-                      )}
-                    </Col>
-                  </Form.Group> */}
 
                   {/* Send Notification */}
                   <Form.Group as={Row} className="mb-3">
@@ -464,21 +417,37 @@ const CreateWorkOrder = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
-                          {t("Expected Time Required ( Hours )") } :
+                          {t("Expected Time Required ( Hours )")} :
                         </Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={expectedTime}
-                          placeholder="hh:mm"
-                          maxLength={5}
-                          onChange={(e) => {
-                            const formattedTime = formatTime(e.target.value);
-                            console.log('formattedTime', formattedTime)
-                            
-                            setExpectedTime(formattedTime);
-                            if (formattedTime) clearError("expectedTime");
-                          }}
-                        />
+                        {defaultWorkTime && intervalTime ? (
+                          <Form.Select
+                            value={expectedTime}
+                            onChange={(e) => {
+                              setExpectedTime(e.target.value);
+                              clearError("expectedTime");
+                            }}
+                          >
+                            {/* First option shows the default work order time */}
+                            <option value={defaultWorkTime}>
+                              {defaultWorkTime} (Default)
+                            </option>
+                            {/* Additional options calculated from the interval */}
+                            {computeExpectedTimeOptions(
+                              defaultWorkTime,
+                              intervalTime
+                            ).map((option, index) => (
+                              <option key={index} value={option} style={{lineHeight:"20px"}}>
+                                {option}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        ) : (
+                          <Form.Control
+                            type="text"
+                            value={expectedTime}
+                            readOnly
+                          />
+                        )}
                         {errors.expectedTime && (
                           <div className="text-danger">
                             {errors.expectedTime}
@@ -486,58 +455,7 @@ const CreateWorkOrder = () => {
                         )}
                       </Form.Group>
                     </Col>
-                    {/* Removed Files field */}
-                  {/* </Row> */}
 
-                  {/* <Row>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="required-label">
-                          {t("Sales Person")}:
-                        </Form.Label>
-                        <Form.Control
-                          type="text"
-                          // value={salesPerson}
-                          onChange={(e) => {
-                            setSalesPerson(e.target.value);
-                            if (e.target.value) clearError("salesPerson");
-                          }}
-                        />
-                        {errors.salesPerson && (
-                          <div className="text-danger">
-                            {errors.salesPerson}
-                          </div>
-                        )}
-                      </Form.Group>
-                    </Col>
-                    <Col md={6}>
-                      <Form.Group className="mb-3">
-                        <Form.Label className="required-label">
-                          {t("Sales Person Contact")}:
-                        </Form.Label>
-                        <Form.Control
-                          type="number"
-                          placeholder={t("Enter Sales Person Contact")}
-                          value={salesPersonContact}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            // Only allow numbers and limit length
-                            if (/^\d{0,15}$/.test(value)) {
-                              setSalesPersonContact(value);
-                              clearError("salesPersonContact");
-                            }
-                          }}
-                          isInvalid={!!errors.salesPersonContact}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {errors.salesPersonContact}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Col>
-                  </Row> */}
-
-                  {/* <Row> */}
-                   
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="required-label">
@@ -554,7 +472,6 @@ const CreateWorkOrder = () => {
                             </option>
                           ))}
                         </Form.Select>
-
                         {errors.selectedWorkers && (
                           <div className="text-danger">
                             {errors.selectedWorkers}
@@ -567,8 +484,7 @@ const CreateWorkOrder = () => {
               </Card.Body>
             </Card>
 
-            {/* Workorder Details */}
-            {/* Work Order Table Section */}
+            {/* Workorder Details Table */}
             <Card className="mb-4">
               <Card.Header className="bg-purple text-white d-flex justify-content-between align-items-center">
                 <span>{t("Workorder Details")}</span>
