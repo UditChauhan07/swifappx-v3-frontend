@@ -13,25 +13,26 @@ const WorkOrderImport = () => {
   const { t } = useTranslation();
   // Using a generic state variable for parsed data (works for both CSV and XLSX)
   const [parsedData, setParsedData] = useState([]);
-  console.log("daataa",parsedData)
+  console.log("daataa", parsedData);
   const [token] = useState(localStorage.getItem("UserToken"));
 
   // Sample data for the sample file download.
+  // These headers include extra format info that will be normalized on upload.
   const sampleData = [
     {
-      CustomerEmail: "aarti.verma@designersx.com",
-      CustomerId: "bElwxWThFgFgdqolJls3",
-      CustomerName: "aarti verma",
-      sendNotification: "Yes",
+      "CustomerEmail": "aarti.verma@designersx.com",
+      "CustomerId": "bElwxWThFgFgdqolJls3",
+      "CustomerName": "aarti verma",
+      "sendNotification": "Yes",
       // Basic Work Order Details
-      WorkerId: "mPR5Z7TufblyrBVeAHCW",
-      WorkerName: "test test",
-      expectedTime: "01:00",
-      startDate: "2025-02-10",
-      startTime: "09:00",
+      "WorkerId": "mPR5Z7TufblyrBVeAHCW",
+      "WorkerName": "test test",
+      "expectedTime(HH:MM)": "01:00",
+      "startDate(YYYY-MM-DD)": "2025-02-10",
+      "startTime(HH:MM)": "09:00",
       // Work Order Details
-      workItem: "abc",
-      workDescription: "abc123",
+      "workItem": "abc",
+      "workDescription": "abc123",
     },
   ];
 
@@ -46,9 +47,9 @@ const WorkOrderImport = () => {
       { wch: 15 }, // sendNotification
       { wch: 25 }, // WorkerId
       { wch: 16 }, // WorkerName
-      { wch: 14 }, // expectedTime
-      { wch: 15 }, // startDate
-      { wch: 10 }, // startTime
+      { wch: 20 }, // expectedTime(HH:MM)
+      { wch: 20 }, // startDate(YYYY-MM-DD)
+      { wch: 20 }, // startTime(HH:MM)
       { wch: 20 }, // workItem
       { wch: 25 }, // workDescription
     ];
@@ -96,7 +97,7 @@ const WorkOrderImport = () => {
           header: 1,
           defval: "",
           cellDates: true,
-          raw:false
+          raw: false,
         });
         setParsedData(jsonData);
       };
@@ -110,6 +111,10 @@ const WorkOrderImport = () => {
     }
   };
 
+  // Helper function to normalize header keys.
+  // For example, "startDate(YYYY-MM-DD)" becomes "startDate"
+  const normalizeHeader = (header) => header.replace(/\(.*?\)/, "").trim();
+
   // Convert date from DD-MM-YYYY to ISO format if needed.
   const convertToISOFormatIfNeeded = (dateString) => {
     const regex = /^\d{2}-\d{2}-\d{4}$/;
@@ -120,15 +125,17 @@ const WorkOrderImport = () => {
     return dateString;
   };
 
+  // Reformat date string if needed (assumes input like MM/DD/YYYY)
   const reformatDateString = (dateStr) => {
-    // Split the date string by "/"
+    if (typeof dateStr !== "string") {
+      console.error("Expected a string for dateStr, but got:", dateStr);
+      return dateStr;
+    }
     const parts = dateStr.split("/");
     if (parts.length === 3) {
       let [month, day, year] = parts;
-      // Ensure month and day have two digits
       month = month.padStart(2, "0");
       day = day.padStart(2, "0");
-      // If the year is two digits, assume it's in the 2000s
       if (year.length === 2) {
         year = "20" + year;
       }
@@ -136,7 +143,6 @@ const WorkOrderImport = () => {
     }
     return dateStr;
   };
-  
 
   // Upload file data to the server.
   const handleUpload = async () => {
@@ -148,8 +154,9 @@ const WorkOrderImport = () => {
       return;
     }
 
-    // First row is assumed to be headers.
-    const headers = parsedData[0];
+    // Normalize headers: first row is assumed to be headers.
+    const rawHeaders = parsedData[0];
+    const headers = rawHeaders.map(normalizeHeader);
     const rows = parsedData.slice(1);
 
     const formattedData = rows.map((row) => {
@@ -193,7 +200,7 @@ const WorkOrderImport = () => {
       workorderDetails: row.workorderDetails,
     }));
 
-    console.log("asdasd",finalDataArray)
+    console.log("Final data to upload:", finalDataArray);
 
     Swal.fire({
       title: t("Are you sure?"),
@@ -223,12 +230,8 @@ const WorkOrderImport = () => {
               title: t("Upload Successful"),
               html: `
                 <p>${t("Message")}: ${response.message}</p>
-                <p><strong>${t("Inserted Work Orders")}</strong>: ${
-                response.insertedWorkOrders
-              }</p>
-                <p><strong>${t("Failed Work Orders")}</strong>: ${
-                response.failedWorkOrders.length
-              }</p>
+                <p><strong>${t("Inserted Work Orders")}</strong>: ${response.insertedWorkOrders}</p>
+                <p><strong>${t("Failed Work Orders")}</strong>: ${response.failedWorkOrders.length}</p>
               `,
             }).then(() => {
               navigate("/workorder/list");
