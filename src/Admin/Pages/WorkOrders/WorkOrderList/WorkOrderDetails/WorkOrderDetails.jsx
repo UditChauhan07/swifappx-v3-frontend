@@ -236,9 +236,9 @@ const WorkOrderDetails = () => {
                 <Col>
                   <span
                     className={`badge px-3 py-2 ${
-                      workOrder.status === "pending"
+                      workOrder.status === "ending"
                         ? "bg-warning text-dark"
-                        : workOrder.status === "completed"
+                        : workOrder.status === "Completed"
                         ? "bg-success"
                         : "bg-danger"
                     }`}
