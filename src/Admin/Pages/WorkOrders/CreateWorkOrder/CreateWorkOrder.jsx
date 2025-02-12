@@ -80,7 +80,7 @@ const CreateWorkOrder = () => {
 
   const [intervalTime, setIntervalTime] = useState("");
   const [defaultWorkTime, setDefaultWorkTime] = useState("");
-  console.log("dasda", defaultWorkTime);
+  // console.log("dasda", defaultWorkTime);
 
   const [workItems, setWorkItems] = useState([
     { id: 1, workItem: "", itemDesc: "" },
@@ -280,7 +280,7 @@ const CreateWorkOrder = () => {
       } else {
         Swal.fire({
           title: "Error!",
-          text:
+          html:
             response.message ||
             t("There was an error creating the Work Order."),
           icon: "error",
