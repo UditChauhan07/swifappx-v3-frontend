@@ -32,11 +32,13 @@ const Header = () => {
   const [selectedLanguage, setSelectedLanguage] = useState(
     localStorage.getItem("language")
   );
+  const [companyId, setcompanyId] = useState(localStorage.getItem('companyId'));
+  
 
   const [expandedDropdown, setExpandedDropdown] = useState("");
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
-  const { roles, hasPermission, permissions } = usePermissions();
+  const { roles, hasPermission, permissions,getRoles } = usePermissions();
   // console.log("permissions",permissions);
 
   const toggleDropdown = (dropdown) => {
@@ -127,7 +129,7 @@ const Header = () => {
   const getItemClass = (lng) => {
     return lng === selectedLanguage ? "selected-item" : "";
   };
-  // console.log("userRole: ", roles);
+  console.log("userRole: ", roles);
   // console.log('userRole: ' + userRole,userRole == "Admin")
   return (
     <>
@@ -265,6 +267,7 @@ const Header = () => {
                 </Link>
 
                 {/* Users */}
+                
                 <div
                   className={`dropdown ${
                     expandedDropdown === "users" ? "expanded" : ""
@@ -283,6 +286,8 @@ const Header = () => {
                     }`}
                   >
                     {/* Office Users */}
+                    {(userRole == "Admin" ||
+                      hasPermission("Company Office User Module", "View")) && (
                     <div
                       className={`dropdown ${
                         expandedDropdown === "users" &&
@@ -293,12 +298,12 @@ const Header = () => {
                     >
                       <div
                         className="dropdown-title"
-                        onClick={() =>
+                        onClick={() =>{
                           setNestedDropdown(
                             nestedDropdown === "officeUsers"
                               ? ""
                               : "officeUsers"
-                          )
+                          );getRoles(companyId);}
                         }
                       >
                         ▣ {t("Office Users")}
@@ -312,12 +317,18 @@ const Header = () => {
                               : ""
                           }`}
                         >
+                           {(userRole == "Admin" ||
+                              hasPermission(
+                                `Company Field User Module`,
+                                `Create`
+                              )) && (
                           <Link
                             to="/users/office/create"
                             className="sidebar-link"
                           >
                             {t("Create")}
                           </Link>
+                          )}
 
                           {roles.length > 0 &&
                             roles?.map((permission) => (
@@ -334,53 +345,76 @@ const Header = () => {
                         ""
                       )}
                     </div>
+                     )}
 
                     {/* Field Agent */}
-
-                    <div
-                      className={`dropdown ${
-                        expandedDropdown === "users" &&
-                        nestedDropdown === "fieldUsers"
-                          ? "expanded"
-                          : ""
-                      }`}
-                    >
+                    {(userRole == "Admin" ||
+                      hasPermission("Company Field User Module", "View")) && (
                       <div
-                        className="dropdown-title"
-                        onClick={() =>
-                          setNestedDropdown(
-                            nestedDropdown === "fieldUsers" ? "" : "fieldUsers"
-                          )
-                        }
+                        className={`dropdown ${
+                          expandedDropdown === "users" &&
+                          nestedDropdown === "fieldUsers"
+                            ? "expanded"
+                            : ""
+                        }`}
                       >
-                        ▣ {t("Field Agent")}
-                      </div>
-                      {nestedDropdown === "fieldUsers" ? (
                         <div
-                          className={`dropdown-items ${
-                            expandedDropdown === "users" &&
-                            nestedDropdown === "fieldUsers"
-                              ? "show"
-                              : ""
-                          }`}
+                          className="dropdown-title"
+                          onClick={() =>
+                            setNestedDropdown(
+                              nestedDropdown === "fieldUsers"
+                                ? ""
+                                : "fieldUsers"
+                            )
+                          }
                         >
-                          <Link
-                            to="/users/field/create"
-                            className="sidebar-link"
-                          >
-                            {t("Create")}
-                          </Link>
-                          <Link to="/users/field/list" className="sidebar-link">
-                            {t("Field Agent List")}
-                          </Link>
-                          <Link to="/users/field/import" className="sidebar-link">
-                            {t("Import Field Agent")}
-                          </Link>
+                          ▣ {t("Field Agent")}
                         </div>
-                      ) : (
-                        ""
-                      )}
-                    </div>
+                        {nestedDropdown === "fieldUsers" ? (
+                          <div
+                            className={`dropdown-items ${
+                              expandedDropdown === "users" &&
+                              nestedDropdown === "fieldUsers"
+                                ? "show"
+                                : ""
+                            }`}
+                          >
+                            {(userRole == "Admin" ||
+                              hasPermission(
+                                `Company Field User Module`,
+                                `Create`
+                              )) && (
+                              <Link
+                                to="/users/field/create"
+                                className="sidebar-link"
+                              >
+                                {t("Create")}
+                              </Link>
+                            )}
+                            <Link
+                              to="/users/field/list"
+                              className="sidebar-link"
+                            >
+                              {t("Field Agent List")}
+                            </Link>
+                            {(userRole == "Admin" ||
+                              hasPermission(
+                                `Company Field User Module`,
+                                `Create`
+                              )) && (
+                              <Link
+                                to="/users/field/import"
+                                className="sidebar-link"
+                              >
+                                {t("Import Field Agent")}
+                              </Link>
+                            )}
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 

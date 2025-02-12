@@ -10,6 +10,7 @@ import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
+import { usePermissions } from "../../../../context/PermissionContext";
 
 const FieldUserList = () => {
   const { t } = useTranslation();
@@ -23,8 +24,9 @@ const FieldUserList = () => {
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
+  const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
   const itemsPerPage = 5;
-
+const {hasPermission}=usePermissions();
   // Fetch data from API
   const fetchData = () => {
     fetch_FieldUserOfCompany(company_id, token)
@@ -294,6 +296,10 @@ const FieldUserList = () => {
                               <i className="bi bi-info-circle"></i>
                               <FaInfoCircle />
                             </Button>
+                            {(userRole == "Admin" ||
+                              hasPermission(
+                                "Company Field User Module", "Edit"
+                              )) && (
                             <Button
                               variant="warning"
                               size="sm"
@@ -310,6 +316,12 @@ const FieldUserList = () => {
                               <i className="bi bi-pencil"></i>
                               <FaEdit />
                             </Button>
+                              )}
+
+                            {(userRole == "Admin" ||
+                              hasPermission(
+                                "Company Field User Module", "Edit"
+                              )) && (
                             <Button
                               variant="danger"
                               size="sm"
@@ -326,6 +338,7 @@ const FieldUserList = () => {
                               <i className="bi bi-trash"></i>
                               <FaClipboardList />
                             </Button>
+                              )}
                           </div>
                         </td>
                       </tr>
