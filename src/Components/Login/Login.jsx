@@ -52,6 +52,7 @@ const Login = () => {
         localStorage.setItem("name", response.user.first_name);
         localStorage.setItem("companyId", response.company_id);
         localStorage.setItem("language", "en");
+        localStorage.setItem("guidlines", "active");
         setPermissions(response.rolesPermissions||[])
         setisLoading(false);
         if (response.user.role === "Admin" || response.user.role === "office_Admin") {

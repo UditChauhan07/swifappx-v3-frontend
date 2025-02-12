@@ -20,6 +20,7 @@ import {
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import Select from "react-select";
 
 const CreateWorkOrder = () => {
   const { t } = useTranslation();
@@ -52,7 +53,7 @@ const CreateWorkOrder = () => {
     const baseMinutes = convertTimeStringToMinutes(defaultTime);
     const intervalMinutes = convertTimeStringToMinutes(intervalTime);
     const options = [];
-    for (let i = 1; i <= 20; i++) {
+    for (let i = 1; i <= 24; i++) {
       const totalMinutes = baseMinutes + i * intervalMinutes;
       options.push(convertMinutesToTimeString(totalMinutes));
     }
@@ -69,7 +70,8 @@ const CreateWorkOrder = () => {
     new Date().toISOString().split("T")[0]
   );
   const [startTime, setStartTime] = useState(getCurrentTimeHHMM());
-  const [expectedTime, setExpectedTime] = useState("01:00");
+  const [expectedTime, setExpectedTime] = useState("00:00");
+  console.log("timeeee",expectedTime)
   const [selectedWorkers, setSelectedWorkers] = useState("");
   const [selectedWorkerId, setSelectedWorkerId] = useState("");
 
@@ -79,7 +81,6 @@ const CreateWorkOrder = () => {
   const [intervalTime, setIntervalTime] = useState("");
   const [defaultWorkTime, setDefaultWorkTime] = useState("");
   console.log("dasda", defaultWorkTime);
-  // const [bufferTime, setBufferTime] = useState("");
 
   const [workItems, setWorkItems] = useState([
     { id: 1, workItem: "", itemDesc: "" },
@@ -297,6 +298,29 @@ const CreateWorkOrder = () => {
     }
   };
 
+  const expectedTimeOptions = [
+    { value: defaultWorkTime, label: `${defaultWorkTime} (Default)` },
+    ...computeExpectedTimeOptions(defaultWorkTime, intervalTime).map(
+      (option) => ({
+        value: option,
+        label: option,
+      })
+    ),
+  ];
+
+  // Optional: Define custom styles for react-select
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      height: "37px", // Set custom height
+      minHeight: "37px",
+    }),
+    option: (provided) => ({
+      ...provided,
+      lineHeight: "15px", // Custom line height for options
+    }),
+  };
+
   return (
     <>
       <Header />
@@ -420,27 +444,21 @@ const CreateWorkOrder = () => {
                           {t("Expected Time Required ( Hours )")} :
                         </Form.Label>
                         {defaultWorkTime && intervalTime ? (
-                          <Form.Select
-                            value={expectedTime}
-                            onChange={(e) => {
-                              setExpectedTime(e.target.value);
+                          <Select
+                            value={
+                              expectedTime
+                                ? expectedTimeOptions.find(
+                                    (option) => option.value === expectedTime
+                                  )
+                                : null
+                            }
+                            onChange={(selectedOption) => {
+                              setExpectedTime(selectedOption.value);
                               clearError("expectedTime");
                             }}
-                          >
-                            {/* First option shows the default work order time */}
-                            <option value={defaultWorkTime}>
-                              {defaultWorkTime} (Default)
-                            </option>
-                            {/* Additional options calculated from the interval */}
-                            {computeExpectedTimeOptions(
-                              defaultWorkTime,
-                              intervalTime
-                            ).map((option, index) => (
-                              <option key={index} value={option} style={{lineHeight:"20px"}}>
-                                {option}
-                              </option>
-                            ))}
-                          </Form.Select>
+                            options={expectedTimeOptions}
+                            styles={customStyles}
+                          />
                         ) : (
                           <Form.Control
                             type="text"

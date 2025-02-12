@@ -1638,6 +1638,7 @@
   "Import Work Orders":"Importar órdenes de trabajo",
   "Agent Id":"Identificación del agente",
   "Customer Id":"Identificación del cliente",
-  "Default Work Time (Hours)":"Tiempo de trabajo predeterminado (horas)"
+  "Default Work Time (Hours)":"Tiempo de trabajo predeterminado (horas)",
+  "Hours":"Horas"
 
 }

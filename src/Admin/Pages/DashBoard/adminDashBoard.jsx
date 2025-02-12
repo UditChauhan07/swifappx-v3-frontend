@@ -16,6 +16,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useTranslation } from "react-i18next";
 import { usePermissions } from "../../../context/PermissionContext";
 import { getAdminDashboardDetails } from "../../../lib/store";
+import GuideTour from "./../../../Components/GuideTour/GuideTour"; // adjust the path as needed
 
 // Register Chart.js components
 ChartJS.register(
@@ -29,11 +30,23 @@ ChartJS.register(
 );
 
 const AdminDashboard = () => {
-  const { getRoles,permissions } = usePermissions();
+  const { getRoles, permissions } = usePermissions();
   const { t } = useTranslation();
   const token = localStorage.getItem("UserToken");
   const userid = localStorage.getItem("userId");
   const companyId = localStorage.getItem("companyId");
+  const [showTour, setShowTour] = useState(
+    localStorage.getItem("guidlines") === "active"
+  );
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setShowTour(localStorage.getItem("guidlines") === "active");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   // State for dashboard data
   const [dashboardData, setDashboardData] = useState({
@@ -98,7 +111,7 @@ const AdminDashboard = () => {
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: { display:false },
+      legend: { display: false },
     },
     scales: {
       y: { beginAtZero: true },
@@ -108,6 +121,15 @@ const AdminDashboard = () => {
   return (
     <>
       <Header />
+      {showTour && (
+        <GuideTour
+          onClose={() => {
+            setShowTour(false);
+            localStorage.setItem("guidlines", "unactive");
+          }}
+        />
+      )}
+
       <div className="main-header-box">
         <div className="mt-4 pages-box">
           <Container fluid>

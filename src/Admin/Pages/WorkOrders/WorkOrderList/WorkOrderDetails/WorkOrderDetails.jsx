@@ -111,7 +111,7 @@ const WorkOrderDetails = () => {
               </Row>
               <Row className="mb-2">
                 <Col md={4} className="fw-bold">
-                  {t("Expected Time")}:
+                  {t("Expected Time")}({t("Hours")}):
                 </Col>
                 <Col>
                   {workOrder?.basicWorkorderDetails?.expectedTime || "--"}
