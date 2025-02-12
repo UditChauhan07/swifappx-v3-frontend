@@ -56,7 +56,7 @@ export const getCompanyListApi = async (token) => {
   }
 };
 
-// Get Admin dashboard Details 
+// Get Admin dashboard Details
 export const getSuperAdminDashboardDetails = async (token) => {
   try {
     const response = await axios.get(`${Url}/dcc23we5t6`, {
@@ -73,8 +73,8 @@ export const getSuperAdminDashboardDetails = async (token) => {
     throw new Error("An unexpected error occurred");
   }
 };
-// Get Super-Admin dashboard Details 
-export const getAdminDashboardDetails = async (companyId,token) => {
+// Get Super-Admin dashboard Details
+export const getAdminDashboardDetails = async (companyId, token) => {
   try {
     const response = await axios.get(`${Url}/cdsj54rt67/${companyId}`, {
       headers: {
@@ -99,15 +99,11 @@ export const createCompanyApi = async (formdata, token) => {
   //   console.log(`${key}:`, value);
   // }
   try {
-    const response = await axios.post(
-      `${Url}/scc54meki8`,
-      formdata,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.post(`${Url}/scc54meki8`, formdata, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     console.log(response, "login api data");
     return response.data;
   } catch (error) {
@@ -218,9 +214,9 @@ export const fetchRolesList = async (userid, token) => {
 };
 
 // Create User Role
-export const createUserRole = async (finalData,token) => {
+export const createUserRole = async (finalData, token) => {
   try {
-    const response = await axios.post(`${Url}/cork654m78`, finalData,{
+    const response = await axios.post(`${Url}/cork654m78`, finalData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -236,19 +232,24 @@ export const createUserRole = async (finalData,token) => {
 };
 
 // Get Role List
-export const getRoles = async (finalData,token) => {
+export const getRoles = async (finalData, token) => {
   // console.log("finalData", finalData);
   const userId = finalData;
   try {
-    const response = await axios.get(`${Url}/ofmg4j3er6`, {
-      params: { userId },headers: {
-        Authorization: `Bearer ${token}`,
+    const response = await axios.get(
+      `${Url}/ofmg4j3er6`,
+      {
+        params: { userId },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },{
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     // console.log(response.data, "login api data");
     return response.data;
   } catch (error) {
@@ -260,7 +261,7 @@ export const getRoles = async (finalData,token) => {
 };
 
 // Edit Role Edit
-export const roleEditApi = async (roleId, finalData,token) => {
+export const roleEditApi = async (roleId, finalData, token) => {
   try {
     const response = await axios.patch(
       `${Url}/ed6tmki8gy/${roleId}`,
@@ -364,7 +365,7 @@ export const DeleteCustomerApi = async (userId, token) => {
 };
 
 // Work Order Create
-export const createWorkOrderApi = async (finalData,token) => {
+export const createWorkOrderApi = async (finalData, token) => {
   try {
     const response = await axios.post(`${Url}/cwok431m56`, finalData, {
       headers: {
@@ -384,14 +385,11 @@ export const createWorkOrderApi = async (finalData,token) => {
 // Work Order List
 export const fetchWorkOrderList = async (companyId, token) => {
   try {
-    const response = await axios.get(
-      `${Url}/gwok32m76nh/${companyId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get(`${Url}/gwok32m76nh/${companyId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     // console.log(response.data, "login api data");
     return response.data;
   } catch (error) {
@@ -535,7 +533,7 @@ export const delete_OfficeUser = async (userId, token) => {
 };
 
 export const edit_OfficeUser = async (formdata, userId, token) => {
-  console.log("user",userId)
+  console.log("user", userId);
   try {
     const response = await axios.put(`${Url}/smjg8g43me/${userId}`, formdata, {
       headers: {
@@ -543,6 +541,84 @@ export const edit_OfficeUser = async (formdata, userId, token) => {
       },
     });
     console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Import Field Agent
+export const importFieldAgent = async (formdata, token) => {
+  try {
+    const response = await axios.post(`${Url}/ifu3ws6t5r`, formdata, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Import Work Order
+export const importWorkOrder = async (formdata, token) => {
+  try {
+    const response = await axios.post(`${Url}/iwo32mm4er`, formdata, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(response, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Work Order Time Api Update
+export const workOrderTimeApi = async (formdata, companyId,token) => {
+  try {
+    const response = await axios.post(
+      `${Url}/wot3m9iszx/${companyId}`,
+      formdata,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Work Order Time Api Get
+export const workOrderTimeGetApi = async (companyId,token) => {
+  try {
+    const response = await axios.get(
+      `${Url}/gwoct43m9su/${companyId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    // console.log(response.data, "login api data");
     return response.data;
   } catch (error) {
     if (error.response) {

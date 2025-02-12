@@ -181,6 +181,15 @@ const CustomerList = () => {
                     background: "#e5e5e5",
                   }}
                 >
+                  {t("Customer Id")}
+                </th>
+                <th
+                  style={{
+                    width: "22%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
                   {t("Name")}
                 </th>
                 <th
@@ -240,6 +249,16 @@ const CustomerList = () => {
               ) : (
                 currentRows.map((customer, index) => (
                   <tr key={index}>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        // padding: "15px",
+                        fontSize: "0.9rem",
+                        color: "#4B5563",
+                      }}
+                    >
+                      {customer.id}
+                    </td>
                     <td
                       style={{
                         textAlign: "left",

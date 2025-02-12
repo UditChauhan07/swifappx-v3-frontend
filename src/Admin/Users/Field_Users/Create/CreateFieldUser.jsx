@@ -1,116 +1,3 @@
-// import React from "react";
-// import { Form, Button, Row, Col } from "react-bootstrap";
-// import Header from "../../../../Components/Header/Header";
-
-// const CreateFieldUser = () => {
-//   return (
-//     <>
-//       <Header />
-//       <div className="main-header-box mt-4">
-//         <div className="pages-box">
-//           <div className="">
-//           <div
-//               className="form-header mb-4"
-//               style={{
-//                 backgroundColor: "#8d28dd",
-//                 color: "white",
-//                 padding: "10px 20px",
-//                 borderRadius: "8px",
-//               }}
-//             >
-//               <h4 className="mb-0">Enter Field User Details</h4>
-//             </div>
-//             <Form>
-//               <Row>
-//                 <Col md={6}>
-//                   <Form.Group className="mb-3" controlId="formName">
-//                     <Form.Label>Name<span className="text-danger">*</span></Form.Label>
-//                     <Form.Control type="text" placeholder="Enter Name" required />
-//                   </Form.Group>
-//                 </Col>
-
-//                 <Col md={6}>
-//                   <Form.Group className="mb-3" controlId="formEmail">
-//                     <Form.Label>Email<span className="text-danger">*</span></Form.Label>
-//                     <Form.Control type="email" placeholder="Enter Email" required />
-//                   </Form.Group>
-//                 </Col>
-
-//                 <Col md={6}>
-//                   <Form.Group className="mb-3" controlId="formUsername">
-//                     <Form.Label>Username<span className="text-danger">*</span></Form.Label>
-//                     <Form.Text className="d-block mb-1 text-muted">
-//                       Field User can login via this Username
-//                     </Form.Text>
-//                     <Form.Control type="text" placeholder="Enter Username" required />
-//                   </Form.Group>
-//                 </Col>
-
-//                 <Col md={6}>
-//                   <Form.Group className="mb-3" controlId="formPassword">
-//                     <Form.Label>Password<span className="text-danger">*</span></Form.Label>
-//                     <Form.Text className="d-block mb-1 text-muted">
-//                       Field User can login via this Password
-//                     </Form.Text>
-//                     <Form.Control type="password" placeholder="Enter Password" required />
-//                   </Form.Group>
-//                 </Col>
-
-//                 <Col md={6}>
-//                   <Form.Group className="mb-3" controlId="formContactNumber">
-//                     <Form.Label>Contact Number<span className="text-danger">*</span></Form.Label>
-//                     <Form.Control type="tel" placeholder="Enter Contact Number" required />
-//                   </Form.Group>
-//                 </Col>
-
-//                 <Col md={6}>
-//                   <Form.Group className="mb-3" controlId="formProfilePicture">
-//                     <Form.Label>Profile Picture</Form.Label>
-//                     <Form.Control type="file" />
-//                   </Form.Group>
-//                 </Col>
-
-//                 <Col md={6}>
-//                   <Form.Group className="mb-3" controlId="formCountry">
-//                     <Form.Label>Country<span className="text-danger">*</span></Form.Label>
-//                     <Form.Select required>
-//                       <option>Select Country</option>
-//                       <option>USA</option>
-//                       <option>Canada</option>
-//                       <option>India</option>
-//                     </Form.Select>
-//                   </Form.Group>
-//                 </Col>
-
-//                 <Col md={6}>
-//                   <Form.Group className="mb-3" controlId="formAddress">
-//                     <Form.Label>Address<span className="text-danger">*</span></Form.Label>
-//                     <Form.Control as="textarea" rows={2} placeholder="Enter Address" required />
-//                   </Form.Group>
-//                 </Col>
-//               </Row>
-
-//               <div className="text-center">
-//                 <Button  type="submit" className="me-2" style={{
-//                   backgroundColor: "#8d28dd",
-//                   border:"none"
-//                 }}>
-//                   Save
-//                 </Button>
-//                 <Button variant="secondary" type="button">
-//                   Cancel
-//                 </Button>
-//               </div>
-//             </Form>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default CreateFieldUser;
-
 import React from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useFormik } from "formik";
@@ -120,9 +7,12 @@ import { create_FieldUser } from "../../../../lib/store";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { getNames } from "country-list";
+import Select from "react-select";
 
 const CreateFieldUser = () => {
   const { t } = useTranslation();
+  const countries = getNames();
 
   const navigate = useNavigate();
   const token = localStorage.getItem("UserToken");
@@ -206,7 +96,7 @@ const CreateFieldUser = () => {
                 borderRadius: "8px",
               }}
             >
-              <h4 className="mb-0">{t("Enter Field User Details")}</h4>
+              <h4 className="mb-0">{t("Enter Field Agent Details")}</h4>
             </div>
             <Form onSubmit={formik.handleSubmit}>
               <Row>
@@ -348,19 +238,38 @@ const CreateFieldUser = () => {
                       {t("Country")}
                       <span className="text-danger">*</span>
                     </Form.Label>
-                    <Form.Select
-                      name="country"
-                      value={formik.values.country}
-                      onChange={formik.handleChange}
-                      isInvalid={
-                        formik.touched.country && formik.errors.country
+                    <Select
+                      options={countries.map((country) => ({
+                        label: country,
+                        value: country,
+                      }))}
+                      onChange={(selectedOption) =>
+                        formik.setFieldValue("country", selectedOption.value)
                       }
-                    >
-                      <option value="">{t("Select Country")}</option>
-                      <option value="USA">USA</option>
-                      <option value="Canada">Canada</option>
-                      <option value="India">India</option>
-                    </Form.Select>
+                      value={
+                        countries.find((c) => c === formik.values.country)
+                          ? {
+                              label: formik.values.country,
+                              value: formik.values.country,
+                            }
+                          : null
+                      }
+                      styles={{
+                        menuList: (provided) => ({
+                          ...provided,
+                          maxHeight: "150px", // Limits dropdown height
+                          overflowY: "auto",
+                        }),
+                      }}
+                      isInvalid={
+                        formik.touched.country && !!formik.errors.country
+                      }
+                    />
+
+                    {formik.touched.country && formik.errors.country && (
+                      <div className="text-danger">{formik.errors.country}</div>
+                    )}
+
                     <Form.Control.Feedback type="invalid">
                       {formik.errors.country}
                     </Form.Control.Feedback>

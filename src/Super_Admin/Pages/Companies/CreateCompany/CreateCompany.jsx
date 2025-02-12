@@ -16,10 +16,11 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
+import Select from "react-select";
+import { getNames } from "country-list";
 
 const CreateCompany = () => {
   const { t, i18n } = useTranslation();
-
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -78,6 +79,10 @@ const CreateCompany = () => {
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
   // console.log("formData", formData);
   const [errors, setErrors] = useState({});
+  const countryOptions = getNames().map((country) => ({
+    value: country,
+    label: country,
+  }));
 
   const handleNext = () => {
     const currentErrors = validateStep(currentStep);
@@ -920,16 +925,22 @@ const CreateCompany = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>{t("Country")}:</Form.Label>
-                    <Form.Select
-                      value={formData.country}
-                      onChange={(e) => handleChange("country", e.target.value)}
-                    >
-                      <option>{t("Select Country")}</option>
-                      <option>{t("India")}</option>
-                      <option>{t("USA")}</option>
-                      <option>{t("UK")}</option>
-                      <option>{t("Canada")}</option>
-                    </Form.Select>
+                    <Select
+                      options={countryOptions}
+                      onChange={(selectedOption) =>
+                        handleChange("country", selectedOption.value)
+                      }
+                      value={countryOptions.find(
+                        (option) => option.value === formData.country
+                      )}
+                      styles={{
+                        menuList: (provided) => ({
+                          ...provided,
+                          maxHeight: "150px", // Limits dropdown height
+                          overflowY: "auto",
+                        }),
+                      }}
+                    />
                   </Form.Group>
                 </Col>
               </Row>
@@ -1128,21 +1139,22 @@ const CreateCompany = () => {
                     <Form.Label>
                       <span className="text-danger">*</span> {t("Country")}:
                     </Form.Label>
-                    <Form.Select
-                      value={formData.contactCountry}
-                      onChange={(e) =>
-                        handleChange("contactCountry", e.target.value)
+                    <Select
+                      options={countryOptions}
+                      onChange={(selectedOption) =>
+                        handleChange("contactCountry", selectedOption.value)
                       }
-                      isInvalid={!!errors.contactCountry}
-                    >
-                      <option value="">
-                        {t("Select Company Address's Country")}
-                      </option>
-                      <option value="India">India</option>
-                      <option value="USA">USA</option>
-                      <option value="UK">UK</option>
-                      <option value="Canada">Canada</option>
-                    </Form.Select>
+                      value={countryOptions.find(
+                        (option) => option.value === formData.contactCountry
+                      )}
+                      styles={{
+                        menuList: (provided) => ({
+                          ...provided,
+                          maxHeight: "150px", // Limits dropdown height
+                          overflowY: "auto",
+                        }),
+                      }}
+                    />
                     <Form.Control.Feedback type="invalid">
                       {errors.contactCountry}
                     </Form.Control.Feedback>
@@ -1180,6 +1192,7 @@ const CreateCompany = () => {
                         onChange={(value) =>
                           handleChange("workingDays", value.filter(Boolean))
                         }
+                        style={{zIndex:"0"}}
                       >
                         {[
                           "Monday",

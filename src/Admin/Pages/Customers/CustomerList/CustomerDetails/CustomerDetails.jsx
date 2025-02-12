@@ -47,6 +47,12 @@ const CustomerDetails = () => {
                 </Col>
                 <Col>{customer.name}</Col>
               </Row>
+              <Row className="p-3">
+                <Col md={3} className="fw-bold">
+                  {t("Customer Id")}:
+                </Col>
+                <Col>{customer.id}</Col>
+              </Row>
 
               <Row className="p-3">
                 <Col md={3} className="fw-bold">
