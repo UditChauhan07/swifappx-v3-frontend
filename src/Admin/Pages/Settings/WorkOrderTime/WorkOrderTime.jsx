@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../../../Components/Header/Header";
-import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Card,
+  Spinner,
+} from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 import { workOrderTimeApi, workOrderTimeGetApi } from "../../../../lib/store";
@@ -9,13 +17,42 @@ const WorkOrderTime = () => {
   const [intervalTime, setIntervalTime] = useState("");
   const [defaultWorkTime, setDefaultWorkTime] = useState("");
   const [bufferTime, setBufferTime] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [companyId, setcompanyId] = useState(localStorage.getItem("companyId"));
-  const [token, settoken] = useState(localStorage.getItem("UserToken"));
-  const [workOrderTimeData, setworkOrderTimeData] = useState();
-  console.log("asdas", workOrderTimeData);
+  const [isLoading, setIsLoading] = useState(false); // For form submission
+  const [isInitialLoading, setIsInitialLoading] = useState(false); // For initial API call
+  const [companyId] = useState(localStorage.getItem("companyId"));
+  const [token] = useState(localStorage.getItem("UserToken"));
   const { t } = useTranslation();
 
+  const fetchWorkOrderTime = async () => {
+    if (!companyId || !token) return;
+
+    setIsInitialLoading(true); // Start initial loading
+    try {
+      const response = await workOrderTimeGetApi(companyId, token);
+      console.log("API Response:", response);
+
+      if (response?.workOrderSettings) {
+        setIntervalTime(response.workOrderSettings.intervalTime || "");
+        setDefaultWorkTime(
+          response.workOrderSettings.defaultWorkOrderTime || ""
+        );
+        setBufferTime(response.workOrderSettings.bufferTime || "");
+      } else {
+        console.log("Work order settings not found in response");
+      }
+    } catch (error) {
+      console.error("Error fetching work order time:", error);
+    } finally {
+      setIsInitialLoading(false); // Stop initial loading regardless of outcome
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkOrderTime()
+  }, [companyId,token])
+  
+
+  // Validate the form fields
   const validateForm = () => {
     if (!intervalTime || !defaultWorkTime || !bufferTime) {
       Swal.fire({
@@ -28,37 +65,12 @@ const WorkOrderTime = () => {
     return true;
   };
 
-  useEffect(() => {
-    const getWorkOrderTime = async () => {
-      if (!companyId || !token) return; // Ensure companyId and token are available
-
-      try {
-        const response = await workOrderTimeGetApi(companyId, token);
-        console.log("API Response:", response);
-
-        if (response?.workOrderSettings) {
-          setIntervalTime(response.workOrderSettings.intervalTime || "");
-          setDefaultWorkTime(
-            response.workOrderSettings.defaultWorkOrderTime || ""
-          );
-          setBufferTime(response.workOrderSettings.bufferTime || "");
-        } else {
-          console.log("Work order settings not found in response");
-        }
-      } catch (error) {
-        console.error("Error fetching work order time:", error);
-      }
-    };
-
-    getWorkOrderTime();
-  }, [companyId, token]); // Dependencies to re-fetch when companyId or token changes
-
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
-    // Confirmation Prompt
     const result = await Swal.fire({
       title: t("Are you sure?"),
       text: t("Do you want to submit the work order time?"),
@@ -69,7 +81,7 @@ const WorkOrderTime = () => {
     });
 
     if (!result.isConfirmed) {
-      return; // Stop submission if the user selects "No"
+      return;
     }
 
     const finalData = {
@@ -88,19 +100,16 @@ const WorkOrderTime = () => {
     });
 
     setIsLoading(true);
-
     try {
       const response = await workOrderTimeApi(finalData, companyId, token);
-      console.log("asdads", response);
+      console.log("Response:", response);
       if (response.status === true) {
         Swal.fire({
           icon: "success",
           title: t("Success"),
           text: t("Work order time saved successfully!"),
         });
-        setIntervalTime("");
-        setDefaultWorkTime("");
-        setBufferTime("");
+        await fetchWorkOrderTime();
       } else {
         Swal.fire({
           icon: "error",
@@ -118,6 +127,27 @@ const WorkOrderTime = () => {
       setIsLoading(false);
     }
   };
+
+  // Show loader until the initial API call is complete
+  if (isInitialLoading) {
+    return (
+      <>
+        <Header />
+        <div className="main-header-box mt-4">
+          <div className="pages-box">
+            <div className="text-center my-5">
+              <Spinner animation="border" role="status">
+                <span className="visually-hidden">{t("Loading")}...</span>
+              </Spinner>
+              <p>
+                {t("Loading")} {t("Companies")}...
+              </p>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

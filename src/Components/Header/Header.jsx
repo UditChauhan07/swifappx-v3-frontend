@@ -94,6 +94,7 @@ const Header = () => {
         localStorage.removeItem("profilePic");
         localStorage.removeItem("name");
         localStorage.removeItem("companyId");
+        localStorage.removeItem("guidlines");
 
         Swal.fire({
           title: "Logged Out!",

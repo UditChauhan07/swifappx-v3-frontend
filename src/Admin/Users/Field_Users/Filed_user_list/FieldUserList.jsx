@@ -68,6 +68,8 @@ const FieldUserList = () => {
       item.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  console.log("dataa",filteredtable)
+
   // Calculate pagination indices and current items to display
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -252,7 +254,7 @@ const FieldUserList = () => {
                             color: "#4B5563",
                           }}
                         >
-                          {row.isActive === 1 ? "Active" : "Unactive"}
+                          {row.isActive === "1" ? "Active" : "Unactive"}
                         </td>
                         <td
                           style={{
