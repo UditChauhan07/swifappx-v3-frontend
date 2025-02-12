@@ -55,6 +55,7 @@ const Login = () => {
         localStorage.setItem("guidlines", "active");
         localStorage.setItem("companyName", response.company_name);
         localStorage.setItem("companyLogo", response.company_logo);
+        localStorage.setItem("defaultLanguage", response.company_language);
         setPermissions(response.rolesPermissions||[])
         setisLoading(false);
         if (response.user.role === "Admin" || response.user.role === "office_Admin") {

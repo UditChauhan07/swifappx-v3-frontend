@@ -4,7 +4,12 @@ import { initReactI18next } from "react-i18next";
 // import en from "./locales/en.json";
 import fr from "./Lang/French/fr2.json";
 import es from "./Lang/Spanish/es.json";
-const savedLanguage = localStorage.getItem("language") || "en";
+let savedLanguage = localStorage.getItem("defaultLanguage") || "en";
+const userRole = localStorage.getItem("Role");
+
+if (userRole === "SuperAdmin") {
+  savedLanguage = "en"; 
+}
 
 i18n
   .use(initReactI18next)
@@ -14,7 +19,7 @@ i18n
       fr: { translation: fr },
       es: { translation: es },
     },
-    lng: savedLanguage, // Set saved language
+    lng: savedLanguage, 
     fallbackLng: "en",
     interpolation: { escapeValue: false },
   });
