@@ -35,6 +35,7 @@ const CreateCompany = () => {
     state: "",
     country: "",
     zip: "",
+    language: "",
 
     // Step 2: Company Basic Details
     companyName: "",
@@ -223,6 +224,14 @@ const CreateCompany = () => {
             );
           } else {
             delete newErrors.zip;
+          }
+          break;
+
+        case "language":
+          if (!value) {
+            newErrors.language = t("Language selection is required.");
+          } else {
+            delete newErrors.language;
           }
           break;
 
@@ -502,6 +511,11 @@ const CreateCompany = () => {
           newErrors.contactNumber = t(
             "Valid Contact Number (10-15 digits) is required."
           );
+
+        if (!formData.language) {
+          newErrors.language = t("Language selection is required.");
+        }
+
         break;
 
       case 2:
@@ -618,6 +632,7 @@ const CreateCompany = () => {
     ) {
       return;
     }
+    const languageCode = formData.language === "English" ? "en" : "es";
     try {
       // ✅ Convert files to Base64 (if they exist)
       const profilePictureBase64 = formData.profilePicture
@@ -650,6 +665,7 @@ const CreateCompany = () => {
         workingDays: formData.workingDays,
         companyStatus: formData.companyStatus,
         companyState: formData.companyState,
+        language: languageCode,
       };
 
       const userdata = {
@@ -956,7 +972,32 @@ const CreateCompany = () => {
                       value={formData.zip}
                       maxLength={10}
                       onChange={(e) => handleChange("zip", e.target.value)}
+                      isInvalid={!!errors.zip}
                     />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.zip}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      <span className="text-danger">*</span>{" "}
+                      {t("Select Language")}:
+                    </Form.Label>
+                    <Form.Control
+                      as="select"
+                      value={formData.language}
+                      onChange={(e) => handleChange("language", e.target.value)}
+                      isInvalid={!!errors.language}
+                    >
+                      <option value="">Select Language</option>
+                      <option value="English">English</option>
+                      <option value="Spanish">Spanish</option>
+                    </Form.Control>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.language}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
               </Row>
@@ -1192,7 +1233,7 @@ const CreateCompany = () => {
                         onChange={(value) =>
                           handleChange("workingDays", value.filter(Boolean))
                         }
-                        style={{zIndex:"0"}}
+                        style={{ zIndex: "0" }}
                       >
                         {[
                           "Monday",
