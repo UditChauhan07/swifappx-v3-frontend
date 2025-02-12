@@ -32,7 +32,9 @@ const Header = () => {
   const [selectedLanguage, setSelectedLanguage] = useState(
     localStorage.getItem("language")
   );
-
+  const [companyLogo, setcompanyLogo] = useState(
+    localStorage.getItem("companyLogo")
+  );
   const [expandedDropdown, setExpandedDropdown] = useState("");
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
@@ -95,6 +97,8 @@ const Header = () => {
         localStorage.removeItem("name");
         localStorage.removeItem("companyId");
         localStorage.removeItem("guidlines");
+        localStorage.removeItem("companyName");
+        localStorage.removeItem("companyLogo");
 
         Swal.fire({
           title: "Logged Out!",
@@ -187,11 +191,14 @@ const Header = () => {
             <div className="py-4 px-4" style={{ alignSelf: "center" }}>
               <img
                 width={"40px"}
-                src="https://swif.truet.net/public/swifCompany/logo/logo.png"
-                // src="https://demos.creative-tim.com/material-dashboard/assets/img/logo-ct.png"
-                alt="Logo"
+                src={
+                  userRole === "SuperAdmin"
+                    ? "https://swif.truet.net/public/swifCompany/logo/logo.png"
+                    : companyLogo
+                }
+                alt="Company Logo"
                 className="logo"
-                style={{ height: "60px", width: "120px" }}
+                style={{ height: "60px", width: "120px", objectFit: "cover" }}
               />
               {/* <span>Swif</span> */}
             </div>
@@ -250,6 +257,48 @@ const Header = () => {
                     </Link> */}
                   </div>
                 </div>
+
+                {/* Reports Dropdown */}
+                {/* <div
+                  className={`dropdown ${
+                    expandedDropdown === "reports" ? "expanded" : ""
+                  }`}
+                >
+                  <div
+                    className="dropdown-title"
+                    onClick={() => toggleDropdown("reports")}
+                  >
+                    <span>{t("Reports")}</span>
+                    <TbReportSearch size={20}/>
+                  </div>
+                  <div
+                    className={`dropdown-items ${
+                      expandedDropdown === "reports" ? "show" : ""
+                    }`}
+                  >
+                    <Link
+                      to="/company/create"
+                      className="sidebar-link"
+                      activeClassName="active"
+                    >
+                      ▣ {t("Work Order Report")}
+                    </Link>
+                    <Link
+                      to="/company/companies"
+                      className="sidebar-link"
+                      activeClassName="active"
+                    >
+                      ▣ {t("Field User Attendence Report")}
+                    </Link>
+                    {/* <Link
+                      to="/company/access"
+                      className="sidebar-link"
+                      activeClassName="active"
+                    >
+                      ▣ {t("Access")}
+                    </Link> */}
+                {/* </div> */}
+                {/* </div> */}
               </>
             ) : (
               <>
@@ -373,7 +422,10 @@ const Header = () => {
                           <Link to="/users/field/list" className="sidebar-link">
                             {t("Field Agent List")}
                           </Link>
-                          <Link to="/users/field/import" className="sidebar-link">
+                          <Link
+                            to="/users/field/import"
+                            className="sidebar-link"
+                          >
                             {t("Import Field Agent")}
                           </Link>
                         </div>

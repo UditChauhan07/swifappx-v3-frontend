@@ -3,9 +3,13 @@ import { Button } from "react-bootstrap";
 import "./GuideTour.css";
 
 const GuideTour = ({ onClose }) => {
+  const [companyName, setcompanyName] = useState(
+    localStorage.getItem("companyName")
+  );
+  console.log("sadad",companyName)
   const steps = [
     {
-      title: "Basic Guidelines to use this Website",
+      title: `Basic Guidelines to use ${companyName || "this Website"}`,
       description: "Follow these guidelines to get started.",
     },
     {
