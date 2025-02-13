@@ -6,6 +6,7 @@ import fr from "./Lang/French/fr2.json";
 import es from "./Lang/Spanish/es.json";
 let savedLanguage = localStorage.getItem("defaultLanguage") || "en";
 const userRole = localStorage.getItem("Role");
+console.log("defaultLanguage",savedLanguage)
 
 if (userRole === "SuperAdmin") {
   savedLanguage = "en"; 
