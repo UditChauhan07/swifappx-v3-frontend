@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
 import Select from "react-select";
 import { getNames } from "country-list";
+import ChangePasswordModal from "../../../../../Components/ChangePasswordModal/ChangePasswordModal ";
 
 const EditCompany = () => {
   const { t, i18n } = useTranslation();
@@ -29,7 +30,11 @@ const EditCompany = () => {
   const { state } = useLocation();
   const { company = {}, user = {} } = state.company || {};
   // console.log("Company------", state.company);
-  const [companyId, setcompanyId] = useState(state.company.company.id);
+  const [companyId, setcompanyId] = useState(state?.company?.company.id);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [passChangeId, setpassChangeId] = useState();
+  const [userId, setuserId] = useState(state?.company?.user.id)
+  
 
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -44,6 +49,7 @@ const EditCompany = () => {
     state: "",
     country: "",
     zip: "",
+    language: "",
 
     // Step 2: Company Basic Details
     companyName: "",
@@ -102,6 +108,7 @@ const EditCompany = () => {
         state: user.state || "",
         country: user.country || "",
         zip: user.zip_code || "",
+        language: company.language === "en" ? "English" : "Spanish",
 
         // Step 2: Company Basic Details
         companyName: company.company_name || "",
@@ -112,7 +119,11 @@ const EditCompany = () => {
         taxPercentage: company.tax_percentage || "",
         certificationName: company.certificates?.[0]?.name || "",
         certificationNumber: company.certificates?.[0]?.number || "",
-        additionalCertifications: company.certificates || [],
+        // Only show additional certifications if there are more than one.
+      additionalCertifications:
+      company.certificates && company.certificates.length > 1
+        ? company.certificates.slice(1)
+        : [],
 
         // Step 3: Contact Information
         addressLine1: company.address_line_1 || "",
@@ -143,7 +154,7 @@ const EditCompany = () => {
   }, []);
   const navigate = useNavigate();
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
-  console.log("formData", formData);
+  // console.log("formData", formData);
   const [errors, setErrors] = useState({});
 
   const handleNext = () => {
@@ -279,6 +290,14 @@ const EditCompany = () => {
               "ZIP/Postal Code must be at least 3 characters, alphanumeric only.";
           } else {
             delete newErrors.zip;
+          }
+          break;
+
+        case "language":
+          if (!value) {
+            newErrors.language = t("Language selection is required.");
+          } else {
+            delete newErrors.language;
           }
           break;
 
@@ -533,6 +552,10 @@ const EditCompany = () => {
         if (!formData.contactNumber || !isPhone.test(formData.contactNumber))
           newErrors.contactNumber =
             "Valid Contact Number (10-15 digits) is required.";
+
+        if (!formData.language) {
+          newErrors.language = t("Language selection is required.");
+        }
         break;
 
       case 2:
@@ -646,7 +669,8 @@ const EditCompany = () => {
     ) {
       return;
     }
-    console.log("Submit---", formData);
+    const languageCode = formData.language === "English" ? "en" : "es";
+    // console.log("Submit---", formData);
     const profilePictureBase64 = formData.profilePicture
       ? await fileToBase64(formData.profilePicture)
       : null;
@@ -655,21 +679,29 @@ const EditCompany = () => {
       ? await fileToBase64(formData.companyLogo)
       : null;
 
-    const allCertificates = [
-      {
-        name: formData.certificationName,
-        number: formData.certificationNumber,
-      },
-      ...formData.additionalCertifications,
-    ];
+    // Build and filter certificates array
+    const primaryCert = {
+      name: formData.certificationName,
+      number: formData.certificationNumber,
+    };
+
+    let allCertificates = [];
+    if (primaryCert.name.trim() !== "" || primaryCert.number.trim() !== "") {
+      allCertificates.push(primaryCert);
+    }
+    if (
+      formData.additionalCertifications &&
+      formData.additionalCertifications.length > 0
+    ) {
+      const filteredAdditional = formData.additionalCertifications.filter(
+        (cert) => cert.name.trim() !== "" || cert.number.trim() !== ""
+      );
+      allCertificates = allCertificates.concat(filteredAdditional);
+    }
 
     const companyData = {
       company_name: formData.companyName,
       company_logo: companyLogoBase64,
-      // currency: formData.currency,
-      // time_zone: formData.timeZone,
-      // tax_name: formData.taxName,
-      // tax_percentage: formData.taxPercentage,
       certificates: allCertificates,
 
       address_line_1: formData.addressLine1,
@@ -683,18 +715,10 @@ const EditCompany = () => {
       // company_office_phone: formData.officePhone,
       company_office_email: formData.officeEmail,
 
-      // package: formData.package,
-      // packageDescritption: formData.packageDescritption,
-      // workOrderTime: formData.workOrderTime,
-      // primaryWorkOrderCost: formData.primaryWorkOrderCost,
-      // quotationCost: formData.quotationCost,
-      // executionWorkOrderCost: formData.executionWorkOrderCost,
-      // freeQuotations: formData.freeQuotations,
-      // freeWorkOrders: formData.freeWorkOrders,
-      // customerAddressFormat: formData.customerAddressFormat,
       workingDays: formData.workingDays,
       companyStatus: formData.companyStatus,
       companyState: formData.companyState,
+      language: languageCode,
     };
     const userdata = {
       first_name: formData.firstName,
@@ -715,7 +739,7 @@ const EditCompany = () => {
       userdata,
     };
 
-    console.log("Transformed finalData", companyData, "\navigator", userdata);
+    // console.log("Transformed finalData", companyData, "\navigator", userdata);
 
     // const formDataToSend = new FormData();
     // formDataToSend.append("userdata", JSON.stringify(userdata)); // Stringify userdata
@@ -931,19 +955,15 @@ const EditCompany = () => {
                       <span className="text-danger">*</span>{" "}
                       {t("Admin Password")}:
                     </Form.Label>
-                    <Form.Control
-                      type="password"
-                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
-                        "Password"
-                      )}`}
-                      value={formData.password}
-                      maxLength={20}
-                      onChange={(e) => handleChange("password", e.target.value)}
-                      isInvalid={!!errors.password}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.password}
-                    </Form.Control.Feedback>
+                    <div className="d-flex align-items-center">
+                      <Button
+                        style={{ background: "#2e2e32", border: "none" }}
+                        onClick={() => setShowChangePassword(true)}
+                        className="ms-2"
+                      >
+                        {t("Change Password")}
+                      </Button>
+                    </div>
                   </Form.Group>
                 </Col>
               </Row>
@@ -1027,6 +1047,27 @@ const EditCompany = () => {
                       maxLength={10}
                       onChange={(e) => handleChange("zip", e.target.value)}
                     />
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>
+                      <span className="text-danger">*</span>{" "}
+                      {t("Select Language")}:
+                    </Form.Label>
+                    <Form.Select
+                      as="select"
+                      value={formData.language}
+                      onChange={(e) => handleChange("language", e.target.value)}
+                      isInvalid={!!errors.language}
+                    >
+                      <option value="">Select Language</option>
+                      <option value="English">English</option>
+                      <option value="Spanish">Spanish</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.language}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
               </Row>
@@ -1262,7 +1303,7 @@ const EditCompany = () => {
                         onChange={(value) =>
                           handleChange("workingDays", value.filter(Boolean))
                         }
-                        style={{zIndex:"0"}}
+                        style={{ zIndex: "0" }}
                       >
                         {[
                           "Monday",
@@ -1451,6 +1492,13 @@ const EditCompany = () => {
               {t("Submit")}
             </Button>
           </Container>
+        )}
+        {showChangePassword && (
+          <ChangePasswordModal
+            show={showChangePassword}
+            handleClose={() => setShowChangePassword(false)}
+            userId={userId}
+          />
         )}
       </div>
     </>

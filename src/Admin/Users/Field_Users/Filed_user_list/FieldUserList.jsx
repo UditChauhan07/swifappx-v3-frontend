@@ -10,6 +10,7 @@ import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
+import { usePermissions } from "../../../../context/PermissionContext";
 
 const FieldUserList = () => {
   const { t } = useTranslation();
@@ -23,8 +24,9 @@ const FieldUserList = () => {
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
+  const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
   const itemsPerPage = 5;
-
+  const { hasPermission } = usePermissions();
   // Fetch data from API
   const fetchData = () => {
     fetch_FieldUserOfCompany(company_id, token)
@@ -68,7 +70,7 @@ const FieldUserList = () => {
       item.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  console.log("dataa",filteredtable)
+  console.log("dataa", filteredtable);
 
   // Calculate pagination indices and current items to display
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -98,8 +100,8 @@ const FieldUserList = () => {
     navigate("/users/field/edit", { state: { row } });
   };
 
-  const handleDelete = (id) => {
-    Swal.fire({
+  const handleDelete = async (id) => {
+    const confirmResult = await Swal.fire({
       title: t("Are you sure?"),
       text: t("You won't be able to revert this!"),
       icon: "warning",
@@ -107,18 +109,45 @@ const FieldUserList = () => {
       confirmButtonText: t("Yes, delete it!"),
       cancelButtonText: t("Cancel"),
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        delete_FieldUser(id, token).then((result) => {
-          if (result.success === true) {
-            fetchData();
-          } else {
-            Swal.fire("Error", result.message, "error");
-          }
-        });
-        Swal.fire(t("Deleted!"), t("Your user has been deleted."), "success");
-      }
     });
+
+    if (confirmResult.isConfirmed) {
+      try {
+        // Show loading alert
+        Swal.fire({
+          title: t("Deleting..."),
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        const result = await delete_FieldUser(id, token, company_id);
+
+        // Close the loading alert once the API call completes
+        Swal.close();
+
+        if (result.success === true) {
+          await Swal.fire(
+            t("Deleted!"),
+            t("Your user has been deleted."),
+            "success"
+          );
+
+          // Update state immediately by filtering out the deleted user
+          setTableData((prevData) => prevData.filter((item) => item.id !== id));
+
+          // Reset the current page to 1 in case the deletion causes the current page to be empty
+          setCurrentPage(1);
+        } else {
+          await Swal.fire("Error", result.message, "error");
+        }
+      } catch (error) {
+        // Close the loading alert if an error occurs
+        Swal.close();
+        await Swal.fire("Error", t("An unexpected error occurred."), "error");
+      }
+    }
   };
 
   const handleClear = () => {
@@ -294,38 +323,51 @@ const FieldUserList = () => {
                               <i className="bi bi-info-circle"></i>
                               <FaInfoCircle />
                             </Button>
-                            <Button
-                              variant="warning"
-                              size="sm"
-                              onClick={() => handleEdit(row)}
-                              style={{
-                                borderRadius: "50%",
-                                width: "35px",
-                                height: "35px",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <i className="bi bi-pencil"></i>
-                              <FaEdit />
-                            </Button>
-                            <Button
-                              variant="danger"
-                              size="sm"
-                              onClick={() => handleDelete(row.id)}
-                              style={{
-                                borderRadius: "50%",
-                                width: "35px",
-                                height: "35px",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <i className="bi bi-trash"></i>
-                              <FaClipboardList />
-                            </Button>
+                            {(userRole == "Admin" ||
+                              hasPermission(
+                                "Company Field User Module",
+                                "Edit"
+                              )) && (
+                              <Button
+                                variant="warning"
+                                size="sm"
+                                onClick={() => handleEdit(row)}
+                                style={{
+                                  borderRadius: "50%",
+                                  width: "35px",
+                                  height: "35px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <i className="bi bi-pencil"></i>
+                                <FaEdit />
+                              </Button>
+                            )}
+
+                            {(userRole == "Admin" ||
+                              hasPermission(
+                                "Company Field User Module",
+                                "Edit"
+                              )) && (
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() => handleDelete(row.id)}
+                                style={{
+                                  borderRadius: "50%",
+                                  width: "35px",
+                                  height: "35px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <i className="bi bi-trash"></i>
+                                <FaClipboardList />
+                              </Button>
+                            )}
                           </div>
                         </td>
                       </tr>

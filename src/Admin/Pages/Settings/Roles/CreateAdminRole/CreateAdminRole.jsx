@@ -23,7 +23,8 @@ const CreateAdminRole = () => {
   });
 
   const companyModules = [
-    // { name: t("Company Office User Module"), actions: ["view", "create", "edit"] },
+    { name: t("Company Office User Module"), actions: ["view", "create", "edit","delete"] },
+    { name: t("Company Field User Module"), actions: ["view", "create", "edit","delete"] },
     {
       name: t("Company Customers Module"),
       actions: ["view", "create", "edit", "delete"],

@@ -52,10 +52,22 @@ const ChangePassword = () => {
     setError(null);
     setSuccess(null);
 
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,16}$/;
+    if (!passwordRegex.test(formData.newPassword)) {
+      setError(
+        t(
+          "Password must be between 8 to 16 characters, include at least one uppercase letter, one number, and one special character."
+        )
+      );
+      return;
+    }
+
     if (formData.newPassword !== formData.confirmPassword) {
       setError("Passwords do not match. Please try again.");
       return;
     }
+
+    
 
     try {
       const finalData = {

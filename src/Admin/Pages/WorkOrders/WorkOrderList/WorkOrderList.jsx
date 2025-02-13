@@ -74,8 +74,7 @@ const WorkOrderList = () => {
     );
   });
 
-  console.log("dasdasd",filteredtable)
-
+  console.log("dasdasd", filteredtable);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -90,8 +89,9 @@ const WorkOrderList = () => {
     navigate("/workorder/list/details", { state: { workOrder } });
   };
 
-  const handleDelete = (id) => {
-    Swal.fire({
+  const handleDelete = async (id) => {
+    // Show confirmation modal
+    const confirmResult = await Swal.fire({
       title: t("Are you sure?"),
       text: t("You won't be able to revert this!"),
       icon: "warning",
@@ -99,18 +99,45 @@ const WorkOrderList = () => {
       confirmButtonText: t("Yes, delete it!"),
       cancelButtonText: t("Cancel"),
       reverseButtons: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        workOrderDeleteApi(id, token).then((result) => {
-          if (result.status === true) {
-            fetchData();
-          } else {
-            Swal.fire("Error", result.message, "error");
-          }
-        });
-        Swal.fire(t("Deleted!"), t("Your user has been deleted."), "success");
-      }
     });
+
+    if (confirmResult.isConfirmed) {
+      try {
+        // Show loading modal
+        Swal.fire({
+          title: t("Deleting..."),
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        // Call the delete API
+        const apiResult = await workOrderDeleteApi(id, token, company_id);
+
+        // Close the loading modal
+        Swal.close();
+
+        if (apiResult.status === true) {
+          // Show success message
+          await Swal.fire(
+            t("Deleted!"),
+            t("Your work order has been deleted."),
+            "success"
+          );
+          setTableData((prevList) =>
+            prevList.filter((order) => order.id !== id)
+          );
+        } else {
+          // Show error message from API
+          await Swal.fire("Error", apiResult.message, "error");
+        }
+      } catch (error) {
+        // Close loading modal and show generic error
+        Swal.close();
+        await Swal.fire("Error", t("An unexpected error occurred."), "error");
+      }
+    }
   };
 
   const handleEdit = (row) => {
@@ -150,13 +177,13 @@ const WorkOrderList = () => {
   const convertToISOFormatIfNeeded = (dateString) => {
     // Regular expression to match DD-MM-YYYY format
     const regex = /^\d{2}-\d{2}-\d{4}$/;
-  
+
     // Check if the input matches the format
     if (regex.test(dateString)) {
       const [day, month, year] = dateString.split("-");
       return `${year}-${month}-${day}`;
     }
-  
+
     // Return the input unchanged if it doesn't match the expected format
     return dateString;
   };
@@ -253,8 +280,10 @@ const WorkOrderList = () => {
                             color: "#4B5563",
                           }}
                         >
-                          {convertToISOFormatIfNeeded(row?.basicWorkorderDetails?.startDate)} &{" "}
-                          {row?.basicWorkorderDetails?.startTime}
+                          {convertToISOFormatIfNeeded(
+                            row?.basicWorkorderDetails?.startDate
+                          )}{" "}
+                          & {row?.basicWorkorderDetails?.startTime}
                         </td>
                         <td
                           style={{

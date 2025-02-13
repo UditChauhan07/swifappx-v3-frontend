@@ -46,6 +46,8 @@ import WorkOrderEdit from "./Admin/Pages/WorkOrders/WorkOrderList/WorkOrderEdit/
 import WorkOrderDetails from "./Admin/Pages/WorkOrders/WorkOrderList/WorkOrderDetails/WorkOrderDetails";
 import WorkOrderTime from "./Admin/Pages/Settings/WorkOrderTime/WorkOrderTime";
 import WorkOrderImport from "./Admin/Pages/WorkOrders/WorkOrderImport/WorkOrderImport";
+import AdminProfile from "./Admin/Pages/AdminProfile/AdminProfile";
+import LanguageChange from "./Admin/Pages/Settings/LanguageChange/LanguageChange";
 
 function App() {
   return (
@@ -78,7 +80,10 @@ function App() {
 
           {/* DashBoard */}
           <Route path="/dashboard/admin" element={<PrivateRoute element={AdminDashboard} />} />
-          
+          {/* Admin Company Profile Detail */}
+          <Route path="/company/profile" element={<AdminProfile />} />
+
+
           {/* Users */}
           {/* Ofice */}
           <Route path="/users/office/create" element={<Create />} />
@@ -113,6 +118,8 @@ function App() {
           <Route path="/settings/admin/roles/edit" element={<EditAdminRole />} />
           {/* Work Order Time */}
           <Route path="/settings/admin/workOrderTime" element={<WorkOrderTime />} />
+          {/* Language Change */}
+          <Route path="/settings/admin/language" element={<LanguageChange />} />
 
 
           {/* Work Order */}

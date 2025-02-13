@@ -104,7 +104,7 @@ const CustomerList = () => {
     });
 
     try {
-      const response = await DeleteCustomerApi(item, token);
+      const response = await DeleteCustomerApi(item, token,companyId);
       Swal.close();
 
       if (response.status === true) {

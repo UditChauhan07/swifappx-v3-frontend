@@ -29,16 +29,24 @@ const Header = () => {
   const location = useLocation();
   const Navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const [selectedLanguage, setSelectedLanguage] = useState(
-    localStorage.getItem("language")
-  );
+
   const [companyLogo, setcompanyLogo] = useState(
     localStorage.getItem("companyLogo")
   );
+  const [companyId, setcompanyId] = useState(localStorage.getItem("companyId"));
+
   const [expandedDropdown, setExpandedDropdown] = useState("");
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
-  const { roles, hasPermission, permissions } = usePermissions();
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    localStorage.getItem("defaultLanguage") || "en"
+  );
+
+  const { roles, hasPermission, permissions, getRoles } = usePermissions();
+  const [defaultLanguage, setdefaultLanguage] = useState(
+    localStorage.getItem("defaultLanguage")
+  );
+  // console.log("defaultLanguage",defaultLanguage)
   // console.log("permissions",permissions);
 
   const toggleDropdown = (dropdown) => {
@@ -69,6 +77,8 @@ const Header = () => {
       setExpandedDropdown("workOrder");
     } else if (location.pathname.startsWith("/worktime")) {
       setExpandedDropdown("worktime");
+    } else if (location.pathname.startsWith("/language")) {
+      setExpandedDropdown("language");
     } else {
       setExpandedDropdown("");
       setNestedDropdown("");
@@ -79,13 +89,13 @@ const Header = () => {
 
   const handleLogOut = () => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You will be logged out of your session.",
+      title: t("Are you sure?"),
+      text: t("You will be logged out of your session."),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Logout",
+      confirmButtonText: t("Yes, Logout"),
     }).then((result) => {
       if (result.isConfirmed) {
         // Remove user data
@@ -99,10 +109,11 @@ const Header = () => {
         localStorage.removeItem("guidlines");
         localStorage.removeItem("companyName");
         localStorage.removeItem("companyLogo");
+        localStorage.removeItem("defaultLanguage");
 
         Swal.fire({
-          title: "Logged Out!",
-          text: "You have been successfully logged out.",
+          title: t("Logged Out!"),
+          text: t("You have been successfully logged out."),
           icon: "success",
           timer: 2000,
           showConfirmButton: false,
@@ -116,10 +127,11 @@ const Header = () => {
     });
   };
 
+  // Handle language change
   const changeLanguage = (lng) => {
     setSelectedLanguage(lng);
     i18n.changeLanguage(lng);
-    localStorage.setItem("language", lng);
+    localStorage.setItem("defaultLanguage", lng); // Save the selected language in localStorage
   };
 
   const languageNames = {
@@ -131,8 +143,7 @@ const Header = () => {
   const getItemClass = (lng) => {
     return lng === selectedLanguage ? "selected-item" : "";
   };
-  // console.log("userRole: ", roles);
-  // console.log('userRole: ' + userRole,userRole == "Admin")
+  console.log("userRole: ", roles);
   return (
     <>
       {/* Navbar */}
@@ -141,34 +152,47 @@ const Header = () => {
         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
           <Nav>
             {/* Language Dropdown */}
+            {/* // Language Dropdown component */}
             <Dropdown>
               <Dropdown.Toggle variant="light" id="language-dropdown">
                 <FaLanguage className="me-2" />
-                {languageNames[selectedLanguage]}{" "}
+                {/* Display logic based on userRole */}
+                {userRole === "SuperAdmin"
+                  ? "English"
+                  : languageNames[selectedLanguage]}{" "}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                {Object.keys(languageNames).map((lng) => (
-                  <Dropdown.Item
-                    key={lng}
-                    onClick={() => changeLanguage(lng)}
-                    className={getItemClass(lng)}
-                  >
-                    {languageNames[lng]}
-                  </Dropdown.Item>
-                ))}
+                {userRole !== "SuperAdmin" && // Show language options only for Admin
+                  Object.keys(languageNames).map((lng) => (
+                    <Dropdown.Item
+                      key={lng}
+                      onClick={() => changeLanguage(lng)}
+                      className={getItemClass(lng)}
+                    >
+                      {languageNames[lng]}
+                    </Dropdown.Item>
+                  ))}
               </Dropdown.Menu>
             </Dropdown>
-
             {/* User Profile Dropdown */}
             <Dropdown align="end">
               <Dropdown.Toggle variant="light" id="profile-dropdown">
                 <FaUserCircle className="me-2" /> {t("Profile")}
               </Dropdown.Toggle>
               <Dropdown.Menu>
+                {userRole === "Admin" && (
+                  <Dropdown.Item>
+                    <Link
+                      to="/company/profile"
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      {t("Company Profile")}
+                    </Link>
+                  </Dropdown.Item>
+                )}
                 <Dropdown.Item>
-                  {" "}
                   <Link
-                    to={"/changepassword"}
+                    to="/changepassword"
                     style={{ textDecoration: "none", color: "black" }}
                   >
                     {t("Change Password")}
@@ -314,127 +338,163 @@ const Header = () => {
                 </Link>
 
                 {/* Users */}
-                <div
-                  className={`dropdown ${
-                    expandedDropdown === "users" ? "expanded" : ""
-                  }`}
-                >
+                {(userRole == "Admin" ||
+                  hasPermission("Company Office User Module", "View") ||
+                  hasPermission("Company Field User Module", "View")) && (
                   <div
-                    className="dropdown-title"
-                    onClick={() => toggleDropdown("users")}
-                  >
-                    <span>{t("Users")}</span>
-                    <FaUserCog size={20} />
-                  </div>
-                  <div
-                    className={`dropdown-items ${
-                      expandedDropdown === "users" ? "show" : ""
+                    className={`dropdown ${
+                      expandedDropdown === "users" ? "expanded" : ""
                     }`}
                   >
-                    {/* Office Users */}
                     <div
-                      className={`dropdown ${
-                        expandedDropdown === "users" &&
-                        nestedDropdown === "officeUsers"
-                          ? "expanded"
-                          : ""
+                      className="dropdown-title"
+                      onClick={() => toggleDropdown("users")}
+                    >
+                      <span>{t("Users")}</span>
+                      <FaUserCog size={20} />
+                    </div>
+                    <div
+                      className={`dropdown-items ${
+                        expandedDropdown === "users" ? "show" : ""
                       }`}
                     >
-                      <div
-                        className="dropdown-title"
-                        onClick={() =>
-                          setNestedDropdown(
-                            nestedDropdown === "officeUsers"
-                              ? ""
-                              : "officeUsers"
-                          )
-                        }
-                      >
-                        ▣ {t("Office Users")}
-                      </div>
-                      {nestedDropdown === "officeUsers" ? (
+                      {/* Office Users */}
+                      {(userRole == "Admin" ||
+                        hasPermission(
+                          "Company Office User Module",
+                          "View"
+                        )) && (
                         <div
-                          className={`dropdown-items ${
+                          className={`dropdown ${
                             expandedDropdown === "users" &&
                             nestedDropdown === "officeUsers"
-                              ? "show"
+                              ? "expanded"
                               : ""
                           }`}
                         >
-                          <Link
-                            to="/users/office/create"
-                            className="sidebar-link"
+                          <div
+                            className="dropdown-title"
+                            onClick={() => {
+                              setNestedDropdown(
+                                nestedDropdown === "officeUsers"
+                                  ? ""
+                                  : "officeUsers"
+                              );
+                              getRoles(companyId);
+                            }}
                           >
-                            {t("Create")}
-                          </Link>
+                            ▣ {t("Office Users")}
+                          </div>
+                          {nestedDropdown === "officeUsers" ? (
+                            <div
+                              className={`dropdown-items ${
+                                expandedDropdown === "users" &&
+                                nestedDropdown === "officeUsers"
+                                  ? "show"
+                                  : ""
+                              }`}
+                            >
+                              {(userRole == "Admin" ||
+                                hasPermission(
+                                  `Company Office User Module`,
+                                  `Create`
+                                )) && (
+                                <Link
+                                  to="/users/office/create"
+                                  className="sidebar-link"
+                                >
+                                  {t("Create")}
+                                </Link>
+                              )}
 
-                          {roles.length > 0 &&
-                            roles?.map((permission) => (
-                              <Link
-                                to={`/users/office/${permission.roleName}?id=${permission.id}`}
-                                className="sidebar-link"
-                              >
-                                {permission.roleName}
-                                {/* {t("Staff Admin")} */}
-                              </Link>
-                            ))}
+                              {roles.length > 0 &&
+                                roles?.map((permission) => (
+                                  <Link
+                                    to={`/users/office/${permission.roleName}?id=${permission.id}`}
+                                    className="sidebar-link"
+                                  >
+                                    {permission.roleName}
+                                    {/* {t("Staff Admin")} */}
+                                  </Link>
+                                ))}
+                            </div>
+                          ) : (
+                            ""
+                          )}
                         </div>
-                      ) : (
-                        ""
                       )}
-                    </div>
 
-                    {/* Field Agent */}
-
-                    <div
-                      className={`dropdown ${
-                        expandedDropdown === "users" &&
-                        nestedDropdown === "fieldUsers"
-                          ? "expanded"
-                          : ""
-                      }`}
-                    >
-                      <div
-                        className="dropdown-title"
-                        onClick={() =>
-                          setNestedDropdown(
-                            nestedDropdown === "fieldUsers" ? "" : "fieldUsers"
-                          )
-                        }
-                      >
-                        ▣ {t("Field Agent")}
-                      </div>
-                      {nestedDropdown === "fieldUsers" ? (
+                      {/* Field Agent */}
+                      {(userRole == "Admin" ||
+                        hasPermission("Company Field User Module", "View")) && (
                         <div
-                          className={`dropdown-items ${
+                          className={`dropdown ${
                             expandedDropdown === "users" &&
                             nestedDropdown === "fieldUsers"
-                              ? "show"
+                              ? "expanded"
                               : ""
                           }`}
                         >
-                          <Link
-                            to="/users/field/create"
-                            className="sidebar-link"
+                          <div
+                            className="dropdown-title"
+                            onClick={() =>
+                              setNestedDropdown(
+                                nestedDropdown === "fieldUsers"
+                                  ? ""
+                                  : "fieldUsers"
+                              )
+                            }
                           >
-                            {t("Create")}
-                          </Link>
-                          <Link to="/users/field/list" className="sidebar-link">
-                            {t("Field Agent List")}
-                          </Link>
-                          <Link
-                            to="/users/field/import"
-                            className="sidebar-link"
-                          >
-                            {t("Import Field Agent")}
-                          </Link>
+                            ▣ {t("Field Agent")}
+                          </div>
+                          {nestedDropdown === "fieldUsers" ? (
+                            <div
+                              className={`dropdown-items ${
+                                expandedDropdown === "users" &&
+                                nestedDropdown === "fieldUsers"
+                                  ? "show"
+                                  : ""
+                              }`}
+                            >
+                              {(userRole == "Admin" ||
+                                hasPermission(
+                                  `Company Field User Module`,
+                                  `Create`
+                                )) && (
+                                <Link
+                                  to="/users/field/create"
+                                  className="sidebar-link"
+                                >
+                                  {t("Create")}
+                                </Link>
+                              )}
+                              <Link
+                                to="/users/field/list"
+                                className="sidebar-link"
+                              >
+                                {t("Field Agent List")}
+                              </Link>
+                              {(userRole == "Admin" ||
+                                hasPermission(
+                                  `Company Field User Module`,
+                                  `Create`
+                                )) && (
+                                <Link
+                                  to="/users/field/import"
+                                  className="sidebar-link"
+                                >
+                                  {t("Import Field Agent")}
+                                </Link>
+                              )}
+                            </div>
+                          ) : (
+                            ""
+                          )}
                         </div>
-                      ) : (
-                        ""
                       )}
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* Customers */}
                 {(userRole == "Admin" ||
@@ -607,6 +667,30 @@ const Header = () => {
                           style={{ padding: "0px" }}
                         >
                           ▣ {t("Work Order Time")}
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Language Change */}
+                    <div
+                      className={`dropdown ${
+                        nestedDropdown === "roles" ? "expanded" : ""
+                      }`}
+                    >
+                      <div
+                        className="dropdown-title"
+                        onClick={() =>
+                          setNestedDropdown(
+                            nestedDropdown === "language" ? "" : "language"
+                          )
+                        }
+                      >
+                        <Link
+                          className="sidebar-link"
+                          to="/settings/admin/language"
+                          style={{ padding: "0px" }}
+                        >
+                          ▣ {t("Language Change")}
                         </Link>
                       </div>
                     </div>

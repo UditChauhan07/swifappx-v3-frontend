@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { FaInfoCircle, FaEdit, FaClipboardList } from "react-icons/fa";
 import { delete_OfficeUser } from "../../../lib/store";
 import { useTranslation } from "react-i18next";
+import { usePermissions } from "../../../context/PermissionContext";
 
 
 const UsersTabelComp = ({
@@ -22,10 +23,12 @@ const UsersTabelComp = ({
   const navigate = useNavigate();
         const { t } = useTranslation(); 
   
+  const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
 
   const handleToPreview = async (row) => {
     navigate("/users/office/list/view", { state: { row } });
-  };
+  };  
+  const {hasPermission}=usePermissions();
 
   const handleDelete = (id) => {
     Swal.fire({
@@ -38,7 +41,7 @@ const UsersTabelComp = ({
       reverseButtons: true, // Reverse the order of the buttons (Cancel left, Confirm right)
     }).then((result) => {
       if (result.isConfirmed) {
-        delete_OfficeUser(id, token).then((result) => {
+        delete_OfficeUser(id, token,company_id).then((result) => {
           console.log("tableData", result);
           if (result.status === true) {
             fetchData();
@@ -141,6 +144,10 @@ const UsersTabelComp = ({
                             <i className="bi bi-info-circle"></i>
                             <FaInfoCircle />
                           </Button>
+                          {(userRole == "Admin" ||
+                              hasPermission(
+                                "Company Office User Module", "Edit"
+                              )) && (
                           <Button
                             variant="warning"
                             size="sm"
@@ -157,6 +164,12 @@ const UsersTabelComp = ({
                             <i className="bi bi-pencil"></i>
                             <FaEdit />
                           </Button>
+                              )}
+
+                        {(userRole == "Admin" ||
+                        hasPermission(
+                          "Company Office User Module", "Delete"
+                        )) && (
                           <Button
                             variant="danger"
                             size="sm"
@@ -173,6 +186,7 @@ const UsersTabelComp = ({
                             <i className="bi bi-trash"></i>
                             <FaClipboardList />
                           </Button>
+                        )}
                         </div>
                       </td>
                     </tr>

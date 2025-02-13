@@ -13,6 +13,7 @@ export const PermissionsProvider = ({ children }) => {
   const [user, setUser] = useState(localStorage.getItem(userDataKey));
 
   const getRoles = async (userID) => {
+    console.log("hit 2", userID);
     if (userID) {
       try {
         // console.log(`userid: ${userID}  `);

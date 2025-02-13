@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Row,
@@ -9,21 +9,27 @@ import {
   ToggleButtonGroup,
   ToggleButton,
 } from "react-bootstrap";
-import Header from "../../../../Components/Header/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { createCompanyApi } from "../../../../lib/store";
-import { useNavigate } from "react-router-dom";
+import { createCompanyApi, editCompanyApi } from "../../../../../lib/store";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import Header from "../../../../../Components/Header/Header";
 import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
 import Select from "react-select";
 import { getNames } from "country-list";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const CreateCompany = () => {
+const EditCompany = () => {
   const { t, i18n } = useTranslation();
+  const countryOptions = getNames().map((country) => ({
+    value: country,
+    label: country,
+  }));
   const [currentStep, setCurrentStep] = useState(1);
-  const [showPassword, setShowPassword] = useState(false);
+  const { state } = useLocation();
+  const { company = {}, user = {} } = state.company || {};
+  // console.log("Company------", state.company);
+  const [companyId, setcompanyId] = useState(state.company.company.id);
 
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -38,30 +44,29 @@ const CreateCompany = () => {
     state: "",
     country: "",
     zip: "",
-    language: "",
 
     // Step 2: Company Basic Details
     companyName: "",
     companyLogo: null,
+    currency: "",
+    timeZone: "",
+    taxName: "",
+    taxPercentage: "",
+    certificationName: "",
+    certificationNumber: "",
+    additionalCertifications: [],
+
+    // Step 3: Contact Information
     addressLine1: "",
+    addressLine2: "",
     contactCity: "",
     companyState: "",
     contactCountry: "",
     contactZip: "",
     contactPerson: "",
     contactPhone: "",
-    officeEmail: "",
-    certificationName: "",
-    certificationNumber: "",
-    workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-    companyStatus: true,
-    additionalCertifications: [],
-
-    // Step 3: Contact Information
-
-    addressLine2: "",
-
     officePhone: "",
+    officeEmail: "",
 
     // Step 4: Other Settings
     package: "Full Pack",
@@ -78,15 +83,68 @@ const CreateCompany = () => {
     executionWorkOrderCost: "0.40",
     freeWorkOrders: "101",
     customerAddressFormat: "US",
+    workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+    companyStatus: true,
   });
+
+  useEffect(() => {
+    if (company && user) {
+      setFormData((prev) => ({
+        ...prev,
+        // Step 1: Super Admin Details
+        firstName: user.first_name || "",
+        lastName: user.last_name || "",
+        profilePicture: null,
+        contactNumber: user.contact_number || "",
+        email: user.email || "",
+        address: user.Address || "",
+        city: user.city || "",
+        state: user.state || "",
+        country: user.country || "",
+        zip: user.zip_code || "",
+
+        // Step 2: Company Basic Details
+        companyName: company.company_name || "",
+        companyLogo: null,
+        currency: company.currency || "",
+        timeZone: company.time_zone || "",
+        taxName: company.tax_name || "",
+        taxPercentage: company.tax_percentage || "",
+        certificationName: company.certificates?.[0]?.name || "",
+        certificationNumber: company.certificates?.[0]?.number || "",
+        additionalCertifications: company.certificates || [],
+
+        // Step 3: Contact Information
+        addressLine1: company.address_line_1 || "",
+        addressLine2: company.address_line_2 || "",
+        contactCity: company.city || "",
+        contactCountry: company.country || "",
+        companyState: company.companyState || "",
+        contactZip: company.zip_postal_code || "",
+        contactPerson: company.company_contact_person_name || "",
+        contactPhone: company.contact_person_phone || "",
+        officePhone: company.company_office_phone || "",
+        officeEmail: company.company_office_email || "",
+
+        // Step 4: Other Settings
+        package: company.package || "",
+        packageDescritption: company.packageDescritption || [],
+        workOrderTime: company.workOrderTime || "",
+        quotationCost: company.quotationCost || "",
+        freeQuotations: company.freeQuotations || "",
+        primaryWorkOrderCost: company.primaryWorkOrderCost || "",
+        executionWorkOrderCost: company.executionWorkOrderCost || "",
+        freeWorkOrders: company.freeWorkOrders || "",
+        customerAddressFormat: company.customerAddressFormat || "",
+        workingDays: company.workingDays || [],
+        companyStatus: company.companyStatus ?? true, // Ensures `true` if undefined
+      }));
+    }
+  }, []);
   const navigate = useNavigate();
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
-  // console.log("formData", formData);
+  console.log("formData", formData);
   const [errors, setErrors] = useState({});
-  const countryOptions = getNames().map((country) => ({
-    value: country,
-    label: country,
-  }));
 
   const handleNext = () => {
     const currentErrors = validateStep(currentStep);
@@ -116,7 +174,6 @@ const CreateCompany = () => {
       const isPhone = /^[0-9]{10,15}$/;
       const isAlpha = /^[a-zA-Z ]*$/;
       const isAlphanumericWithSpaces = /^[a-zA-Z0-9 ]*$/;
-      const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,16}$/;
 
       switch (field) {
         case "firstName":
@@ -126,9 +183,8 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.firstName = t(
-              "First Name must be 1-60 characters, letters only."
-            );
+            newErrors.firstName =
+              "First Name must be 1-60 characters, letters only.";
           } else {
             delete newErrors.firstName;
           }
@@ -141,9 +197,8 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.lastName = t(
-              "Last Name must be 1-60 characters, letters only."
-            );
+            newErrors.lastName =
+              "Last Name must be 1-60 characters, letters only.";
           } else {
             delete newErrors.lastName;
           }
@@ -151,30 +206,30 @@ const CreateCompany = () => {
 
         case "email":
           if (!value.trim() || !isEmail.test(value)) {
-            newErrors.email = t("Valid Email Address is required.");
+            newErrors.email = "Valid Email Address is required.";
           } else {
             delete newErrors.email;
           }
           break;
 
-        case "password":
-          // Password validation: 8-16 characters, at least one uppercase, one number, one special character.
-          if (!value.trim()) {
-            newErrors.password = t("Password is required.");
-          } else if (!passwordRegex.test(value)) {
-            newErrors.password = t(
-              "Password must be between 8 to 16 characters, include at least one uppercase letter, one number, and one special character."
-            );
-          } else {
-            delete newErrors.password;
-          }
-          break;
+        // case "password":
+        //   if (
+        //     !value.trim() ||
+        //     value.length < 1 ||
+        //     value.length > 60 ||
+        //     !isAlphanumeric.test(value)
+        //   ) {
+        //     newErrors.password =
+        //       "Password must be 1-60 alphanumeric characters, no spaces.";
+        //   } else {
+        //     delete newErrors.password;
+        //   }
+        //   break;
 
         case "contactNumber":
           if (!value.trim() || !isPhone.test(value)) {
-            newErrors.contactNumber = t(
-              "Valid Contact Number (10-15 digits) is required."
-            );
+            newErrors.contactNumber =
+              "Valid Contact Number (10-15 digits) is required.";
           } else {
             delete newErrors.contactNumber;
           }
@@ -182,9 +237,7 @@ const CreateCompany = () => {
 
         case "address":
           if (value.trim() && value.length < 5) {
-            newErrors.address = t(
-              "Address must be at least 5 characters long."
-            );
+            newErrors.address = "Address must be at least 5 characters long.";
           } else {
             delete newErrors.address;
           }
@@ -197,7 +250,7 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.city = t("City must be 2-60 characters, letters only.");
+            newErrors.city = "City must be 2-60 characters, letters only.";
           } else {
             delete newErrors.city;
           }
@@ -210,7 +263,7 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.state = t("State must be 2-60 characters, letters only.");
+            newErrors.state = "State must be 2-60 characters, letters only.";
           } else {
             delete newErrors.state;
           }
@@ -222,19 +275,10 @@ const CreateCompany = () => {
             value.length < 3 ||
             !isAlphanumericWithSpaces.test(value)
           ) {
-            newErrors.zip = t(
-              "ZIP/Postal Code must be at least 3 characters, alphanumeric only."
-            );
+            newErrors.zip =
+              "ZIP/Postal Code must be at least 3 characters, alphanumeric only.";
           } else {
             delete newErrors.zip;
-          }
-          break;
-
-        case "language":
-          if (!value) {
-            newErrors.language = t("Language selection is required.");
-          } else {
-            delete newErrors.language;
           }
           break;
 
@@ -245,9 +289,8 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.companyName = t(
-              "Company Name must be 1-60 characters, no numbers."
-            );
+            newErrors.companyName =
+              "Company Name must be 1-60 characters, no numbers.";
           } else {
             delete newErrors.companyName;
           }
@@ -255,7 +298,7 @@ const CreateCompany = () => {
 
         case "currency":
           if (!value) {
-            newErrors.currency = t("Currency is required.");
+            newErrors.currency = "Currency is required.";
           } else {
             delete newErrors.currency;
           }
@@ -263,7 +306,7 @@ const CreateCompany = () => {
 
         case "timeZone":
           if (!value) {
-            newErrors.timeZone = t("Time Zone is required.");
+            newErrors.timeZone = "Time Zone is required.";
           } else {
             delete newErrors.timeZone;
           }
@@ -276,9 +319,8 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.taxName = t(
-              "Tax Name must be 1-60 characters, letters only."
-            );
+            newErrors.taxName =
+              "Tax Name must be 1-60 characters, letters only.";
           } else {
             delete newErrors.taxName;
           }
@@ -286,9 +328,8 @@ const CreateCompany = () => {
 
         case "taxPercentage":
           if (isNaN(value) || value < 0 || value > 40) {
-            newErrors.taxPercentage = t(
-              "Tax Percentage must be a number between 0 and 40."
-            );
+            newErrors.taxPercentage =
+              "Tax Percentage must be a number between 0 and 40.";
           } else {
             delete newErrors.taxPercentage;
           }
@@ -296,9 +337,8 @@ const CreateCompany = () => {
 
         case "certificationName":
           if (value.trim() && value.length < 3) {
-            newErrors.certificationName = t(
-              "Certification Name must be at least 3 characters."
-            );
+            newErrors.certificationName =
+              "Certification Name must be at least 3 characters.";
           } else {
             delete newErrors.certificationName;
           }
@@ -306,9 +346,8 @@ const CreateCompany = () => {
 
         case "certificationNumber":
           if (value.trim() && value.length < 3) {
-            newErrors.certificationNumber = t(
-              "Certification Number must be at least 3 characters."
-            );
+            newErrors.certificationNumber =
+              "Certification Number must be at least 3 characters.";
           } else {
             delete newErrors.certificationNumber;
           }
@@ -316,9 +355,8 @@ const CreateCompany = () => {
 
         case "addressLine1":
           if (!value.trim() || value.length < 5) {
-            newErrors.addressLine1 = t(
-              "Address Line 1 must be at least 5 characters."
-            );
+            newErrors.addressLine1 =
+              "Address Line 1 must be at least 5 characters.";
           } else {
             delete newErrors.addressLine1;
           }
@@ -326,9 +364,8 @@ const CreateCompany = () => {
 
         case "addressLine2":
           if (value.trim() && value.length < 5) {
-            newErrors.addressLine2 = t(
-              "Address Line 2 must be at least 5 characters."
-            );
+            newErrors.addressLine2 =
+              "Address Line 2 must be at least 5 characters.";
           } else {
             delete newErrors.addressLine2;
           }
@@ -341,9 +378,8 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.contactCity = t(
-              "City must be 2-60 characters, letters only."
-            );
+            newErrors.contactCity =
+              "City must be 2-60 characters, letters only.";
           } else {
             delete newErrors.contactCity;
           }
@@ -356,9 +392,8 @@ const CreateCompany = () => {
             value.length > 60 ||
             !isAlpha.test(value)
           ) {
-            newErrors.companyState = t(
-              "State must be 2-60 characters, letters only."
-            );
+            newErrors.companyState =
+              "State must be 2-60 characters, letters only.";
           } else {
             delete newErrors.companyState;
           }
@@ -370,9 +405,8 @@ const CreateCompany = () => {
             value.length < 3 ||
             !isAlphanumericWithSpaces.test(value)
           ) {
-            newErrors.contactZip = t(
-              "ZIP/Postal Code must be at least 3 characters, alphanumeric only."
-            );
+            newErrors.contactZip =
+              "ZIP/Postal Code must be at least 3 characters, alphanumeric only.";
           } else {
             delete newErrors.contactZip;
           }
@@ -380,7 +414,7 @@ const CreateCompany = () => {
 
         case "contactPerson":
           if (!value.trim()) {
-            newErrors.contactPerson = t("Contact Person Required");
+            newErrors.contactPerson = "Contact Person Required";
           } else {
             delete newErrors.contactPerson;
           }
@@ -388,18 +422,16 @@ const CreateCompany = () => {
 
         case "contactPhone":
           if (!value.trim() || !isPhone.test(value)) {
-            newErrors.contactPhone = t(
-              "Valid Person Phone (10-15 digits) is required."
-            );
+            newErrors.contactPhone =
+              "Valid Person Phone (10-15 digits) is required.";
           } else {
             delete newErrors.contactPhone;
           }
           break;
         case "officePhone":
           if (!value.trim() || !isPhone.test(value)) {
-            newErrors.officePhone = t(
-              "Valid Office Phone (10-15 digits) is required."
-            );
+            newErrors.officePhone =
+              "Valid Office Phone (10-15 digits) is required.";
           } else {
             delete newErrors.officePhone;
           }
@@ -407,9 +439,7 @@ const CreateCompany = () => {
 
         case "officeEmail":
           if (!value.trim() || !isEmail.test(value)) {
-            newErrors.officeEmail = t(
-              "Valid Office Email Address is required."
-            );
+            newErrors.officeEmail = "Valid Office Email Address is required.";
           } else {
             delete newErrors.officeEmail;
           }
@@ -417,7 +447,7 @@ const CreateCompany = () => {
 
         case "workOrderTime":
           if (!value.trim()) {
-            newErrors.workOrderTime = t("Default Work Order Time is required.");
+            newErrors.workOrderTime = "Default Work Order Time is required.";
           } else {
             delete newErrors.workOrderTime;
           }
@@ -425,9 +455,8 @@ const CreateCompany = () => {
 
         case "quotationCost":
           if (isNaN(value) || value < 0 || value > 1000) {
-            newErrors.quotationCost = t(
-              "Quotation Cost must be a number between 0 and 1000."
-            );
+            newErrors.quotationCost =
+              "Quotation Cost must be a number between 0 and 1000.";
           } else {
             delete newErrors.quotationCost;
           }
@@ -435,9 +464,8 @@ const CreateCompany = () => {
 
         case "primaryWorkOrderCost":
           if (isNaN(value) || value < 0 || value > 1000) {
-            newErrors.primaryWorkOrderCost = t(
-              "Primary Work Order Cost must be a number between 0 and 1000."
-            );
+            newErrors.primaryWorkOrderCost =
+              "Primary Work Order Cost must be a number between 0 and 1000.";
           } else {
             delete newErrors.primaryWorkOrderCost;
           }
@@ -445,9 +473,8 @@ const CreateCompany = () => {
 
         case "executionWorkOrderCost":
           if (isNaN(value) || value < 0 || value > 1000) {
-            newErrors.executionWorkOrderCost = t(
-              "Execution Work Order Cost must be a number between 0 and 1000."
-            );
+            newErrors.executionWorkOrderCost =
+              "Execution Work Order Cost must be a number between 0 and 1000.";
           } else {
             delete newErrors.executionWorkOrderCost;
           }
@@ -459,7 +486,6 @@ const CreateCompany = () => {
       return newErrors;
     });
   };
-
   const validateStep = (step) => {
     const newErrors = {};
     const isAlphanumeric = /^[a-zA-Z0-9]*$/;
@@ -467,8 +493,6 @@ const CreateCompany = () => {
     const isPhone = /^[0-9]{10,15}$/;
     const isAlpha = /^[a-zA-Z ]*$/;
     const isAlphanumericWithSpaces = /^[a-zA-Z0-9 ]*$/;
-
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,16}$/;
 
     switch (step) {
       case 1:
@@ -479,9 +503,8 @@ const CreateCompany = () => {
           formData.firstName.length > 60 ||
           !isAlpha.test(formData.firstName)
         )
-          newErrors.firstName = t(
-            "First Name must be 1-60 characters, letters only."
-          );
+          newErrors.firstName =
+            "First Name must be 1-60 characters, letters only.";
         if (
           !formData.lastName ||
           !formData.lastName.trim() ||
@@ -489,38 +512,27 @@ const CreateCompany = () => {
           formData.lastName.length > 60 ||
           !isAlpha.test(formData.lastName)
         )
-          newErrors.lastName = t(
-            "Last Name must be 1-60 characters, letters only."
-          );
+          newErrors.lastName =
+            "Last Name must be 1-60 characters, letters only.";
         if (
           !formData.email ||
           !formData.email.trim() ||
           !isEmail.test(formData.email)
         )
-          newErrors.email = t("Valid Email Address is required.");
+          newErrors.email = "Valid Email Address is required.";
+        // if (
+        //   !formData.password ||
+        //   !formData.password.trim() ||
+        //   formData.password.length < 1 ||
+        //   formData.password.length > 60 ||
+        //   !isAlphanumeric.test(formData.password)
+        // )
+        //   newErrors.password =
+        //     "Password must be 1-60 alphanumeric characters, no spaces.";
 
-        // Password validation for step 1:
-        if (!formData.password || !formData.password.trim()) {
-          newErrors.password = t("Password is required.");
-        } else if (!passwordRegex.test(formData.password)) {
-          newErrors.password = t(
-            "Password must be between 8 to 16 characters, include at least one uppercase letter, one number, and one special character."
-          );
-        }
-
-        if (
-          !formData.contactNumber ||
-          !formData.contactNumber.trim() ||
-          !isPhone.test(formData.contactNumber)
-        )
-          newErrors.contactNumber = t(
-            "Valid Contact Number (10-15 digits) is required."
-          );
-
-        if (!formData.language) {
-          newErrors.language = t("Language selection is required.");
-        }
-
+        if (!formData.contactNumber || !isPhone.test(formData.contactNumber))
+          newErrors.contactNumber =
+            "Valid Contact Number (10-15 digits) is required.";
         break;
 
       case 2:
@@ -531,18 +543,16 @@ const CreateCompany = () => {
           formData.companyName.length > 60 ||
           !isAlpha.test(formData.companyName)
         )
-          newErrors.companyName = t(
-            "Company Name must be 1-60 characters, no numbers."
-          );
+          newErrors.companyName =
+            "Company Name must be 1-60 characters, no numbers.";
 
         if (
           !formData.addressLine1 ||
           !formData.addressLine1.trim() ||
           formData.addressLine1.length < 5
         )
-          newErrors.addressLine1 = t(
-            "Address Line 1 must be at least 5 characters."
-          );
+          newErrors.addressLine1 =
+            "Address Line 1 must be at least 5 characters.";
         // if (formData.addressLine2 && formData.addressLine2.length < 5)
         //   newErrors.addressLine2 =
         //     "Address Line 2 must be at least 5 characters.";
@@ -553,9 +563,7 @@ const CreateCompany = () => {
           formData.contactCity.length > 60 ||
           !isAlpha.test(formData.contactCity)
         )
-          newErrors.contactCity = t(
-            "City must be 2-60 characters, letters only."
-          );
+          newErrors.contactCity = "City must be 2-60 characters, letters only.";
         if (
           !formData.companyState ||
           !formData.companyState.trim() ||
@@ -563,23 +571,21 @@ const CreateCompany = () => {
           formData.companyState.length > 60 ||
           !isAlpha.test(formData.companyState)
         )
-          newErrors.companyState = t(
-            "State must be 2-60 characters, letters only."
-          );
+          newErrors.companyState =
+            "State must be 2-60 characters, letters only.";
         if (
           !formData.contactZip ||
           !formData.contactZip.trim() ||
           formData.contactZip.length < 3 ||
           !isAlphanumericWithSpaces.test(formData.contactZip)
         )
-          newErrors.contactZip = t(
-            "ZIP/Postal Code must be at least 3 characters, alphanumeric only."
-          );
+          newErrors.contactZip =
+            "ZIP/Postal Code must be at least 3 characters, alphanumeric only.";
         if (!formData.contactPerson || !formData.contactPerson.trim())
-          newErrors.contactPerson = t("Contact Person is required.");
+          newErrors.contactPerson = "Contact Person is required.";
         if (!formData.contactPhone.trim())
           if (!formData.officeEmail.trim())
-            newErrors.officeEmail = t("Office Email Address is required.");
+            newErrors.officeEmail = "Office Email Address is required.";
 
         break;
       default:
@@ -618,9 +624,12 @@ const CreateCompany = () => {
       }));
     }
   };
-
   const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
+      if (!(file instanceof Blob)) {
+        return null;
+      }
+
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
@@ -637,76 +646,97 @@ const CreateCompany = () => {
     ) {
       return;
     }
-    const languageCode = formData.language === "English" ? "en" : "es";
-    try {
-      // ✅ Convert files to Base64 (if they exist)
-      const profilePictureBase64 = formData.profilePicture
-        ? await fileToBase64(formData.profilePicture)
-        : null;
+    console.log("Submit---", formData);
+    const profilePictureBase64 = formData.profilePicture
+      ? await fileToBase64(formData.profilePicture)
+      : null;
 
-      const companyLogoBase64 = formData.companyLogo
-        ? await fileToBase64(formData.companyLogo)
-        : null;
-      // Build and filter certificates array
-      const primaryCert = {
+    const companyLogoBase64 = formData.companyLogo
+      ? await fileToBase64(formData.companyLogo)
+      : null;
+
+    const allCertificates = [
+      {
         name: formData.certificationName,
         number: formData.certificationNumber,
-      };
+      },
+      ...formData.additionalCertifications,
+    ];
 
-      let allCertificates = [];
-      if (primaryCert.name.trim() !== "" || primaryCert.number.trim() !== "") {
-        allCertificates.push(primaryCert);
-      }
-      if (
-        formData.additionalCertifications &&
-        formData.additionalCertifications.length > 0
-      ) {
-        const filteredAdditional = formData.additionalCertifications.filter(
-          (cert) => cert.name.trim() !== "" || cert.number.trim() !== ""
-        );
-        allCertificates = allCertificates.concat(filteredAdditional);
-      }
-      const companyData = {
-        company_name: formData.companyName,
-        company_logo: companyLogoBase64,
-        certificates: allCertificates,
+    const companyData = {
+      company_name: formData.companyName,
+      company_logo: companyLogoBase64,
+      // currency: formData.currency,
+      // time_zone: formData.timeZone,
+      // tax_name: formData.taxName,
+      // tax_percentage: formData.taxPercentage,
+      certificates: allCertificates,
 
-        address_line_1: formData.addressLine1,
-        city: formData.contactCity,
-        country: formData.contactCountry,
-        zip_postal_code: formData.contactZip,
+      address_line_1: formData.addressLine1,
+      // address_line_2: formData.addressLine2,
+      city: formData.contactCity,
+      country: formData.contactCountry,
+      zip_postal_code: formData.contactZip,
 
-        company_contact_person_name: formData.contactPerson,
-        contact_person_phone: formData.contactPhone,
-        company_office_email: formData.officeEmail,
-        workingDays: formData.workingDays,
-        companyStatus: formData.companyStatus,
-        companyState: formData.companyState,
-        language: languageCode,
-      };
+      company_contact_person_name: formData.contactPerson,
+      contact_person_phone: formData.contactPhone,
+      // company_office_phone: formData.officePhone,
+      company_office_email: formData.officeEmail,
 
-      const userdata = {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        Address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        contact_number: formData.contactNumber,
-        country: formData.country,
-        email: formData.email,
-        password: formData.password,
-        zip_code: formData.zip,
-        profile_picture: profilePictureBase64, // ✅ Store as Base64
-      };
+      // package: formData.package,
+      // packageDescritption: formData.packageDescritption,
+      // workOrderTime: formData.workOrderTime,
+      // primaryWorkOrderCost: formData.primaryWorkOrderCost,
+      // quotationCost: formData.quotationCost,
+      // executionWorkOrderCost: formData.executionWorkOrderCost,
+      // freeQuotations: formData.freeQuotations,
+      // freeWorkOrders: formData.freeWorkOrders,
+      // customerAddressFormat: formData.customerAddressFormat,
+      workingDays: formData.workingDays,
+      companyStatus: formData.companyStatus,
+      companyState: formData.companyState,
+    };
+    const userdata = {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      Address: formData.address,
+      city: formData.city,
+      state: formData.state,
+      contact_number: formData.contactNumber,
+      country: formData.country,
+      email: formData.email,
+      password: formData.password,
+      zip_code: formData.zip,
+      profile_picture: profilePictureBase64,
+    };
 
-      console.log("Final Data:", companyData, userdata);
+    const finalData = {
+      companyData,
+      userdata,
+    };
+
+    console.log("Transformed finalData", companyData, "\navigator", userdata);
+
+    // const formDataToSend = new FormData();
+    // formDataToSend.append("userdata", JSON.stringify(userdata)); // Stringify userdata
+    // formDataToSend.append("companyData", JSON.stringify(companyData)); // Stringify companyData
+    // if (formData.profilePicture) {
+    //   formDataToSend.append("profile_picture", formData.profilePicture);
+    // }
+    // if (formData.companyLogo) {
+    //   formDataToSend.append("company_logo", formData.companyLogo);
+    // }
+
+    console.log("Final FormData: ", { companyData, userdata });
+    try {
+      // Show confirmation alert before API call
       const result = await Swal.fire({
-        title: t("Are you sure?"),
-        text: t("Do you want to create this company?"),
+        title: "Are you sure?",
+        text: "Do you want to create this company?",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: t("Yes, create it!"),
-        cancelButtonText: t("No, cancel"),
+        confirmButtonText: "Yes, create it!",
+        cancelButtonText: "No, cancel",
       });
 
       if (!result.isConfirmed) {
@@ -716,22 +746,30 @@ const CreateCompany = () => {
 
       // Show loading alert while API is executing
       Swal.fire({
-        title: t("Processing..."),
-        text: t("Creating company, please wait."),
+        title: "Processing...",
+        text: "Updating company, please wait.",
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
         },
       });
 
-      // ✅ Send as JSON (No FormData needed)
-      const response = await createCompanyApi({ companyData, userdata }, token);
+      // Call API
+      console.log("companyId: ", companyId);
+      const response = await editCompanyApi(
+        companyId,
+        { companyData, userdata },
+        token
+      );
       console.log("response", response);
+
+      // Close loading alert
       Swal.close();
-      if (response.success) {
+
+      if (response.status) {
         Swal.fire({
-          title: t("Success!"),
-          text: t("Company created successfully."),
+          title: "Success!",
+          text: "Company Updated successfully.",
           icon: "success",
           confirmButtonText: "OK",
         }).then(() => {
@@ -740,21 +778,20 @@ const CreateCompany = () => {
       } else {
         Swal.fire({
           title: "Error!",
-          text:
-            response.message || t("There was an error creating the company."),
+          text: response.message || "There was an error creating the company.",
           icon: "error",
           confirmButtonText: "Try Again",
         });
       }
-      console.log("Response:", response);
     } catch (error) {
-      console.error("Error submitting data:", error);
-      Swal.close();
+      Swal.close(); // Ensure loading is closed
+      console.error("Error Updating company", error);
+
       Swal.fire({
         title: "API Error!",
-        text: error || t("Something went wrong. Please try again later."),
+        text: "Something went wrong. Please try again later.",
         icon: "error",
-        confirmButtonText: t("OK"),
+        confirmButtonText: "OK",
       });
     }
   };
@@ -894,29 +931,19 @@ const CreateCompany = () => {
                       <span className="text-danger">*</span>{" "}
                       {t("Admin Password")}:
                     </Form.Label>
-                    <InputGroup hasValidation>
-                      <Form.Control
-                        type={showPassword ? "text" : "password"}
-                        placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
-                          "Password"
-                        )}`}
-                        value={formData.password}
-                        maxLength={20}
-                        onChange={(e) =>
-                          handleChange("password", e.target.value)
-                        }
-                        isInvalid={!!errors.password}
-                      />
-                      <InputGroup.Text
-                        style={{ cursor: "pointer" }}
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                      </InputGroup.Text>
-                      <Form.Control.Feedback type="invalid">
-                        {errors.password}
-                      </Form.Control.Feedback>
-                    </InputGroup>
+                    <Form.Control
+                      type="password"
+                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                        "Password"
+                      )}`}
+                      value={formData.password}
+                      maxLength={20}
+                      onChange={(e) => handleChange("password", e.target.value)}
+                      isInvalid={!!errors.password}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.password}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
               </Row>
@@ -999,32 +1026,7 @@ const CreateCompany = () => {
                       value={formData.zip}
                       maxLength={10}
                       onChange={(e) => handleChange("zip", e.target.value)}
-                      isInvalid={!!errors.zip}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.zip}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      <span className="text-danger">*</span>{" "}
-                      {t("Select Language")}:
-                    </Form.Label>
-                    <Form.Select
-                      as="select"
-                      value={formData.language}
-                      onChange={(e) => handleChange("language", e.target.value)}
-                      isInvalid={!!errors.language}
-                    >
-                      <option value="">Select Language</option>
-                      <option value="English">English</option>
-                      <option value="Spanish">Spanish</option>
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      {errors.language}
-                    </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
               </Row>
@@ -1260,7 +1262,7 @@ const CreateCompany = () => {
                         onChange={(value) =>
                           handleChange("workingDays", value.filter(Boolean))
                         }
-                        style={{ zIndex: "0" }}
+                        style={{zIndex:"0"}}
                       >
                         {[
                           "Monday",
@@ -1292,7 +1294,7 @@ const CreateCompany = () => {
                         ))}
                       </ToggleButtonGroup>
                       <Form.Text muted>
-                        Default (mon, tue, wed, thr, fri)
+                        Default (mon, tue, wed, thus, fri)
                       </Form.Text>
                     </div>
                   </Form.Group>
@@ -1440,7 +1442,7 @@ const CreateCompany = () => {
               {t("Previous")}
             </Button>
             <Button
-              variant="primary"
+              type="submit"
               onClick={() => {
                 handleNext();
                 handleSubmit();
@@ -1455,4 +1457,4 @@ const CreateCompany = () => {
   );
 };
 
-export default CreateCompany;
+export default EditCompany;
