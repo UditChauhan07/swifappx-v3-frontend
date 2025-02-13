@@ -83,13 +83,13 @@ const Header = () => {
 
   const handleLogOut = () => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You will be logged out of your session.",
+      title: t("Are you sure?"),
+      text: t("You will be logged out of your session."),
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Logout",
+      confirmButtonText: t("Yes, Logout"),
     }).then((result) => {
       if (result.isConfirmed) {
         // Remove user data
@@ -106,8 +106,8 @@ const Header = () => {
         localStorage.removeItem("defaultLanguage");
 
         Swal.fire({
-          title: "Logged Out!",
-          text: "You have been successfully logged out.",
+          title: t("Logged Out!"),
+          text: t("You have been successfully logged out."),
           icon: "success",
           timer: 2000,
           showConfirmButton: false,

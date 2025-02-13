@@ -1639,6 +1639,10 @@
   "Agent Id":"Identificación del agente",
   "Customer Id":"Identificación del cliente",
   "Default Work Time (Hours)":"Tiempo de trabajo predeterminado (horas)",
-  "Hours":"Horas"
+  "Hours":"Horas",
+  "You will be logged out of your session.":"Se cerrará su sesión.",
+  "Yes, Logout":"Sí, cerrar sesión",
+  "Logged Out!":"¡Desconectado!",
+  "You have been successfully logged out.":"Has cerrado tu sesión correctamente."
 
 }
