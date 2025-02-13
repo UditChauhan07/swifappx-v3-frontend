@@ -321,7 +321,10 @@ const Header = () => {
                 </Link>
 
                 {/* Users */}
-
+                {(userRole == "Admin" ||
+                      hasPermission("Company Office User Module", "View") ||
+                      hasPermission("Company Field User Module", "View")) &&
+                       (
                 <div
                   className={`dropdown ${
                     expandedDropdown === "users" ? "expanded" : ""
@@ -374,7 +377,7 @@ const Header = () => {
                           >
                             {(userRole == "Admin" ||
                               hasPermission(
-                                `Company Field User Module`,
+                                `Company Office User Module`,
                                 `Create`
                               )) && (
                               <Link
@@ -472,6 +475,8 @@ const Header = () => {
                     )}
                   </div>
                 </div>
+                )}
+
 
                 {/* Customers */}
                 {(userRole == "Admin" ||
