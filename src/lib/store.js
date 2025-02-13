@@ -347,12 +347,13 @@ export const editCustomerApi = async (customerId, formdata, token) => {
 };
 
 // Delete Customer Api
-export const DeleteCustomerApi = async (userId, token) => {
+export const DeleteCustomerApi = async (userId, token, companyId) => {
   try {
     const response = await axios.delete(`${Url}/dcl45m76y8/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      data: { companyId: companyId },
     });
     // console.log(response.data, "login api data");
     return response.data;
@@ -401,12 +402,13 @@ export const fetchWorkOrderList = async (companyId, token) => {
 };
 
 // Work Order Delete Api
-export const workOrderDeleteApi = async (userId, token) => {
+export const workOrderDeleteApi = async (userId, token, company_id) => {
   try {
     const response = await axios.delete(`${Url}/dwo32mt54f/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      data: { companyId: company_id },
     });
     // console.log(response.data, "login api data");
     return response.data;
@@ -480,14 +482,18 @@ export const fetch_officeUsersByRoleId = async (roleId, token) => {
 };
 
 //delete field user by id
-export const delete_FieldUser = async (userId, token) => {
+export const delete_FieldUser = async (userId, token, company_id) => {
+  console.log("Company ID:", company_id);
+  console.log("User ID:", userId);
+  console.log("Token:", token);
+
   try {
     const response = await axios.delete(`${Url}/dfu54mjki9/${userId}`, {
+      data: { companyId: company_id }, // include company_id here
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    // console.log(response.data, "login api data");
     return response.data;
   } catch (error) {
     if (error.response) {
@@ -515,12 +521,13 @@ export const update_FieldUser = async (formdata, token, id) => {
   }
 };
 
-export const delete_OfficeUser = async (userId, token) => {
+export const delete_OfficeUser = async (userId, token, company_id) => {
   try {
     const response = await axios.delete(`${Url}/dlofim54rt/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      data: { companyId: company_id },
     });
     // console.log(response.data, "login api data");
     return response.data;
@@ -587,11 +594,12 @@ export const importWorkOrder = async (formdata, token) => {
 };
 
 // Work Order Time Api Update
-export const workOrderTimeApi = async (formdata, companyId,token) => {
+export const workOrderTimeApi = async (formdata, companyId, token) => {
   try {
     const response = await axios.post(
       `${Url}/wot3m9iszx/${companyId}`,
-      formdata,{
+      formdata,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -608,17 +616,74 @@ export const workOrderTimeApi = async (formdata, companyId,token) => {
 };
 
 // Work Order Time Api Get
-export const workOrderTimeGetApi = async (companyId,token) => {
+export const workOrderTimeGetApi = async (companyId, token) => {
   try {
-    const response = await axios.get(
-      `${Url}/gwoct43m9su/${companyId}`,
+    const response = await axios.get(`${Url}/gwoct43m9su/${companyId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// get Single Company Detail
+export const getCompanyDetail = async (companyId, token) => {
+  try {
+    const response = await axios.get(`${Url}/gscd3m9isd/${companyId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Update Single Company
+export const updateSingleCompany = async (companyId, token, companyData) => {
+  try {
+    const response = await axios.put(
+      `${Url}/upcom32mw8/${companyId}`,
+      companyData, // pass the company data directly as the request body
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
-    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Language update Api
+export const LanguageCompanyUpdateApi = async (companyId, token, language) => {
+  try {
+    const response = await axios.post(
+      `${Url}/dlg2m8ui5r/${companyId}`,
+      {language}, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     if (error.response) {

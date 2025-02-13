@@ -30,9 +30,11 @@ const EditCompany = () => {
   const { state } = useLocation();
   const { company = {}, user = {} } = state.company || {};
   // console.log("Company------", state.company);
-  const [companyId, setcompanyId] = useState(state.company.company.id);
+  const [companyId, setcompanyId] = useState(state?.company?.company.id);
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [passChangeId, setpassChangeId] = useState()
+  const [passChangeId, setpassChangeId] = useState();
+  const [userId, setuserId] = useState(state?.company?.user.id)
+  
 
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
@@ -117,7 +119,11 @@ const EditCompany = () => {
         taxPercentage: company.tax_percentage || "",
         certificationName: company.certificates?.[0]?.name || "",
         certificationNumber: company.certificates?.[0]?.number || "",
-        additionalCertifications: company.certificates || [],
+        // Only show additional certifications if there are more than one.
+      additionalCertifications:
+      company.certificates && company.certificates.length > 1
+        ? company.certificates.slice(1)
+        : [],
 
         // Step 3: Contact Information
         addressLine1: company.address_line_1 || "",
@@ -148,7 +154,7 @@ const EditCompany = () => {
   }, []);
   const navigate = useNavigate();
   const [token, settoken] = useState(localStorage.getItem("UserToken"));
-  console.log("formData", formData);
+  // console.log("formData", formData);
   const [errors, setErrors] = useState({});
 
   const handleNext = () => {
@@ -664,7 +670,7 @@ const EditCompany = () => {
       return;
     }
     const languageCode = formData.language === "English" ? "en" : "es";
-    console.log("Submit---", formData);
+    // console.log("Submit---", formData);
     const profilePictureBase64 = formData.profilePicture
       ? await fileToBase64(formData.profilePicture)
       : null;
@@ -673,13 +679,25 @@ const EditCompany = () => {
       ? await fileToBase64(formData.companyLogo)
       : null;
 
-    const allCertificates = [
-      {
-        name: formData.certificationName,
-        number: formData.certificationNumber,
-      },
-      ...formData.additionalCertifications,
-    ];
+    // Build and filter certificates array
+    const primaryCert = {
+      name: formData.certificationName,
+      number: formData.certificationNumber,
+    };
+
+    let allCertificates = [];
+    if (primaryCert.name.trim() !== "" || primaryCert.number.trim() !== "") {
+      allCertificates.push(primaryCert);
+    }
+    if (
+      formData.additionalCertifications &&
+      formData.additionalCertifications.length > 0
+    ) {
+      const filteredAdditional = formData.additionalCertifications.filter(
+        (cert) => cert.name.trim() !== "" || cert.number.trim() !== ""
+      );
+      allCertificates = allCertificates.concat(filteredAdditional);
+    }
 
     const companyData = {
       company_name: formData.companyName,
@@ -939,7 +957,7 @@ const EditCompany = () => {
                     </Form.Label>
                     <div className="d-flex align-items-center">
                       <Button
-                      style={{background:"#2e2e32",border:"none"}}
+                        style={{ background: "#2e2e32", border: "none" }}
                         onClick={() => setShowChangePassword(true)}
                         className="ms-2"
                       >
@@ -1037,7 +1055,7 @@ const EditCompany = () => {
                       <span className="text-danger">*</span>{" "}
                       {t("Select Language")}:
                     </Form.Label>
-                    <Form.Control
+                    <Form.Select
                       as="select"
                       value={formData.language}
                       onChange={(e) => handleChange("language", e.target.value)}
@@ -1046,7 +1064,7 @@ const EditCompany = () => {
                       <option value="">Select Language</option>
                       <option value="English">English</option>
                       <option value="Spanish">Spanish</option>
-                    </Form.Control>
+                    </Form.Select>
                     <Form.Control.Feedback type="invalid">
                       {errors.language}
                     </Form.Control.Feedback>
@@ -1479,6 +1497,7 @@ const EditCompany = () => {
           <ChangePasswordModal
             show={showChangePassword}
             handleClose={() => setShowChangePassword(false)}
+            userId={userId}
           />
         )}
       </div>

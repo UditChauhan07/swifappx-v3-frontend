@@ -109,7 +109,7 @@ const CompanyDetails = () => {
                         fontSize: "0.9rem",
                         borderRadius: "10px",
                         padding: "8px 12px",
-                        background: "#8d28dd",
+                        background: "#2e2e32",
                       }}
                     >
                       {t(day)}

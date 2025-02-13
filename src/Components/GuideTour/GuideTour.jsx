@@ -1,32 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import "./GuideTour.css";
+import { useTranslation } from "react-i18next";
 
 const GuideTour = ({ onClose }) => {
-  const [companyName, setcompanyName] = useState(
+  const [companyName, setCompanyName] = useState(
     localStorage.getItem("companyName")
   );
-  console.log("sadad",companyName)
+  const { t } = useTranslation();
+
   const steps = [
     {
-      title: `Basic Guidelines to use ${companyName || "this Website"}`,
-      description: "Follow these guidelines to get started.",
+      title: t("Basic Guidelines to use {{companyName}}", {
+        companyName: companyName || t("this Website"),
+      }),
+      description: t("Follow these guidelines to get started."),
     },
     {
       slides: [
         {
           image: "/images/Guidelines/Work-Order-1.png",
-          title: "Step 1: Create Work Order Time - Part 1",
-          description:
-            "In the Settings → Work Order Time page, you can define default time parameters for work orders, ensuring consistency in time tracking and scheduling. This allows for automated time allocation, accurate logging, and efficient work order management",
+          title: t("Step 1: Create Work Order Time - Part 1"),
+          description: t(
+            "In the Settings → Work Order Time page, you can define default time parameters for work orders, ensuring consistency in time tracking and scheduling. This allows for automated time allocation, accurate logging, and efficient work order management"
+          ),
         },
         {
           image: "/images/Guidelines/Work-Order-2.png",
-          title: "Step 1: Create Work Order Time - Part 2",
-          description: `In the Work Order Time page, you can configure the following settings:
+          title: t("Step 1: Create Work Order Time - Part 2"),
+          description: t(
+            `In the Work Order Time page, you can configure the following settings:
 Interval Time: Set the gap between work order entries.
 Default Work Order Hours: Define the expected duration for field agents.
-Buffer Time: Add extra time for flexibility in scheduling.`,
+Buffer Time: Add extra time for flexibility in scheduling.`
+          ),
         },
       ],
     },
@@ -34,28 +41,32 @@ Buffer Time: Add extra time for flexibility in scheduling.`,
       slides: [
         {
           image: "/images/Guidelines/Create-Field-agent.png",
-          title: "Step 2: Create Work Order - Field Agent",
-          description:
-            "To select a field agent, first ensure they are created in the system. Navigate to Users → Field Agent → Create to add a new field agent by filling in the necessary details. Field agents are responsible for handling customer work orders.",
+          title: t("Step 2: Create Work Order - Field Agent"),
+          description: t(
+            "To select a field agent, first ensure they are created in the system. Navigate to Users → Field Agent → Create to add a new field agent by filling in the necessary details. Field agents are responsible for handling customer work orders."
+          ),
         },
         {
           image: "/images/Guidelines/Create-Customer.png",
-          title: "Step 2: Create Work Order - Customer Details",
-          description:
-            "To enter customer information, navigate to Customers → Create and fill in the necessary details to add a new customer to the system.",
+          title: t("Step 2: Create Work Order - Customer Details"),
+          description: t(
+            "To enter customer information, navigate to Customers → Create and fill in the necessary details to add a new customer to the system."
+          ),
         },
         {
           image: "/images/Guidelines/Create-Work-Order.png",
-          title: "Step 2: Create Work Order - Confirmation",
-          description:
-            "Before finalizing the work order, ensure all details are accurate. Navigate to Work Orders → Create to create a new work order by selecting a customer, assigning a field agent, and filling in the required details.",
+          title: t("Step 2: Create Work Order - Confirmation"),
+          description: t(
+            "Before finalizing the work order, ensure all details are accurate. Navigate to Work Orders → Create to create a new work order by selecting a customer, assigning a field agent, and filling in the required details."
+          ),
         },
       ],
     },
     {
-      title: "Great, Now You are Ready to use",
-      description:
-        "You've successfully completed the guided tour. Enjoy using the website!",
+      title: t("Great, Now You are Ready to use"),
+      description: t(
+        "You've successfully completed the guided tour. Enjoy using the website!"
+      ),
     },
   ];
 
@@ -109,30 +120,24 @@ Buffer Time: Add extra time for flexibility in scheduling.`,
     }
   };
 
-  const handleSlidePrev = () => {
-    if (currentStepHasSlides && slideIndex > 0) {
-      setSlideIndex(slideIndex - 1);
-    }
-  };
-
-  const handleSlideNext = () => {
-    if (
-      currentStepHasSlides &&
-      slideIndex < steps[currentStep].slides.length - 1
-    ) {
-      setSlideIndex(slideIndex + 1);
-    }
-  };
-
-  // Create a key so that whenever currentStep or slideIndex changes, the content remounts
+  // Use a key so that when currentStep or slideIndex changes, the content re-mounts
   const contentKey = currentStepHasSlides
     ? `${currentStep}-${slideIndex}`
     : currentStep;
 
   return (
     <div className="guide-overlay">
-      <div className="guide-box">
-        {/* Wrap dynamic content with a key and apply a CSS class that triggers animation */}
+      <div className="guide-box" style={{ position: "relative" }}>
+        {/* Skip Tutorial Button */}
+        <Button
+          variant="link"
+          onClick={onClose}
+          style={{ position: "absolute", top: 10, right: 10,background:"grey",color:"white",textDecoration:"none" }}
+        >
+          {t("Skip Tutorial")}
+        </Button>
+
+        {/* Dynamic content with animation triggered by a key */}
         <div key={contentKey} className="fade-in">
           <h3 className="mb-3">{title}</h3>
           {currentStepHasSlides && (
@@ -143,7 +148,7 @@ Buffer Time: Add extra time for flexibility in scheduling.`,
                   color: "black",
                   border: "none",
                 }}
-                onClick={handleSlidePrev}
+                onClick={handlePrev}
                 disabled={slideIndex === 0}
               >
                 &lt;
@@ -160,7 +165,7 @@ Buffer Time: Add extra time for flexibility in scheduling.`,
                   color: "black",
                   border: "none",
                 }}
-                onClick={handleSlideNext}
+                onClick={handleNext}
                 disabled={slideIndex === steps[currentStep].slides.length - 1}
               >
                 &gt;
@@ -172,7 +177,7 @@ Buffer Time: Add extra time for flexibility in scheduling.`,
         <div className="guide-buttons">
           {(currentStep > 0 || (currentStepHasSlides && slideIndex > 0)) && (
             <Button variant="secondary" onClick={handlePrev}>
-              Previous
+              {t("Previous")}
             </Button>
           )}
           <Button
@@ -182,8 +187,8 @@ Buffer Time: Add extra time for flexibility in scheduling.`,
             {currentStep === steps.length - 1 &&
             (!currentStepHasSlides ||
               slideIndex === steps[currentStep].slides.length - 1)
-              ? "Okay, Got It"
-              : "Next"}
+              ? t("Okay, Got It")
+              : t("Next")}
           </Button>
         </div>
       </div>

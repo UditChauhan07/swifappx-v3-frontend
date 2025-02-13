@@ -18,10 +18,13 @@ import { useTranslation } from "react-i18next";
 import imageCompression from "browser-image-compression";
 import Select from "react-select";
 import { getNames } from "country-list";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const CreateCompany = () => {
   const { t, i18n } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
+  const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     // Step 1: Super Admin Details
     firstName: "",
@@ -50,7 +53,7 @@ const CreateCompany = () => {
     officeEmail: "",
     certificationName: "",
     certificationNumber: "",
-    workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+    workingDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
     companyStatus: true,
     additionalCertifications: [],
 
@@ -113,6 +116,7 @@ const CreateCompany = () => {
       const isPhone = /^[0-9]{10,15}$/;
       const isAlpha = /^[a-zA-Z ]*$/;
       const isAlphanumericWithSpaces = /^[a-zA-Z0-9 ]*$/;
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,16}$/;
 
       switch (field) {
         case "firstName":
@@ -153,19 +157,18 @@ const CreateCompany = () => {
           }
           break;
 
-        // case "password":
-        //   if (
-        //     !value.trim() ||
-        //     value.length < 1 ||
-        //     value.length > 60 ||
-        //     !isAlphanumeric.test(value)
-        //   ) {
-        //     newErrors.password =
-        //       "Password must be 1-60 alphanumeric characters, no spaces.";
-        //   } else {
-        //     delete newErrors.password;
-        //   }
-        //   break;
+        case "password":
+          // Password validation: 8-16 characters, at least one uppercase, one number, one special character.
+          if (!value.trim()) {
+            newErrors.password = t("Password is required.");
+          } else if (!passwordRegex.test(value)) {
+            newErrors.password = t(
+              "Password must be between 8 to 16 characters, include at least one uppercase letter, one number, and one special character."
+            );
+          } else {
+            delete newErrors.password;
+          }
+          break;
 
         case "contactNumber":
           if (!value.trim() || !isPhone.test(value)) {
@@ -465,6 +468,8 @@ const CreateCompany = () => {
     const isAlpha = /^[a-zA-Z ]*$/;
     const isAlphanumericWithSpaces = /^[a-zA-Z0-9 ]*$/;
 
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,16}$/;
+
     switch (step) {
       case 1:
         if (
@@ -493,15 +498,15 @@ const CreateCompany = () => {
           !isEmail.test(formData.email)
         )
           newErrors.email = t("Valid Email Address is required.");
-        // if (
-        //   !formData.password ||
-        //   !formData.password.trim() ||
-        //   formData.password.length < 1 ||
-        //   formData.password.length > 60 ||
-        //   !isAlphanumeric.test(formData.password)
-        // )
-        //   newErrors.password =
-        //     "Password must be 1-60 alphanumeric characters, no spaces.";
+
+        // Password validation for step 1:
+        if (!formData.password || !formData.password.trim()) {
+          newErrors.password = t("Password is required.");
+        } else if (!passwordRegex.test(formData.password)) {
+          newErrors.password = t(
+            "Password must be between 8 to 16 characters, include at least one uppercase letter, one number, and one special character."
+          );
+        }
 
         if (
           !formData.contactNumber ||
@@ -642,13 +647,25 @@ const CreateCompany = () => {
       const companyLogoBase64 = formData.companyLogo
         ? await fileToBase64(formData.companyLogo)
         : null;
-      const allCertificates = [
-        {
-          name: formData.certificationName,
-          number: formData.certificationNumber,
-        },
-        ...formData.additionalCertifications,
-      ];
+      // Build and filter certificates array
+      const primaryCert = {
+        name: formData.certificationName,
+        number: formData.certificationNumber,
+      };
+
+      let allCertificates = [];
+      if (primaryCert.name.trim() !== "" || primaryCert.number.trim() !== "") {
+        allCertificates.push(primaryCert);
+      }
+      if (
+        formData.additionalCertifications &&
+        formData.additionalCertifications.length > 0
+      ) {
+        const filteredAdditional = formData.additionalCertifications.filter(
+          (cert) => cert.name.trim() !== "" || cert.number.trim() !== ""
+        );
+        allCertificates = allCertificates.concat(filteredAdditional);
+      }
       const companyData = {
         company_name: formData.companyName,
         company_logo: companyLogoBase64,
@@ -877,19 +894,29 @@ const CreateCompany = () => {
                       <span className="text-danger">*</span>{" "}
                       {t("Admin Password")}:
                     </Form.Label>
-                    <Form.Control
-                      type="password"
-                      placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
-                        "Password"
-                      )}`}
-                      value={formData.password}
-                      maxLength={20}
-                      onChange={(e) => handleChange("password", e.target.value)}
-                      isInvalid={!!errors.password}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.password}
-                    </Form.Control.Feedback>
+                    <InputGroup hasValidation>
+                      <Form.Control
+                        type={showPassword ? "text" : "password"}
+                        placeholder={`${t("Enter")} ${t("Super Admin")} ${t(
+                          "Password"
+                        )}`}
+                        value={formData.password}
+                        maxLength={20}
+                        onChange={(e) =>
+                          handleChange("password", e.target.value)
+                        }
+                        isInvalid={!!errors.password}
+                      />
+                      <InputGroup.Text
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </InputGroup.Text>
+                      <Form.Control.Feedback type="invalid">
+                        {errors.password}
+                      </Form.Control.Feedback>
+                    </InputGroup>
                   </Form.Group>
                 </Col>
               </Row>
@@ -985,7 +1012,7 @@ const CreateCompany = () => {
                       <span className="text-danger">*</span>{" "}
                       {t("Select Language")}:
                     </Form.Label>
-                    <Form.Control
+                    <Form.Select
                       as="select"
                       value={formData.language}
                       onChange={(e) => handleChange("language", e.target.value)}
@@ -994,7 +1021,7 @@ const CreateCompany = () => {
                       <option value="">Select Language</option>
                       <option value="English">English</option>
                       <option value="Spanish">Spanish</option>
-                    </Form.Control>
+                    </Form.Select>
                     <Form.Control.Feedback type="invalid">
                       {errors.language}
                     </Form.Control.Feedback>

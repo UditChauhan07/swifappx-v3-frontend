@@ -41,7 +41,7 @@ const UsersTabelComp = ({
       reverseButtons: true, // Reverse the order of the buttons (Cancel left, Confirm right)
     }).then((result) => {
       if (result.isConfirmed) {
-        delete_OfficeUser(id, token).then((result) => {
+        delete_OfficeUser(id, token,company_id).then((result) => {
           console.log("tableData", result);
           if (result.status === true) {
             fetchData();

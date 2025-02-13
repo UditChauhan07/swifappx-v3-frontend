@@ -3,9 +3,10 @@ import { Modal, Form, Button, Row, Col, Alert } from "react-bootstrap";
 import { Eye, EyeSlash } from "react-bootstrap-icons";
 import { useTranslation } from "react-i18next";
 // import { changePasswordApi } from "../../../lib/store"; // adjust the import path as needed
-import './ChangePass.css'
+import "./ChangePass.css";
+import { changePasswordApi } from "../../lib/store";
 
-const ChangePasswordModal = ({ show, handleClose }) => {
+const ChangePasswordModal = ({ show, handleClose, userId }) => {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     newPassword: "",
@@ -18,9 +19,7 @@ const ChangePasswordModal = ({ show, handleClose }) => {
     confirmPassword: false,
   });
 
-  // Get user information from localStorage (or via props/context as needed)
   const token = localStorage.getItem("UserToken");
-  const userId = localStorage.getItem("userId");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,33 +35,53 @@ const ChangePasswordModal = ({ show, handleClose }) => {
   };
 
   const handleSubmit = async (e) => {
-  }
-//     e.preventDefault();
-//     setError(null);
-//     setSuccess(null);
+    e.preventDefault();
 
-//     if (formData.newPassword !== formData.confirmPassword) {
-//       setError(t("Passwords do not match. Please try again."));
-//       return;
-//     }
+    setError(null);
+    setSuccess(null);
 
-//     try {
-//       const finalData = { id: userId, new_password: formData.confirmPassword };
-//       const response = await changePasswordApi(finalData, token);
-//       if (response.status === true) {
-//         setSuccess(t("Password updated successfully!"));
-//       } else {
-//         setError(t("Failed to change password. Please try again."));
-//       }
-//       setFormData({ newPassword: "", confirmPassword: "" });
-//     } catch (err) {
-//       setError(t("Failed to change password. Please try again."));
-//     }
-//   };
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,16}$/;
+    if (!passwordRegex.test(formData.newPassword)) {
+      setError(
+        t(
+          "Password must be between 8 to 16 characters, include at least one uppercase letter, one number, and one special character."
+        )
+      );
+      return;
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      setError(t("Passwords do not match. Please try again."));
+      return;
+    }
+
+    // Validate password: 8-16 characters, one uppercase, one number, one special character
+
+    try {
+      const finalData = {
+        id: userId,
+        new_password: formData.confirmPassword,
+      };
+      const response = await changePasswordApi(finalData, token);
+      // console.log("resss", response);
+      if (response.status === true) {
+        setSuccess(t("Password updated successfully!"));
+        setFormData({ newPassword: "", confirmPassword: "" });
+        setTimeout(() => {
+          handleClose();
+        }, 1000);
+      } else {
+        setError(t("Failed to change password. Please try again."));
+      }
+      setFormData({ newPassword: "", confirmPassword: "" });
+    } catch (err) {
+      console.error("API Error:", err);
+      setError(t("Failed to change password. Please try again."));
+    }
+  };
 
   return (
     <Modal
-    
       show={show}
       onHide={handleClose}
       centered
@@ -72,7 +91,7 @@ const ChangePasswordModal = ({ show, handleClose }) => {
         closeButton
         style={{ backgroundColor: "transparent", border: "none" }}
       >
-        <Modal.Title >{t("Change Password")}</Modal.Title>
+        <Modal.Title>{t("Change Password")}</Modal.Title>
       </Modal.Header>
       <Modal.Body style={{ backgroundColor: "transparent" }}>
         {error && <Alert variant="danger">{error}</Alert>}

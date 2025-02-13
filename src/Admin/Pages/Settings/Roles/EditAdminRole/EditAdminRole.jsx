@@ -29,6 +29,8 @@ const EditAdminRole = () => {
     //   name: t("Company Office User Module"), // Translated name
     //   actions: ["view", "create", "edit"],
     // },
+    {originalName:"Company Office User Module", name: t("Company Office User Module"), actions: ["view", "create", "edit","delete"] },
+    {originalName:"Company Field User Module", name: t("Company Field User Module"), actions: ["view", "create", "edit","delete"] },
     {
       originalName: "Company Customers Module",
       name: t("Company Customers Module"), // Translated name
@@ -202,3 +204,4 @@ const EditAdminRole = () => {
 };
 
 export default EditAdminRole;
+// s

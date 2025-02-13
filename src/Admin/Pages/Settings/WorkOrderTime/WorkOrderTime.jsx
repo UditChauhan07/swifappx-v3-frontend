@@ -140,7 +140,7 @@ const WorkOrderTime = () => {
                 <span className="visually-hidden">{t("Loading")}...</span>
               </Spinner>
               <p>
-                {t("Loading")} {t("Companies")}...
+                {t("Loading")}...
               </p>
             </div>
           </div>
