@@ -13,8 +13,12 @@ import axios from "axios";
 import { LoginApi } from "../../lib/store";
 import { useNavigate } from "react-router-dom";
 import { usePermissions } from "../../context/PermissionContext";
+import { useTranslation } from "react-i18next";
+
 
 const Login = () => {
+    const { i18n } = useTranslation();
+  
   const {setPermissions}=usePermissions();
   const Navigate = useNavigate();
   const [isLoading, setisLoading] = useState(false);
@@ -56,6 +60,13 @@ const Login = () => {
         localStorage.setItem("companyName", response.company_name);
         localStorage.setItem("companyLogo", response.company_logo);
         localStorage.setItem("defaultLanguage", response.company_language);
+
+        if (response.user.role === "SuperAdmin") {
+          i18n.changeLanguage("en");
+        } else if(response.user.role === "Admin"){
+          i18n.changeLanguage(response.company_language);
+        }
+
         setPermissions(response.rolesPermissions||[])
         setisLoading(false);
         if (response.user.role === "Admin" || response.user.role === "office_Admin") {
@@ -63,6 +74,7 @@ const Login = () => {
         } else {
           Navigate("/dashboard");
         }
+        
       } else {
         setError(response.message);
       }
