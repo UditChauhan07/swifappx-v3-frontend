@@ -14,7 +14,7 @@ const Companies = () => {
 
   const navigate = useNavigate();
   const [companyList, setCompanyList] = useState([]);
-  console.log("cascasc",companyList)
+  console.log("cascasc", companyList);
   const [token, setToken] = useState(localStorage.getItem("UserToken"));
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -155,51 +155,65 @@ const Companies = () => {
               style={{ minWidth: "1650px" }}
             >
               <thead>
-              <tr style={{ backgroundColor: "#E7EAF3", color: "#3C3C3C" }}>
-            <th
-              style={{
-                width: "26%",
-                textAlign: "left",
-                background: "#e5e5e5",
-              }}
-            >
-              {t("Company Name & Address")}
-            </th>
-            <th
-              style={{
-                width: "20%",
-                textAlign: "left",
-                background: "#e5e5e5",
-              }}
-            >
-              {t("Admin")}
-            </th>
-              <th
-                style={{
-                  width: "10%",
-                  textAlign: "left",
-                  background: "#e5e5e5",
-                }}
-              >
-                {t("Creation")}
-              </th>
-              <th className="text-center" style={{ width: "7%", background: "#e5e5e5" }}>
-                {t("Field Users")}
-              </th>
-              <th className="text-center" style={{ width: "7%", background: "#e5e5e5" }}>
-                {t("Office Users")}
-              </th>
-              <th className="text-center" style={{ width: "7%", background: "#e5e5e5" }}>
-                {t("Customers")}
-              </th>
-              <th className="text-center" style={{ width: "10%", background: "#e5e5e5" }}>
-                {t("Work Orders")}
-              </th>
-              <th className="text-center" style={{ width: "10%", background: "#e5e5e5" }}>
-                {t("Action")}
-              </th>
-            </tr>
-
+                <tr style={{ backgroundColor: "#E7EAF3", color: "#3C3C3C" }}>
+                  <th
+                    style={{
+                      width: "26%",
+                      textAlign: "left",
+                      background: "#e5e5e5",
+                    }}
+                  >
+                    {t("Company Name & Address")}
+                  </th>
+                  <th
+                    style={{
+                      width: "20%",
+                      textAlign: "left",
+                      background: "#e5e5e5",
+                    }}
+                  >
+                    {t("Admin")}
+                  </th>
+                  <th
+                    style={{
+                      width: "10%",
+                      textAlign: "left",
+                      background: "#e5e5e5",
+                    }}
+                  >
+                    {t("Creation")}
+                  </th>
+                  <th
+                    className="text-center"
+                    style={{ width: "7%", background: "#e5e5e5" }}
+                  >
+                    {t("Field Users")}
+                  </th>
+                  <th
+                    className="text-center"
+                    style={{ width: "7%", background: "#e5e5e5" }}
+                  >
+                    {t("Office Users")}
+                  </th>
+                  <th
+                    className="text-center"
+                    style={{ width: "7%", background: "#e5e5e5" }}
+                  >
+                    {t("Customers")}
+                  </th>
+                  <th
+                    className="text-center"
+                    style={{ width: "10%", background: "#e5e5e5" }}
+                  >
+                    {t("Work Orders")}
+                  </th>
+                  <th
+                    className="text-center"
+                    style={{ width: "10%", background: "#e5e5e5" }}
+                  >
+                    {t("Action")}
+                  </th>
+                </tr>
               </thead>
 
               <tbody>
@@ -268,10 +282,18 @@ const Companies = () => {
                       >
                         {formatTimestamp(item.company.created_at)}
                       </td>
-                      <td className="text-center">{item.user_counts.field_user || 0}</td>
-                      <td className="text-center">{item.user_counts.office_user || 0}</td>
-                      <td className="text-center">{item.user_counts.totalCustomers || 0}</td>
-                      <td className="text-center">{item.user_counts.totalWorkOrders || 0}</td>
+                      <td className="text-center">
+                        {item.user_counts.field_user || 0}
+                      </td>
+                      <td className="text-center">
+                        {item.user_counts.office_user || 0}
+                      </td>
+                      <td className="text-center">
+                        {item.user_counts.totalCustomers || 0}
+                      </td>
+                      <td className="text-center">
+                        {item.user_counts.totalWorkOrders || 0}
+                      </td>
                       <td className="text-center">
                         <div className="d-flex gap-2 justify-content-center">
                           <Button
@@ -356,4 +378,3 @@ const Companies = () => {
 };
 
 export default Companies;
-

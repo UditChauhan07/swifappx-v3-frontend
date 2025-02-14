@@ -709,3 +709,20 @@ export const workOrderReportAllCompany = async (token) => {
     throw new Error("An unexpected error occurred");
   }
 };
+
+// Work Order Report Single Company
+export const workOrderReportSingleCompany = async (token,companyId) => {
+  try {
+    const response = await axios.get(`${Url}/csr4m32we4/${companyId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};

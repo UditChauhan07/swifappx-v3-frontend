@@ -127,13 +127,13 @@ const CreateAdminRole = () => {
     let newErrors = { roleName: "", roleDescription: "", permissions: "" };
 
     if (!roleName) {
-      newErrors.roleName = "Role Name is required";
+      newErrors.roleName = t("Role Name is required");
       isValid = false;
       window.scroll(0, 0);
     }
 
     if (!roleDescription) {
-      newErrors.roleDescription = "Role Description is required";
+      newErrors.roleDescription = t("Role Description is required");
       isValid = false;
       window.scroll(0, 0);
     }
@@ -143,7 +143,7 @@ const CreateAdminRole = () => {
     );
 
     if (!permissionsSelected) {
-      newErrors.permissions = "Please select at least one checkbox!";
+      newErrors.permissions = t("Please select at least one checkbox!");
       isValid = false;
     }
 
