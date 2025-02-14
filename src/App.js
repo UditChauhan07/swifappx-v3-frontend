@@ -48,6 +48,8 @@ import WorkOrderTime from "./Admin/Pages/Settings/WorkOrderTime/WorkOrderTime";
 import WorkOrderImport from "./Admin/Pages/WorkOrders/WorkOrderImport/WorkOrderImport";
 import AdminProfile from "./Admin/Pages/AdminProfile/AdminProfile";
 import LanguageChange from "./Admin/Pages/Settings/LanguageChange/LanguageChange";
+import WorkOrderReport from "./Super_Admin/Pages/Reports/WorkOrderReport/WorkOrderReport";
+import CompanyWOreport from "./Admin/Pages/CompanyReports/WorkOrderReport/CompanyWOreport";
 
 function App() {
   return (
@@ -75,6 +77,9 @@ function App() {
           <Route path="/settings/roles" element={<Roles />} />
           <Route path="/settings/roles/create" element={<CreateRole />} />
           <Route path="/settings/roles/edit" element={<EditRoles />} />
+
+          {/* Reports */}
+          <Route path="/reports/workorder" element={<WorkOrderReport />} />
 
                       {/* Admin */}
 
@@ -106,9 +111,16 @@ function App() {
           <Route path="/customers/list/details" element={<CustomerDetails />} />
           <Route path="/customers/list/edit" element={<CustomerEdit />} />
           {/* <Route path="/customers/list/address" element={<CustomerList />} /> */}
-
           <Route path="/customers/prospects" element={<ProspectsCustomer />} />
           <Route path="/customers/import" element={<CustomerImport />} />
+
+          {/* Work Order */}
+          <Route path="/workorder/create" element={<CreateWorkOrder />} />
+          <Route path="/workorder/list" element={<WorkOrderList />} />
+          <Route path="/workorder/list/details" element={<WorkOrderDetails />} />
+          <Route path="/workorder/list/edit" element={<WorkOrderEdit />} />
+          <Route path="/workorder/draft" element={<DraftWorkOrder />} />
+          <Route path="/workorder/import" element={<WorkOrderImport />} />
 
 
           {/* Settings */}
@@ -122,13 +134,10 @@ function App() {
           <Route path="/settings/admin/language" element={<LanguageChange />} />
 
 
-          {/* Work Order */}
-          <Route path="/workorder/create" element={<CreateWorkOrder />} />
-          <Route path="/workorder/list" element={<WorkOrderList />} />
-          <Route path="/workorder/list/details" element={<WorkOrderDetails />} />
-          <Route path="/workorder/list/edit" element={<WorkOrderEdit />} />
-          <Route path="/workorder/draft" element={<DraftWorkOrder />} />
-          <Route path="/workorder/import" element={<WorkOrderImport />} />
+          {/* Reports */}
+          <Route path="/reports/company/workorder" element={<CompanyWOreport />} />
+
+          
         </Routes>
       </Router>
     </>

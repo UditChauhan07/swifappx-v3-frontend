@@ -692,3 +692,20 @@ export const LanguageCompanyUpdateApi = async (companyId, token, language) => {
     throw new Error("An unexpected error occurred");
   }
 };
+
+// Work Order Report All Company
+export const workOrderReportAllCompany = async (token) => {
+  try {
+    const response = await axios.get(`${Url}/scwok24mrd/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
