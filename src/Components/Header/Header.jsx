@@ -36,6 +36,7 @@ const Header = () => {
   const [companyId, setcompanyId] = useState(localStorage.getItem("companyId"));
 
   const [expandedDropdown, setExpandedDropdown] = useState("");
+  console.log("expandedDropdown",expandedDropdown)
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
   const [selectedLanguage, setSelectedLanguage] = useState(
@@ -152,7 +153,6 @@ const Header = () => {
         <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
           <Nav>
             {/* Language Dropdown */}
-            {/* // Language Dropdown component */}
             <Dropdown>
               <Dropdown.Toggle variant="light" id="language-dropdown">
                 <FaLanguage className="me-2" />
@@ -162,7 +162,7 @@ const Header = () => {
                   : languageNames[selectedLanguage]}{" "}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                {userRole !== "SuperAdmin" && // Show language options only for Admin
+                {(userRole === "SuperAdmin" || userRole === "Admin") && // Show language options only for Admin
                   Object.keys(languageNames).map((lng) => (
                     <Dropdown.Item
                       key={lng}
@@ -283,7 +283,7 @@ const Header = () => {
                 </div>
 
                 {/* Reports Dropdown */}
-                {/* <div
+                <div
                   className={`dropdown ${
                     expandedDropdown === "reports" ? "expanded" : ""
                   }`}
@@ -293,7 +293,7 @@ const Header = () => {
                     onClick={() => toggleDropdown("reports")}
                   >
                     <span>{t("Reports")}</span>
-                    <TbReportSearch size={20}/>
+                    <TbReportSearch size={20} />
                   </div>
                   <div
                     className={`dropdown-items ${
@@ -301,28 +301,28 @@ const Header = () => {
                     }`}
                   >
                     <Link
-                      to="/company/create"
+                      to="/reports/workorder"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Work Order Report")}
                     </Link>
-                    <Link
+                    {/* <Link
                       to="/company/companies"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Field User Attendence Report")}
                     </Link>
-                    {/* <Link
+                    <Link
                       to="/company/access"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Access")}
                     </Link> */}
-                {/* </div> */}
-                {/* </div> */}
+                  </div>
+                </div>
               </>
             ) : (
               <>
@@ -696,6 +696,49 @@ const Header = () => {
                     </div>
                   </div>
                 </div>
+                
+                {/* Comoany Reports */}
+                {/* <div
+                  className={`dropdown ${
+                    expandedDropdown === "reports" ? "expanded" : ""
+                  }`}
+                >
+                  <div
+                    className="dropdown-title"
+                    onClick={() => toggleDropdown("reports")}
+                  >
+                    <span>{t("Reports")}</span>
+                    <TbReportSearch size={20} />
+                  </div>
+                  <div
+                    className={`dropdown-items ${
+                      expandedDropdown === "reports" ? "show" : ""
+                    }`}
+                  >
+                    <Link
+                      to="/reports/workorder"
+                      className="sidebar-link"
+                      activeClassName="active"
+                    >
+                      ▣ {t("Work Order Report")}
+                    </Link>
+                    {/* <Link
+                      to="/company/companies"
+                      className="sidebar-link"
+                      activeClassName="active"
+                    >
+                      ▣ {t("Field User Attendence Report")}
+                    </Link>
+                    <Link
+                      to="/company/access"
+                      className="sidebar-link"
+                      activeClassName="active"
+                    >
+                      ▣ {t("Access")}
+                    </Link> */}
+                  {/* </div> */}
+                {/* </div> */} 
+                
               </>
             )}
           </Nav>
