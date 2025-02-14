@@ -1676,6 +1676,23 @@
   "Contact Person Name": "Nombre de Contacto",
   "Contact Phone": "Teléfono de Contacto",
   "Office Email": "Correo de la Oficina",
-  "Working Days": "Días Laborales"
+  "Work Orders per Day": "Órdenes de trabajo por día",
+  "Work Orders per Week": "Órdenes de trabajo por semana",
+  "Work Orders per Month": "Órdenes de trabajo por mes",
+  "Completed Work Orders per Day": "Órdenes de trabajo completadas por día",
+  "Completed Work Orders per Week": "Órdenes de trabajo completadas por semana",
+  "Completed Work Orders per Month": "Órdenes de trabajo completadas por mes",
+  "Working Days": "Días Laborales",
+  "Work Order Report": "Informe de orden de trabajo",
+  "Search by Company Name...":"Buscar por nombre de empresa...",
+  "Password is required.":"Se requiere contraseña.",
+  "Customer is required": "Se requiere un cliente.",
+  "Start Date is required": "Se requiere una fecha de inicio.",
+  "Start Time is required": "Se requiere una hora de inicio.",
+  "Expected Time is required": "Se requiere un tiempo estimado.",
+  "Select Workers is required": "Se requiere seleccionar trabajadores.",
+  "At least one Work Item and Description are required.": "Se requiere al menos un elemento de trabajo y una descripción.",
+  "Role Name is required":"El nombre del rol es obligatorio",
+  "Role Description is required":"Se requiere descripción del rol"
 
 }

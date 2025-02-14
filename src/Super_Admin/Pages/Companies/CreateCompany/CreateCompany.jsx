@@ -1018,7 +1018,7 @@ const CreateCompany = () => {
                       onChange={(e) => handleChange("language", e.target.value)}
                       isInvalid={!!errors.language}
                     >
-                      <option value="">Select Language</option>
+                      <option value="">{t("Select Language")}</option>
                       <option value="English">English</option>
                       <option value="Spanish">Spanish</option>
                     </Form.Select>

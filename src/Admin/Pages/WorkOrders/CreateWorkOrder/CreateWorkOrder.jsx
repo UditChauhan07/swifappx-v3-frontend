@@ -186,19 +186,19 @@ const CreateWorkOrder = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!selectedCustomer) newErrors.selectedCustomer = "Customer is required";
-    if (!startDate) newErrors.startDate = "Start Date is required";
-    if (!startTime) newErrors.startTime = "Start Time is required";
-    if (!expectedTime) newErrors.expectedTime = "Expected Time is required";
+    if (!selectedCustomer) newErrors.selectedCustomer = t("Customer is required");
+    if (!startDate) newErrors.startDate = t("Start Date is required");
+    if (!startTime) newErrors.startTime = t("Start Time is required");
+    if (!expectedTime) newErrors.expectedTime = t("Expected Time is required");
     if (!selectedWorkers)
-      newErrors.selectedWorkers = "Select Workers is required";
+      newErrors.selectedWorkers = t("Select Workers is required");
 
     if (
       workItems.length === 0 ||
       workItems.some((row) => !row.workItem.trim() || !row.itemDesc.trim())
     ) {
       newErrors.workItems =
-        "At least one Work Item and Description are required.";
+        t("At least one Work Item and Description are required.");
     }
 
     setErrors(newErrors);

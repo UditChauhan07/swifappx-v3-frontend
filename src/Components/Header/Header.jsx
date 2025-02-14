@@ -36,19 +36,15 @@ const Header = () => {
   const [companyId, setcompanyId] = useState(localStorage.getItem("companyId"));
 
   const [expandedDropdown, setExpandedDropdown] = useState("");
-  console.log("expandedDropdown",expandedDropdown)
+  console.log("expandedDropdown", expandedDropdown);
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
   const [selectedLanguage, setSelectedLanguage] = useState(
     localStorage.getItem("defaultLanguage") || "en"
   );
+  console.log("dasasas", selectedLanguage);
 
   const { roles, hasPermission, permissions, getRoles } = usePermissions();
-  const [defaultLanguage, setdefaultLanguage] = useState(
-    localStorage.getItem("defaultLanguage")
-  );
-  // console.log("defaultLanguage",defaultLanguage)
-  // console.log("permissions",permissions);
 
   const toggleDropdown = (dropdown) => {
     setExpandedDropdown(expandedDropdown === dropdown ? "" : dropdown);
@@ -87,6 +83,13 @@ const Header = () => {
 
     window.scroll(0, 0);
   }, [location]);
+
+  useEffect(() => {
+    if(selectedLanguage === null){
+    setSelectedLanguage("en")
+    }
+  }, [])
+  
 
   const handleLogOut = () => {
     Swal.fire({
@@ -158,11 +161,11 @@ const Header = () => {
                 <FaLanguage className="me-2" />
                 {/* Display logic based on userRole */}
                 {userRole === "SuperAdmin"
-                  ? "English"
-                  : languageNames[selectedLanguage]}{" "}
+                  ? languageNames[selectedLanguage] || languageNames["en"]
+                  : languageNames[selectedLanguage] || languageNames["en"]}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                {(userRole === "SuperAdmin" || userRole === "Admin") && // Show language options only for Admin
+                {(userRole === "SuperAdmin" || userRole === "Admin") &&
                   Object.keys(languageNames).map((lng) => (
                     <Dropdown.Item
                       key={lng}
@@ -696,9 +699,9 @@ const Header = () => {
                     </div>
                   </div>
                 </div>
-                
-                {/* Comoany Reports */}
-                {/* <div
+
+                {/* Company Reports */}
+                <div
                   className={`dropdown ${
                     expandedDropdown === "reports" ? "expanded" : ""
                   }`}
@@ -716,7 +719,7 @@ const Header = () => {
                     }`}
                   >
                     <Link
-                      to="/reports/workorder"
+                      to="/reports/company/workorder"
                       className="sidebar-link"
                       activeClassName="active"
                     >
@@ -736,9 +739,8 @@ const Header = () => {
                     >
                       ▣ {t("Access")}
                     </Link> */}
-                  {/* </div> */}
-                {/* </div> */} 
-                
+                  </div>
+                </div>
               </>
             )}
           </Nav>
