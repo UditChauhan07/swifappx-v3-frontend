@@ -58,7 +58,7 @@ const CompanyWOreport = () => {
                 <Row className="mb-3">
                   <Col md={6}>
                     <Card className="p-3 shadow-sm">
-                      <h6>{t("Work Orders per Day")}</h6>
+                      <h6>{t("Scheduled per Day")}</h6>
                       <div className="text-muted fs-4">
                         {workOrderData.per_day}
                       </div>
@@ -66,7 +66,7 @@ const CompanyWOreport = () => {
                   </Col>
                   <Col md={6}>
                     <Card className="p-3 shadow-sm">
-                      <h6>{t("Work Orders per Week")}</h6>
+                      <h6>{t("Scheduled per Week")}</h6>
                       <div className="text-muted fs-4">
                         {workOrderData.per_week}
                       </div>
@@ -76,7 +76,7 @@ const CompanyWOreport = () => {
                 <Row className="mb-3">
                   <Col md={6}>
                     <Card className="p-3 shadow-sm">
-                      <h6>{t("Work Orders per Month")}</h6>
+                      <h6>{t("Scheduled per Month")}</h6>
                       <div className="text-muted fs-4">
                         {workOrderData.per_month}
                       </div>

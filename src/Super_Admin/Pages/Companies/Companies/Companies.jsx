@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 
 const Companies = () => {
-  const { t } = useTranslation(); // ✅ Translation Hook
+  const { t } = useTranslation(); 
 
   const navigate = useNavigate();
   const [companyList, setCompanyList] = useState([]);

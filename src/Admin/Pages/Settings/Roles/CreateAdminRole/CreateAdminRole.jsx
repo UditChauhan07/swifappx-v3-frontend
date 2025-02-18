@@ -33,6 +33,28 @@ const CreateAdminRole = () => {
       name: t("Company Work Order Module"),
       actions: ["view", "create", "edit", "delete"],
     },
+    {
+      name: t("Company Roles Module"),
+      actions: ["view", "create"],
+    },
+    {
+      name: t("Company Work Order Time Module"),
+      actions: ["view","edit"],
+    },
+    {
+      name: t("Company Language Change Module"),
+      actions: ["view","edit"],
+    },
+    {
+      name: t("Company Work Order Report Module"),
+      actions: ["view"],
+    },
+    {
+      name: t("Company Field User Attendence Report Module"),
+      actions: ["view"],
+    },
+    
+    
     
   ];
 

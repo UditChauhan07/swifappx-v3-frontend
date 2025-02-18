@@ -60,6 +60,8 @@ const Login = () => {
         localStorage.setItem("companyName", response.company_name);
         localStorage.setItem("companyLogo", response.company_logo);
         localStorage.setItem("defaultLanguage", response.company_language);
+        if (response.user.role === "Admin" || response.user.role === "SuperAdmin") {
+        localStorage.setItem("SessionId", response.sessionId);}
 
         if (response.user.role === "SuperAdmin") {
           i18n.changeLanguage("en");

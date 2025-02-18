@@ -50,6 +50,9 @@ import AdminProfile from "./Admin/Pages/AdminProfile/AdminProfile";
 import LanguageChange from "./Admin/Pages/Settings/LanguageChange/LanguageChange";
 import WorkOrderReport from "./Super_Admin/Pages/Reports/WorkOrderReport/WorkOrderReport";
 import CompanyWOreport from "./Admin/Pages/CompanyReports/WorkOrderReport/CompanyWOreport";
+import FieldUserAttenderReport from "./Super_Admin/Pages/Reports/FieldUserAttenderReport/FieldUserAttenderReport";
+import LoginLogoutReport from "./Super_Admin/Pages/Reports/LoginLogoutReport/LoginLogoutReport";
+import FieldUserAttendece from "./Admin/Pages/CompanyReports/Attedence/FieldUserAttendece";
 
 function App() {
   return (
@@ -80,6 +83,8 @@ function App() {
 
           {/* Reports */}
           <Route path="/reports/workorder" element={<WorkOrderReport />} />
+          <Route path="/reports/fieldattendence" element={<FieldUserAttenderReport />} />
+          <Route path="/reports/login-logout" element={<LoginLogoutReport />} />
 
                       {/* Admin */}
 
@@ -136,6 +141,7 @@ function App() {
 
           {/* Reports */}
           <Route path="/reports/company/workorder" element={<CompanyWOreport />} />
+          <Route path="/reports/company/fielduser-attendence" element={<FieldUserAttendece />} />
 
           
         </Routes>

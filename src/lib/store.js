@@ -2,6 +2,7 @@ import axios from "axios";
 // export const Url = "http://localhost:2525";
 export const Url = "https://apiv4-hl3bjt37ia-uc.a.run.app/";
 // export const Url = "http://127.0.0.1:5001/swif-v2/us-central1/test"
+// export const Url = "http://127.0.0.1:5001/swif-v2/us-central1/apiv4"
 
 // Admin Login APi
 export const LoginApi = async (formData) => {
@@ -718,6 +719,60 @@ export const workOrderReportSingleCompany = async (token,companyId) => {
         Authorization: `Bearer ${token}`,
       },
     });
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Login/Logout Records, Session Records Get
+export const getLoginLogoutRecords = async ( token) => {
+  try {
+    const response = await axios.get(`${Url}/h12kd1dks1/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// Logout Api For Login/Logout Update
+export const LogoutRecordUpdateAPi = async (sessionId,userId, token) => {
+  try {
+    const response = await axios.get(`${Url}/stn54m7d9s?sessionID=${sessionId}&userId=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      return error.response.data;
+    }
+    throw new Error("An unexpected error occurred");
+  }
+};
+
+// field User Attendence report api
+export const getFieldUserAttendenceApi = async (companyId, token) => {
+  try {
+    const response = await axios.get(`${Url}/fuarm3k65m/${companyId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // console.log(response.data, "login api data");
     return response.data;
   } catch (error) {
     if (error.response) {

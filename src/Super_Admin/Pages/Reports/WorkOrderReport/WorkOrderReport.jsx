@@ -99,28 +99,76 @@ const WorkOrderReport = () => {
           >
             <thead>
               <tr style={{ backgroundColor: "#E7EAF3", color: "#3C3C3C" }}>
-                <th style={{ width: "15%", textAlign: "left", background: "#e5e5e5" }}>
+                <th
+                  style={{
+                    width: "15%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
                   {t("Company Id")}
                 </th>
-                <th style={{ width: "15%", textAlign: "left", background: "#e5e5e5" }}>
+                <th
+                  style={{
+                    width: "15%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
                   {t("Company Name")}
                 </th>
-                <th style={{ width: "7%", textAlign: "left", background: "#e5e5e5" }}>
+                <th
+                  style={{
+                    width: "7%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
                   {t("Per Day")}
                 </th>
-                <th style={{ width: "7%", textAlign: "left", background: "#e5e5e5" }}>
+                <th
+                  style={{
+                    width: "7%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
                   {t("Per Week")}
                 </th>
-                <th style={{ width: "7%", textAlign: "left", background: "#e5e5e5" }}>
+                <th
+                  style={{
+                    width: "7%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
                   {t("Per Month")}
                 </th>
-                <th style={{ width: "8%", textAlign: "left", background: "#e5e5e5" }}>
+                <th
+                  style={{
+                    width: "8%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
                   {t("Completed Per Day")}
                 </th>
-                <th style={{ width: "8%", textAlign: "left", background: "#e5e5e5" }}>
+                <th
+                  style={{
+                    width: "8%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
                   {t("Completed Per Week")}
                 </th>
-                <th style={{ width: "8%", textAlign: "left", background: "#e5e5e5" }}>
+                <th
+                  style={{
+                    width: "8%",
+                    textAlign: "left",
+                    background: "#e5e5e5",
+                  }}
+                >
                   {t("Completed Per Month")}
                 </th>
               </tr>
@@ -129,13 +177,19 @@ const WorkOrderReport = () => {
               {isLoading ? (
                 <tr>
                   <td colSpan="8" className="text-center py-5">
-                    <BeatLoader size={12} color={"#3C3C3C"} style={{ display: "flex", justifyContent: "center" }} />
+                    <BeatLoader
+                      size={12}
+                      color={"#3C3C3C"}
+                      style={{ display: "flex", justifyContent: "center" }}
+                    />
                     <p className="mt-2">{t("Loading...")}</p>
                   </td>
                 </tr>
               ) : Object.keys(filteredData).length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="text-center py-5">{t("No data found")}</td>
+                  <td colSpan="8" className="text-center py-5">
+                    {t("No data found")}
+                  </td>
                 </tr>
               ) : (
                 formatWorkOrderData().map((item, index) => (
@@ -146,12 +200,24 @@ const WorkOrderReport = () => {
                     <td style={{ padding: "15px", fontSize: "0.9rem" }}>
                       <strong>{item.companyName}</strong>
                     </td>
-                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>{item.perDay}</td>
-                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>{item.perWeek}</td>
-                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>{item.perMonth}</td>
-                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>{item.completedPerDay}</td>
-                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>{item.completedPerWeek}</td>
-                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>{item.completedPerMonth}</td>
+                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>
+                      {item.perDay}
+                    </td>
+                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>
+                      {item.perWeek}
+                    </td>
+                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>
+                      {item.perMonth}
+                    </td>
+                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>
+                      {item.completedPerDay}
+                    </td>
+                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>
+                      {item.completedPerWeek}
+                    </td>
+                    <td style={{ padding: "15px", fontSize: "0.9rem" }}>
+                      {item.completedPerMonth}
+                    </td>
                   </tr>
                 ))
               )}

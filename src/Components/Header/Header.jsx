@@ -24,6 +24,7 @@ import {
 } from "react-icons/fa";
 import "./Header.css";
 import { useTranslation } from "react-i18next";
+import { LogoutRecordUpdateAPi } from "../../lib/store";
 
 const Header = () => {
   const location = useLocation();
@@ -34,16 +35,19 @@ const Header = () => {
     localStorage.getItem("companyLogo")
   );
   const [companyId, setcompanyId] = useState(localStorage.getItem("companyId"));
+  const [sessionId, setsessionId] = useState(localStorage.getItem("SessionId"));
+  const [userId, setuserId] = useState(localStorage.getItem("userId"));
+  const [token, settoken] = useState(localStorage.getItem("UserToken"));
 
   const [expandedDropdown, setExpandedDropdown] = useState("");
-  console.log("expandedDropdown", expandedDropdown);
+  // console.log("expandedDropdown", expandedDropdown);
   const [nestedDropdown, setNestedDropdown] = useState("");
   const [userRole, setuserRole] = useState(localStorage.getItem("Role"));
   const [selectedLanguage, setSelectedLanguage] = useState(
     localStorage.getItem("defaultLanguage") || "en"
   );
-  console.log("dasasas", selectedLanguage);
-
+  // console.log("dasasas", selectedLanguage);
+  //
   const { roles, hasPermission, permissions, getRoles } = usePermissions();
 
   const toggleDropdown = (dropdown) => {
@@ -85,14 +89,13 @@ const Header = () => {
   }, [location]);
 
   useEffect(() => {
-    if(selectedLanguage === null){
-    setSelectedLanguage("en")
+    if (selectedLanguage === null) {
+      setSelectedLanguage("en");
     }
-  }, [])
-  
+  }, []);
 
-  const handleLogOut = () => {
-    Swal.fire({
+  const handleLogOut = async () => {
+    const result = await Swal.fire({
       title: t("Are you sure?"),
       text: t("You will be logged out of your session."),
       icon: "warning",
@@ -100,35 +103,62 @@ const Header = () => {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: t("Yes, Logout"),
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Remove user data
-        localStorage.removeItem("UserToken");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("Role");
-        localStorage.removeItem("userEmail");
-        localStorage.removeItem("profilePic");
-        localStorage.removeItem("name");
-        localStorage.removeItem("companyId");
-        localStorage.removeItem("guidlines");
-        localStorage.removeItem("companyName");
-        localStorage.removeItem("companyLogo");
-        localStorage.removeItem("defaultLanguage");
-
-        Swal.fire({
-          title: t("Logged Out!"),
-          text: t("You have been successfully logged out."),
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-
-        // Redirect to login after delay
-        setTimeout(() => {
-          Navigate("/");
-        }, 2000);
-      }
     });
+
+    if (result.isConfirmed) {
+      // Remove user data immediately
+      localStorage.removeItem("UserToken");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("Role");
+      localStorage.removeItem("userEmail");
+      localStorage.removeItem("profilePic");
+      localStorage.removeItem("name");
+      localStorage.removeItem("companyId");
+      localStorage.removeItem("guidlines");
+      localStorage.removeItem("companyName");
+      localStorage.removeItem("companyLogo");
+      localStorage.removeItem("defaultLanguage");
+
+      // Show a loading modal immediately
+      Swal.fire({
+        title: t("Logging Out..."),
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      // If the user is an admin, update logout record.
+      if (userRole === "Admin" || userRole === "SuperAdmin") {
+        localStorage.removeItem("SessionId");
+        try {
+          const response = await LogoutRecordUpdateAPi(
+            sessionId,
+            userId,
+            token
+          );
+          console.log("Logout record updated:", response);
+        } catch (error) {
+          console.error("Error updating logout record", error);
+        }
+      }
+
+      // Close the loading modal immediately
+      Swal.close();
+
+      // Show a brief success message
+      await Swal.fire({
+        title: t("Logged Out!"),
+        text: t("You have been successfully logged out."),
+        icon: "success",
+        timer: 1000, // Shorter timer for immediate feedback
+        timerProgressBar: true,
+        showConfirmButton: false,
+      });
+
+      // Redirect immediately after success notification
+      Navigate("/");
+    }
   };
 
   // Handle language change
@@ -147,7 +177,7 @@ const Header = () => {
   const getItemClass = (lng) => {
     return lng === selectedLanguage ? "selected-item" : "";
   };
-  console.log("userRole: ", roles);
+  console.log("permissions: ", permissions.permissions);
   return (
     <>
       {/* Navbar */}
@@ -310,20 +340,20 @@ const Header = () => {
                     >
                       ▣ {t("Work Order Report")}
                     </Link>
-                    {/* <Link
-                      to="/company/companies"
+                    <Link
+                      to="/reports/fieldattendence"
                       className="sidebar-link"
                       activeClassName="active"
                     >
                       ▣ {t("Field User Attendence Report")}
                     </Link>
                     <Link
-                      to="/company/access"
+                      to="/reports/login-logout"
                       className="sidebar-link"
                       activeClassName="active"
                     >
-                      ▣ {t("Access")}
-                    </Link> */}
+                      ▣ {t("Login/Logout Report")}
+                    </Link>
                   </div>
                 </div>
               </>
@@ -593,145 +623,170 @@ const Header = () => {
                     </div>
                   </div>
                 )}
+
                 {/* Settings */}
-                <div
-                  className={`dropdown ${
-                    expandedDropdown === "settings" ? "expanded" : ""
-                  }`}
-                >
+                {(userRole == "Admin" ||
+                  hasPermission(`Company Roles Module`, `View`) ||
+                  hasPermission(`Company Work Order Time Module`, `View`) ||
+                  hasPermission(`Company Language Change Module`, `View`)) && (
                   <div
-                    className="dropdown-title"
-                    onClick={() => toggleDropdown("settings")}
-                  >
-                    <span>{t("Settings")}</span>
-                    <IoMdSettings size={20} />
-                  </div>
-                  <div
-                    className={`dropdown-items ${
-                      expandedDropdown === "settings" ? "show" : ""
+                    className={`dropdown ${
+                      expandedDropdown === "settings" ? "expanded" : ""
                     }`}
                   >
-                    {/* Roles Dropdown */}
-
                     <div
-                      className={`dropdown ${
-                        nestedDropdown === "roles" ? "expanded" : ""
+                      className="dropdown-title"
+                      onClick={() => toggleDropdown("settings")}
+                    >
+                      <span>{t("Settings")}</span>
+                      <IoMdSettings size={20} />
+                    </div>
+                    <div
+                      className={`dropdown-items ${
+                        expandedDropdown === "settings" ? "show" : ""
                       }`}
                     >
-                      <div
-                        className="dropdown-title"
-                        onClick={() =>
-                          setNestedDropdown(
-                            nestedDropdown === "roles" ? "" : "roles"
-                          )
-                        }
-                      >
-                        ▣ {t("Roles")}
-                      </div>
-                      {nestedDropdown === "roles" && (
-                        <div className="dropdown-items show">
-                          {userRole === "SuperAdmin" ||
-                            (userRole === "Admin" && (
-                              <Link
-                                to="/settings/admin/roles/create"
-                                className="sidebar-link"
-                              >
-                                {t("Create New")}
-                              </Link>
-                            ))}
+                      {/* Roles Dropdown */}
 
+                      <div
+                        className={`dropdown ${
+                          nestedDropdown === "roles" ? "expanded" : ""
+                        }`}
+                      >
+                        <div
+                          className="dropdown-title"
+                          onClick={() =>
+                            setNestedDropdown(
+                              nestedDropdown === "roles" ? "" : "roles"
+                            )
+                          }
+                        >
+                          ▣ {t("Roles")}
+                        </div>
+                        {nestedDropdown === "roles" && (
+                          <div className="dropdown-items show">
+                            {userRole === "SuperAdmin" ||
+                              (userRole === "Admin" && (
+                                <Link
+                                  to="/settings/admin/roles/create"
+                                  className="sidebar-link"
+                                >
+                                  {t("Create New")}
+                                </Link>
+                              ))}
+
+                            <Link
+                              to="/settings/admin/roles"
+                              className="sidebar-link"
+                            >
+                              {t("List Roles")}
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Work Order Time */}
+                      <div
+                        className={`dropdown ${
+                          nestedDropdown === "roles" ? "expanded" : ""
+                        }`}
+                      >
+                        <div
+                          className="dropdown-title"
+                          onClick={() =>
+                            setNestedDropdown(
+                              nestedDropdown === "worktime" ? "" : "worktime"
+                            )
+                          }
+                        >
                           <Link
-                            to="/settings/admin/roles"
                             className="sidebar-link"
+                            to="/settings/admin/workOrderTime"
+                            style={{ padding: "0px" }}
                           >
-                            {t("List Roles")}
+                            ▣ {t("Work Order Time")}
                           </Link>
                         </div>
-                      )}
-                    </div>
-
-                    {/* Work Order Time */}
-                    <div
-                      className={`dropdown ${
-                        nestedDropdown === "roles" ? "expanded" : ""
-                      }`}
-                    >
-                      <div
-                        className="dropdown-title"
-                        onClick={() =>
-                          setNestedDropdown(
-                            nestedDropdown === "worktime" ? "" : "worktime"
-                          )
-                        }
-                      >
-                        <Link
-                          className="sidebar-link"
-                          to="/settings/admin/workOrderTime"
-                          style={{ padding: "0px" }}
-                        >
-                          ▣ {t("Work Order Time")}
-                        </Link>
                       </div>
-                    </div>
 
-                    {/* Language Change */}
-                    <div
-                      className={`dropdown ${
-                        nestedDropdown === "roles" ? "expanded" : ""
-                      }`}
-                    >
+                      {/* Language Change */}
                       <div
-                        className="dropdown-title"
-                        onClick={() =>
-                          setNestedDropdown(
-                            nestedDropdown === "language" ? "" : "language"
-                          )
-                        }
+                        className={`dropdown ${
+                          nestedDropdown === "roles" ? "expanded" : ""
+                        }`}
                       >
-                        <Link
-                          className="sidebar-link"
-                          to="/settings/admin/language"
-                          style={{ padding: "0px" }}
+                        <div
+                          className="dropdown-title"
+                          onClick={() =>
+                            setNestedDropdown(
+                              nestedDropdown === "language" ? "" : "language"
+                            )
+                          }
                         >
-                          ▣ {t("Language Change")}
-                        </Link>
+                          <Link
+                            className="sidebar-link"
+                            to="/settings/admin/language"
+                            style={{ padding: "0px" }}
+                          >
+                            ▣ {t("Language Change")}
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* Company Reports */}
-                <div
-                  className={`dropdown ${
-                    expandedDropdown === "reports" ? "expanded" : ""
-                  }`}
-                >
+                {(userRole == "Admin" ||
+                  hasPermission(`Company Work Order Report Module`, `View`) ||
+                  hasPermission(
+                    `Company Field User Attendence Report Module`,
+                    `View`
+                  )) && (
                   <div
-                    className="dropdown-title"
-                    onClick={() => toggleDropdown("reports")}
-                  >
-                    <span>{t("Reports")}</span>
-                    <TbReportSearch size={20} />
-                  </div>
-                  <div
-                    className={`dropdown-items ${
-                      expandedDropdown === "reports" ? "show" : ""
+                    className={`dropdown ${
+                      expandedDropdown === "reports" ? "expanded" : ""
                     }`}
                   >
-                    <Link
-                      to="/reports/company/workorder"
-                      className="sidebar-link"
-                      activeClassName="active"
+                    <div
+                      className="dropdown-title"
+                      onClick={() => toggleDropdown("reports")}
                     >
-                      ▣ {t("Work Order Report")}
-                    </Link>
-                    {/* <Link
-                      to="/company/companies"
-                      className="sidebar-link"
-                      activeClassName="active"
+                      <span>{t("Reports")}</span>
+                      <TbReportSearch size={20} />
+                    </div>
+                    <div
+                      className={`dropdown-items ${
+                        expandedDropdown === "reports" ? "show" : ""
+                      }`}
                     >
-                      ▣ {t("Field User Attendence Report")}
-                    </Link>
+                      {(userRole == "Admin" ||
+                        hasPermission(
+                          `Company Work Order Report Module`,
+                          `View`
+                        )) && (
+                        <Link
+                          to="/reports/company/workorder"
+                          className="sidebar-link"
+                          activeClassName="active"
+                        >
+                          ▣ {t("Work Order Report")}
+                        </Link>
+                      )}
+                      {(userRole == "Admin" ||
+                        hasPermission(
+                          `Company Field User Attendence Report Module`,
+                          `View`
+                        )) && (
+                        <Link
+                          to="/reports/company/fielduser-attendence"
+                          className="sidebar-link"
+                          activeClassName="active"
+                        >
+                          ▣ {t("Field User Attendence Report")}
+                        </Link>
+                      )}
+                      {/*  
                     <Link
                       to="/company/access"
                       className="sidebar-link"
@@ -739,8 +794,9 @@ const Header = () => {
                     >
                       ▣ {t("Access")}
                     </Link> */}
+                    </div>
                   </div>
-                </div>
+                )}
               </>
             )}
           </Nav>
