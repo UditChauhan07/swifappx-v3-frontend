@@ -53,8 +53,12 @@ import CompanyWOreport from "./Admin/Pages/CompanyReports/WorkOrderReport/Compan
 import FieldUserAttenderReport from "./Super_Admin/Pages/Reports/FieldUserAttenderReport/FieldUserAttenderReport";
 import LoginLogoutReport from "./Super_Admin/Pages/Reports/LoginLogoutReport/LoginLogoutReport";
 import FieldUserAttendece from "./Admin/Pages/CompanyReports/Attedence/FieldUserAttendece";
+import { usePermissions } from "./context/PermissionContext";
+import { fetch_permissions } from "./lib/store";
+import { useEffect } from "react";
 
 function App() {
+
   return (
     <>
       <Router>

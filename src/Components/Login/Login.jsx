@@ -59,7 +59,8 @@ const Login = () => {
         localStorage.setItem("guidlines", "active");
         localStorage.setItem("companyName", response.company_name);
         localStorage.setItem("companyLogo", response.company_logo);
-        localStorage.setItem("defaultLanguage", response.company_language);
+        localStorage.setItem("defaultTimezone", response.company_timezone);
+        localStorage.setItem("roleID", response.roleID);
         if (response.user.role === "Admin" || response.user.role === "SuperAdmin") {
         localStorage.setItem("SessionId", response.sessionId);}
 
